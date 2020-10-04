@@ -1,0 +1,22 @@
+{
+    "files.eol": "\n",
+    "files.associations": {
+        ".huskyrc": "json",
+        ".lintstagedrc": "json"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true,
+    },
+    "eslint.validate": [
+        "javascript",
+        "typescript"
+    ],
+    "editor.formatOnSave": true,
+    "[javascript]": {
+        "editor.formatOnSave": false
+    },
+    "[typescript]": {
+        "editor.formatOnSave": false
+    }
+}

@@ -1,6 +1,6 @@
 export default interface ConfigInterface {
   NODE: {
-    ENV: 'production' | 'development';
+    ENV: 'production' | 'development' | 'test';
     PORT: number;
   };
   DATABASE: {
@@ -12,5 +12,9 @@ export default interface ConfigInterface {
     ENTITIES: string;
     MIGRATIONS: string;
     SUBSCRIBERS: string;
+  };
+  GRAPHQL: {
+    PLAYGROUND: boolean;
+    RESOLVERS: string;
   };
 }

@@ -1,12 +1,31 @@
 import 'reflect-metadata';
 import path from 'path';
-import { createConnection, ConnectionOptions } from 'typeorm';
+import { createConnection, ConnectionOptions, useContainer } from 'typeorm';
+import { ApolloServer } from 'apollo-server';
 import { Container } from 'typedi';
+import { buildSchema } from 'type-graphql';
 import config from '@app/config';
 import logger from '@app/logger';
 
 const boostrap = async () => {
   try {
+    useContainer(Container);
+
+    const schema = await buildSchema({
+      resolvers: [path.join(__dirname, config.GRAPHQL.RESOLVERS)],
+      container: Container,
+      validate: true,
+    });
+
+    logger.info('Schema built');
+
+    const server = new ApolloServer({
+      schema,
+      playground: config.GRAPHQL.PLAYGROUND,
+    });
+
+    logger.info('Server configured');
+
     await createConnection(<ConnectionOptions>{
       type: config.DATABASE.TYPE,
       url: config.DATABASE.URL,
@@ -20,9 +39,11 @@ const boostrap = async () => {
       subscribers: [path.join(__dirname, config.DATABASE.SUBSCRIBERS)],
     });
 
-    logger.info(`Database connected`);
+    logger.info('Database connected');
 
-    // logger.info(`Server running at ${addressInfo.address} on port ${addressInfo.port}`);
+    const serverInfo = await server.listen(config.NODE.PORT);
+
+    logger.info(`Server running at ${serverInfo.url} on port ${serverInfo.port}`);
   } catch (error) {
     logger.error(error);
     process.exit(1);

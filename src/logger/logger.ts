@@ -1,34 +1,24 @@
-import path from 'path';
 import { createLogger, format, transports } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 
 const logger = createLogger({
-  level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+  level: process.env.isProduction === 'true' ? 'info' : 'debug',
   exitOnError: false,
   format: format.combine(
-    format.label({
-      label: path.basename(process.mainModule !== undefined ? process.mainModule.filename : '?'),
-    }),
-    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:SSS' })
+    format((info) => {
+      // eslint-disable-next-line no-param-reassign
+      info.level = info.level.toUpperCase();
+      return info;
+    })(),
+    format.colorize(),
+    format.align(),
+    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:SSS' }),
+    format.printf(({ timestamp, level, message }) => `${timestamp} ${level} ${message}`)
   ),
   transports: [
-    new transports.Console({
-      format: format.combine(
-        format((info) => {
-          // eslint-disable-next-line no-param-reassign
-          info.level = info.level.toUpperCase();
-          return info;
-        })(),
-        format.colorize(),
-        format.printf(
-          (info) =>
-            `${info.timestamp} ${info.level} [${info.label}]: ${info.message
-              .replace(/\s+/g, ' ')
-              .trim()}`
-        )
-      ),
-    }),
+    new transports.Console(),
     new DailyRotateFile({
+      format: format.uncolorize(),
       dirname: 'log',
       filename: '%DATE%',
       extension: '.log',
@@ -36,14 +26,6 @@ const logger = createLogger({
       eol: '\n',
       zippedArchive: true,
       maxFiles: '112d',
-      format: format.combine(
-        format.printf(
-          (info) =>
-            `${info.timestamp} ${info.level.toUpperCase()} [${info.label}]: ${info.message
-              .replace(/\s+/g, ' ')
-              .trim()}`
-        )
-      ),
     }),
   ],
 });

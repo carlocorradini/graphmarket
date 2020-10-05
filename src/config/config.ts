@@ -5,12 +5,13 @@ import { ConfigInterface } from '@app/interfaces';
 const cleanConfig = envalid.cleanEnv(
   process.env,
   {
-    NODE_ENV: str({ default: 'production', choices: ['production', 'development'] }),
+    NODE_ENV: str({ default: 'production', choices: ['production', 'development', 'test'] }),
     PORT: port({ devDefault: 8080 }),
     DATABASE_URL: url(),
     DATABASE_SSL: bool({ default: true, devDefault: false }),
     DATABASE_SYNCHRONIZE: bool({ default: false, devDefault: true }),
     DATABASE_LOGGING: bool({ default: false }),
+    GRAPHQL_PLAYGROUND: bool({ default: false, devDefault: true }),
   },
   {
     strict: true,
@@ -30,9 +31,13 @@ const config: ConfigInterface = {
     SSL: cleanConfig.DATABASE_SSL,
     SYNCHRONIZE: cleanConfig.DATABASE_SYNCHRONIZE,
     LOGGING: cleanConfig.DATABASE_LOGGING,
-    ENTITIES: 'entities/**/*',
-    MIGRATIONS: 'migration/**/*',
-    SUBSCRIBERS: 'subscriber/**/*',
+    ENTITIES: 'entities/**/*.{ts,js}',
+    MIGRATIONS: 'migration/**/*.{ts,js}',
+    SUBSCRIBERS: 'subscriber/**/*.{ts,js}',
+  },
+  GRAPHQL: {
+    PLAYGROUND: cleanConfig.GRAPHQL_PLAYGROUND,
+    RESOLVERS: 'graphql/resolvers/**/*.{ts,js}',
   },
 };
 

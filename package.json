@@ -38,7 +38,7 @@
     "class-validator": "^0.12.2",
     "cross-env": "^7.0.2",
     "envalid": "^6.0.2",
-    "pg": "^8.3.3",
+    "pg": "^8.4.0",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.28",
     "winston": "^3.3.3",

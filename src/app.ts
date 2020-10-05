@@ -12,10 +12,12 @@ const boostrap = async () => {
   try {
     useContainer(Container);
 
+    logger.debug('Dependency injection configured');
+
     const schema = await buildSchema({
       resolvers: [path.join(__dirname, config.GRAPHQL.RESOLVERS)],
       container: Container,
-      validate: true,
+      dateScalarMode: 'timestamp',
     });
 
     logger.debug('GraphQL schema built');

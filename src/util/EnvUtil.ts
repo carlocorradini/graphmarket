@@ -1,11 +1,11 @@
 import env from '@app/config/env';
 
 export default class EnvUtil {
-  public static readonly ENV_PRODUCTION = 'production';
+  public static readonly ENV_PRODUCTION: string = 'production';
 
-  public static readonly ENV_DEVELOPMENT = 'development';
+  public static readonly ENV_DEVELOPMENT: string = 'development';
 
-  public static readonly ENV_TEST = 'test';
+  public static readonly ENV_TEST: string = 'test';
 
   public static getCurrent(): string | undefined {
     return process.env.NODE_ENV || env.NODE_ENV;

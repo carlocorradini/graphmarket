@@ -9,13 +9,13 @@ export enum UserValidationGroup {
 
 @InputType()
 export default class UserInput implements Partial<User> {
-  @Field()
+  @Field({ nullable: true })
   @IsString({ groups: [UserValidationGroup.CREATION] })
   @Length(1, 128, { groups: [UserValidationGroup.CREATION] })
   @IsEmpty({ groups: [UserValidationGroup.UPDATE] })
   username?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @IsString({ groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
   @Length(8, 64, { groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
   @IsOptional({ groups: [UserValidationGroup.UPDATE] })
@@ -33,7 +33,7 @@ export default class UserInput implements Partial<User> {
   @IsOptional({ groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
   surname?: string;
 
-  @Field(() => UserGender)
+  @Field(() => UserGender, { nullable: true })
   @IsEnum(UserGender, { groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
   @IsOptional({ groups: [UserValidationGroup.UPDATE] })
   gender?: UserGender;
@@ -46,7 +46,7 @@ export default class UserInput implements Partial<User> {
   @IsOptional({ groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
   dateOfBirth?: Date;
 
-  @Field()
+  @Field({ nullable: true })
   @IsEmail(undefined, { groups: [UserValidationGroup.CREATION] })
   @Length(3, 128, { groups: [UserValidationGroup.CREATION] })
   @IsEmpty({ groups: [UserValidationGroup.UPDATE] })

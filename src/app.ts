@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import '@app/config/env';
 import path from 'path';
 import { createConnection, ConnectionOptions, useContainer } from 'typeorm';
 import { ApolloServer } from 'apollo-server';
@@ -17,14 +18,14 @@ const boostrap = async () => {
       validate: true,
     });
 
-    logger.info('Schema built');
+    logger.debug('GraphQL schema built');
 
     const server = new ApolloServer({
       schema,
       playground: config.GRAPHQL.PLAYGROUND,
     });
 
-    logger.info('Server configured');
+    logger.debug('Server configured');
 
     await createConnection(<ConnectionOptions>{
       type: config.DATABASE.TYPE,
@@ -39,7 +40,7 @@ const boostrap = async () => {
       subscribers: [path.join(__dirname, config.DATABASE.SUBSCRIBERS)],
     });
 
-    logger.info('Database connected');
+    logger.debug('Database connected');
 
     const serverInfo = await server.listen(config.NODE.PORT);
 

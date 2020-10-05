@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import path from 'path';
 import { createConnection, ConnectionOptions } from 'typeorm';
+import { Container } from 'typedi';
 import config from '@app/config';
 import logger from '@app/logger';
 

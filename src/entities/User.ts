@@ -8,6 +8,7 @@ import {
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
+import { Field, ID, ObjectType } from 'type-graphql';
 import { IsString, IsEmail, IsEnum, Length, IsEmpty, IsOptional, IsISO8601 } from 'class-validator';
 import { CryptUtil } from '@app/util';
 
@@ -27,13 +28,16 @@ export enum UserRole {
 }
 
 @Entity('user')
+@ObjectType()
 export default class User {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   @Index()
+  @Field(() => ID)
   @IsEmpty({ always: true })
   id!: string;
 
   @Column({ name: 'username', length: 128, unique: true, update: false })
+  @Field()
   @IsString({ groups: [UserValidationGroup.CREATION] })
   @Length(1, 128, { groups: [UserValidationGroup.CREATION] })
   @IsEmpty({ groups: [UserValidationGroup.UPDATE] })
@@ -55,18 +59,21 @@ export default class User {
     enum: UserRole,
     default: UserRole.STANDARD,
   })
+  @Field()
   @IsEnum(UserRole, { groups: [UserValidationGroup.UPDATE] })
   @IsEmpty({ groups: [UserValidationGroup.CREATION] })
   @IsOptional({ groups: [UserValidationGroup.UPDATE] })
   role!: UserRole;
 
   @Column({ name: 'name', type: 'varchar', length: 64, nullable: true, default: undefined })
+  @Field()
   @IsString({ groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
   @Length(0, 64, { groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
   @IsOptional({ groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
   name!: string;
 
   @Column({ name: 'surname', type: 'varchar', length: 64, nullable: true, default: undefined })
+  @Field()
   @IsString({ groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
   @Length(0, 64, { groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
   @IsOptional({ groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
@@ -77,11 +84,13 @@ export default class User {
     type: 'enum',
     enum: UserGender,
   })
+  @Field()
   @IsEnum(UserGender, { groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
   @IsOptional({ groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] })
   gender!: UserGender;
 
   @Column({ name: 'date_of_birth', type: 'date', nullable: true, default: undefined })
+  @Field()
   @IsISO8601(
     { strict: true },
     { groups: [UserValidationGroup.CREATION, UserValidationGroup.UPDATE] }
@@ -90,12 +99,14 @@ export default class User {
   dateOfBirth!: Date;
 
   @Column({ name: 'email', length: 128, unique: true, select: false, update: false })
+  @Field()
   @IsEmail(undefined, { groups: [UserValidationGroup.CREATION] })
   @Length(3, 128, { groups: [UserValidationGroup.CREATION] })
   @IsEmpty({ groups: [UserValidationGroup.UPDATE] })
   email!: string;
 
   @CreateDateColumn({ name: 'created_at', update: false })
+  @Field()
   @IsEmpty({ always: true })
   createdAt!: Date;
 

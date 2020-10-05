@@ -24,7 +24,6 @@
     "sourceType": "module"
   },
   "rules": {
-    "prettier/prettier": "error",
-    "no-return-await": "off"
+    "prettier/prettier": "error"
   }
 }

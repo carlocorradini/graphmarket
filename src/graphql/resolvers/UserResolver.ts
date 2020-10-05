@@ -1,30 +1,38 @@
 import { Repository } from 'typeorm';
-import { Arg, Args, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Args, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import User from '@app/entities/User';
+import { User, Recipe } from '@app/entities';
 import UserInput, { UserValidationGroup } from '@app/graphql/inputs/UserInput';
 import { PaginationArgs } from '@app/graphql/args';
 
 @Resolver(User)
 @Service()
 export default class UserResolver {
-  constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Recipe) private readonly recipeRepository: Repository<Recipe>
+  ) {}
 
-  @Query(() => User)
-  async user(@Arg('id') id: string): Promise<User> {
-    return await this.userRepository.findOneOrFail(id);
+  @Query(() => User, { nullable: true })
+  user(@Arg('id') id: string): Promise<User | undefined> {
+    return this.userRepository.findOne(id);
   }
 
   @Query(() => [User])
-  async users(@Args() { skip, take }: PaginationArgs): Promise<User[]> {
-    return await this.userRepository.find({ skip, take });
+  users(@Args() { skip, take }: PaginationArgs): Promise<User[]> {
+    return this.userRepository.find({ skip, take });
   }
 
   @Mutation(() => User)
-  async createUser(
+  createUser(
     @Arg('user', { validate: { groups: [UserValidationGroup.CREATION] } }) userInput: UserInput
   ): Promise<User> {
-    return await this.userRepository.save(this.userRepository.create(userInput));
+    return this.userRepository.save(this.userRepository.create(userInput));
+  }
+
+  @FieldResolver()
+  recipes(@Root() user: User): Promise<Recipe[]> {
+    return this.recipeRepository.findByIds(user.recipesIds);
   }
 }

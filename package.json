@@ -39,6 +39,7 @@
     "class-validator": "^0.12.2",
     "cross-env": "^7.0.2",
     "envalid": "^6.0.2",
+    "graphql": "^15.3.0",
     "pg": "^8.4.0",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.0.0",

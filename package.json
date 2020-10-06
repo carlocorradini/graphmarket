@@ -53,7 +53,7 @@
     "@types/jest": "^26.0.14",
     "@types/node": "^14.11.2",
     "@types/shelljs": "^0.8.8",
-    "@typescript-eslint/eslint-plugin": "^4.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.4.0",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-typescript": "^11.0.0",
     "eslint-config-prettier": "^6.12.0",

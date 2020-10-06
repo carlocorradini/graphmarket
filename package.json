@@ -34,7 +34,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "apollo-server": "^2.18.1",
+    "apollo-server": "^2.18.2",
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.12.2",
     "cross-env": "^7.0.2",

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -5,12 +7,15 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  BeforeInsert,
-  BeforeUpdate,
   OneToMany,
   RelationId,
 } from 'typeorm';
-import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
+import {
+  GraphQLNonEmptyString,
+  GraphQLDate,
+  GraphQLDateTime,
+  GraphQLEmailAddress,
+} from '@app/graphql/scalars';
 import { CryptUtil } from '@app/util';
 // eslint-disable-next-line import/no-cycle
 import Recipe from './Recipe';
@@ -31,67 +36,81 @@ registerEnumType(UserRole, { name: 'UserRole' });
 @Entity('user')
 @ObjectType()
 export default class User {
-  @PrimaryGeneratedColumn('uuid', { name: 'id' })
+  @PrimaryGeneratedColumn('uuid')
   @Index()
   @Field(() => ID)
   id!: string;
 
-  @Column({ name: 'username', length: 128, unique: true, update: false })
-  @Field()
+  @Column({ length: 64, unique: true, update: false })
+  @Field(() => GraphQLNonEmptyString)
   username!: string;
 
-  @Column({ name: 'password', length: 72, select: false })
+  @Column({
+    length: 72,
+    select: false,
+    transformer: {
+      to: (value) => {
+        if (!value) return;
+        // eslint-disable-next-line consistent-return
+        return CryptUtil.hashSync(value);
+      },
+      from: (value) => value,
+    },
+  })
   password?: string;
 
-  @Column({ name: 'role', type: 'enum', enum: UserRole, default: UserRole.STANDARD })
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.STANDARD })
   @Field(() => UserRole)
   role!: UserRole;
 
-  @Column({ name: 'name', type: 'varchar', length: 64, nullable: true, default: undefined })
-  @Field({ nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 64,
+    nullable: true,
+    transformer: {
+      to: (value) => _.capitalize(value),
+      from: (value) => value,
+    },
+  })
+  @Field(() => GraphQLNonEmptyString, { nullable: true })
   name?: string;
 
-  @Column({ name: 'surname', type: 'varchar', length: 64, nullable: true, default: undefined })
-  @Field({ nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 64,
+    nullable: true,
+    transformer: {
+      to: (value) => _.capitalize(value),
+      from: (value) => value,
+    },
+  })
+  @Field(() => GraphQLNonEmptyString, { nullable: true })
   surname?: string;
 
-  @Column({ name: 'gender', type: 'enum', enum: UserGender })
+  @Column({ type: 'enum', enum: UserGender })
   @Field(() => UserGender)
   gender!: UserGender;
 
-  @Column({ name: 'date_of_birth', type: 'date', nullable: true, default: undefined })
-  @Field({ nullable: true })
-  dateOfBirth?: Date;
+  @Column({ type: 'date', nullable: true })
+  @Field(() => GraphQLDate, { nullable: true })
+  date_of_birth?: Date;
 
-  @Column({ name: 'email', length: 128, unique: true, select: false, update: false })
-  @Field()
+  @Column({ length: 128, unique: true, update: false })
+  @Field(() => GraphQLEmailAddress)
   email!: string;
 
-  @CreateDateColumn({ name: 'created_at', update: false })
-  @Field()
-  createdAt!: Date;
+  @CreateDateColumn({ update: false })
+  @Field(() => GraphQLDateTime)
+  created_at!: Date;
 
-  @UpdateDateColumn({ name: 'updated_at', select: false })
-  updatedAt!: Date;
+  @UpdateDateColumn()
+  @Field(() => GraphQLDateTime)
+  updated_at!: Date;
 
   @OneToMany(() => Recipe, (recipe) => recipe.author, { nullable: false })
   @Field(() => [Recipe])
   recipes!: Recipe[];
 
   @RelationId((user: User) => user.recipes)
-  recipesIds!: number[];
-
-  @BeforeInsert()
-  async beforeInsert() {
-    if (this.name) this.name = this.name.replace(/^\w/, (c) => c.toUpperCase());
-    if (this.surname) this.surname = this.surname.replace(/^\w/, (c) => c.toUpperCase());
-    if (this.password) this.password = await CryptUtil.hash(this.password);
-  }
-
-  @BeforeUpdate()
-  async beforeUpdate() {
-    if (this.name) this.name = this.name.replace(/^\w/, (c) => c.toUpperCase());
-    if (this.surname) this.surname = this.surname.replace(/^\w/, (c) => c.toUpperCase());
-    if (this.password) this.password = await CryptUtil.hash(this.password);
-  }
+  recipes_ids!: number[];
 }

@@ -17,7 +17,6 @@ const boostrap = async () => {
     const schema = await buildSchema({
       resolvers: [path.join(__dirname, config.GRAPHQL.RESOLVERS)],
       container: Container,
-      dateScalarMode: 'timestamp',
     });
 
     logger.debug('GraphQL schema built');
@@ -46,7 +45,7 @@ const boostrap = async () => {
 
     const serverInfo = await server.listen(config.NODE.PORT);
 
-    logger.info(`Server running at ${serverInfo.url} on port ${serverInfo.port}`);
+    logger.info(`Server running on ${serverInfo.url}`);
   } catch (error) {
     logger.error(error);
     process.exit(1);

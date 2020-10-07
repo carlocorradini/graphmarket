@@ -1,4 +1,5 @@
-import { ArgsType, Field, Int } from 'type-graphql';
+import { ArgsType, Field } from 'type-graphql';
+import { GraphQLNonNegativeInt, GraphQLPositiveInt } from '../scalars';
 
 @ArgsType()
 export default class PaginationArgs {
@@ -6,9 +7,9 @@ export default class PaginationArgs {
 
   public static readonly DEFAULT_TAKE: number = 16;
 
-  @Field(() => Int)
+  @Field(() => GraphQLNonNegativeInt)
   skip: number = PaginationArgs.DEFAULT_SKIP;
 
-  @Field(() => Int)
+  @Field(() => GraphQLPositiveInt)
   take: number = PaginationArgs.DEFAULT_TAKE;
 }

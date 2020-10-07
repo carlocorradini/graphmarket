@@ -1,37 +1,64 @@
+import _ from 'lodash';
 import { Field, ID, ObjectType } from 'type-graphql';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
-  JoinTable,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   RelationId,
+  UpdateDateColumn,
 } from 'typeorm';
+import { GraphQLDateTime, GraphQLNonEmptyString } from '@app/graphql/scalars';
 // eslint-disable-next-line import/no-cycle
 import User from './User';
 
 @Entity('recipe')
 @ObjectType()
 export default class Recipe {
-  @PrimaryGeneratedColumn('increment', { name: 'id' })
+  @PrimaryGeneratedColumn('increment')
   @Index()
   @Field(() => ID)
   id!: number;
 
-  @Column({ name: 'name', type: 'varchar', length: 128 })
-  @Field()
+  @Column({
+    type: 'varchar',
+    length: 64,
+    transformer: {
+      to: (value) => _.capitalize(value),
+      from: (value) => value,
+    },
+  })
+  @Field(() => GraphQLNonEmptyString)
   name!: string;
 
-  @Column({ name: 'description', type: 'varchar', length: 256, nullable: true, default: undefined })
-  @Field({ nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 256,
+    nullable: true,
+    transformer: {
+      to: (value) => _.capitalize(value),
+      from: (value) => value,
+    },
+  })
+  @Field(() => GraphQLNonEmptyString, { nullable: true })
   description?: string;
 
   @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
-  @JoinTable({ name: 'author_id' })
+  @JoinColumn({ name: 'author_id' })
   @Field(() => User)
   author!: User;
 
   @RelationId((recipe: Recipe) => recipe.author)
-  authorId!: string;
+  author_id!: string;
+
+  @CreateDateColumn({ update: false })
+  @Field(() => GraphQLDateTime)
+  created_at!: Date;
+
+  @UpdateDateColumn()
+  @Field(() => GraphQLDateTime)
+  updated_at!: Date;
 }

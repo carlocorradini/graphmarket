@@ -3,8 +3,9 @@ import { Arg, Args, FieldResolver, Mutation, Query, Resolver, Root } from 'type-
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Recipe, User } from '@app/entities';
-import { PaginationArgs } from '@app/graphql/args';
-import RecipeInput, { RecipeValidationGroup } from '@app/graphql/inputs/RecipeInput';
+import { GraphQLPositiveInt } from '../scalars';
+import { PaginationArgs } from '../args';
+import { RecipeCreateInput, RecipeUpdateInput } from '../inputs';
 
 @Resolver(Recipe)
 @Service()
@@ -15,7 +16,7 @@ export default class RecipeResolver {
   ) {}
 
   @Query(() => Recipe, { nullable: true })
-  recipe(@Arg('id') id: number): Promise<Recipe | undefined> {
+  recipe(@Arg('id', () => GraphQLPositiveInt) id: number): Promise<Recipe | undefined> {
     return this.recipeRepository.findOne(id);
   }
 
@@ -25,21 +26,33 @@ export default class RecipeResolver {
   }
 
   @Mutation(() => Recipe)
-  createRecipe(
-    @Arg('recipe', { validate: { groups: [RecipeValidationGroup.CREATION] } })
-    recipeInput: RecipeInput
-  ): Promise<Recipe> {
+  createRecipe(@Arg('data') recipeInput: RecipeCreateInput): Promise<Recipe> {
+    const recipe: Recipe = this.recipeRepository.create(recipeInput);
     // TODO Change this
-    return this.recipeRepository.save(
-      this.recipeRepository.create({
-        ...recipeInput,
-        authorId: 'be721e75-e7c1-4c8a-bc79-a308768c77e0',
-      })
-    );
+    recipe.id = 99;
+    recipe.author = this.userRepository.create({ id: '12aad751-ec02-4c96-9441-1866a1c67f54' });
+
+    return this.recipeRepository.save(recipe);
+  }
+
+  @Mutation(() => Recipe)
+  async updateRecipe(@Arg('data') recipeInput: RecipeUpdateInput): Promise<Recipe> {
+    const recipe: Recipe = this.recipeRepository.create(recipeInput);
+    // TODO cambiare
+    recipe.author = this.userRepository.create({ id: '12aad751-ec02-4c96-9441-1866a1c67f54' });
+    await this.recipeRepository.save(recipe);
+    return this.recipeRepository.findOneOrFail(recipe.id);
+  }
+
+  @Mutation(() => Recipe)
+  async deleteRecipe(@Arg('id', () => GraphQLPositiveInt) id: number): Promise<Recipe> {
+    const recipe: Recipe = await this.recipeRepository.findOneOrFail(id);
+    await this.recipeRepository.delete(recipe.id);
+    return recipe;
   }
 
   @FieldResolver()
   author(@Root() recipe: Recipe): Promise<User> {
-    return this.userRepository.findOneOrFail(recipe.authorId);
+    return this.userRepository.findOneOrFail(recipe.author_id);
   }
 }

@@ -1,6 +1,6 @@
 # GraphQL template
 
-[![Build Status](https://github.com/carlocorradini/graphql-template/workflows/build/badge.svg)](https://github.com/carlocorradini/graphql-template/actions)
+[![CI Status](https://github.com/carlocorradini/graphql-template/workflows/main/badge.svg)](https://github.com/carlocorradini/graphql-template/actions)
 
 ## Members
 

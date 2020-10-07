@@ -13,7 +13,7 @@ const env = envalid.cleanEnv(
   },
   {
     strict: true,
-  }
+  },
 );
 
 export default env;

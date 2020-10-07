@@ -13,7 +13,7 @@
     "clean": "npx rimraf build && npx rimraf log",
     "update": "npx ncu -u && npm install",
     "prettify": "npx prettier --write",
-    "lint": "npx eslint --fix",
+    "lint": "npx eslint --ext .ts \"src/**/*.ts\"",
     "test": "jest --forceExit --no-watchman",
     "prebuild": "npm run clean",
     "build": "npx ttsc --p ./tsconfig.json",

@@ -27,7 +27,7 @@ const logger = createLogger({
     format.colorize(),
     format.align(),
     format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:SSS' }),
-    format.printf(({ timestamp, level, message }) => `${timestamp} ${level} ${message}`)
+    format.printf(({ timestamp, level, message }) => `${timestamp} ${level} ${message}`),
   ),
   transports: [consoleTransport, fileTransport],
 });

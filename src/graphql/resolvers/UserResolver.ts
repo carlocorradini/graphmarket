@@ -12,7 +12,7 @@ import { UserCreateInput, UserUpdateInput } from '../inputs';
 export default class UserResolver {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Recipe) private readonly recipeRepository: Repository<Recipe>
+    @InjectRepository(Recipe) private readonly recipeRepository: Repository<Recipe>,
   ) {}
 
   @Query(() => User, { nullable: true })

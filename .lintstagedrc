@@ -1,8 +1,8 @@
 {
   "*.{js,ts}": [
-    "npm run lint"
+    "npx eslint --fix"
   ],
   "*.{js,ts,json,md}": [
-    "npm run prettify"
+    "npx prettier --write"
   ]
 }

@@ -1,8 +1,8 @@
-import { ConfigInterface } from '@app/interfaces';
+import { IConfig } from '@app/typings';
 import logger from '@app/logger';
 import env from './env';
 
-const config: ConfigInterface = {
+const config: IConfig = {
   NODE: {
     ENV: env.NODE_ENV,
     PORT: env.PORT,

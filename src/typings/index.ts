@@ -1,4 +1,4 @@
-export default interface ConfigInterface {
+export interface IConfig {
   NODE: {
     ENV: 'production' | 'development' | 'test';
     PORT: number;

@@ -1,7 +1,8 @@
 {
   "*.{js,ts}": [
-    "npm run lint:staged",
-    "npm run prettify:staged",
-    "npm run test:staged"
+    "npm run lint"
+  ],
+  "*.{js,ts,json,md}": [
+    "npm run prettify"
   ]
 }

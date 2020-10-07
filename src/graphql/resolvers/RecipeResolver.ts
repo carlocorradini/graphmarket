@@ -28,7 +28,7 @@ export default class RecipeResolver {
   @Mutation(() => Recipe)
   createRecipe(@Arg('data') recipeInput: RecipeCreateInput): Promise<Recipe> {
     const recipe: Recipe = this.recipeRepository.create(recipeInput);
-    // TODO Change this
+    // TODO Change
     recipe.id = 99;
     recipe.author = this.userRepository.create({ id: '12aad751-ec02-4c96-9441-1866a1c67f54' });
 

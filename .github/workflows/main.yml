@@ -31,8 +31,6 @@ jobs:
         run: npm ci
       - name: Linting
         run: npm run lint
-      - name: Prettify
-        run: npm run prettify
       - name: Building
         run: npm run build
       - name: Testing

@@ -17,6 +17,10 @@ const config: IConfig = {
     MIGRATIONS: 'migration/**/*.{ts,js}',
     SUBSCRIBERS: 'subscriber/**/*.{ts,js}',
   },
+  JWT: {
+    SECRET: env.JWT_SECRET,
+    EXPIRATION_TIME: env.JWT_EXPIRATION_TIME,
+  },
   GRAPHQL: {
     PLAYGROUND: env.GRAPHQL_PLAYGROUND,
     RESOLVERS: 'graphql/resolvers/**/*.{ts,js}',

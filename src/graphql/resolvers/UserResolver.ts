@@ -3,7 +3,9 @@ import { Arg, Args, FieldResolver, Mutation, Query, Resolver, Root } from 'type-
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { User, Recipe } from '@app/entities';
-import { GraphQLUUID } from '../scalars';
+import { CryptUtil } from '@app/util';
+import { JWTHelper } from '@app/helper';
+import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '../scalars';
 import { PaginationArgs } from '../args';
 import { UserCreateInput, UserUpdateInput } from '../inputs';
 
@@ -50,6 +52,28 @@ export default class UserResolver {
     const user: User = await this.userRepository.findOneOrFail(id);
     await this.userRepository.delete(user.id);
     return user;
+  }
+
+  // TODO migliorare error
+  @Mutation(() => String)
+  async signIn(
+    @Arg('username', () => GraphQLNonEmptyString) username: string,
+    @Arg('password', () => GraphQLNonEmptyString) password: string,
+  ): Promise<string> {
+    const user: User | undefined = await this.userRepository.findOne(
+      { username },
+      { select: ['id', 'username', 'password'] },
+    );
+    if (!user) return '';
+    if (!(await CryptUtil.compare(password, user.password!))) return '';
+    return JWTHelper.sign({ id: user.id, username: user.username });
+  }
+
+  // TODO implementare
+  @Mutation(() => GraphQLVoid)
+  async signOut(): Promise<void> {
+    // TODO delete
+    this.userRepository.findOne('');
   }
 
   @FieldResolver()

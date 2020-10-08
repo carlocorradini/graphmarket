@@ -13,8 +13,17 @@ export interface IConfig {
     MIGRATIONS: string;
     SUBSCRIBERS: string;
   };
+  JWT: {
+    SECRET: string;
+    EXPIRATION_TIME: string;
+  };
   GRAPHQL: {
     PLAYGROUND: boolean;
     RESOLVERS: string;
   };
+}
+
+export interface IJWTPayload {
+  id: string;
+  username: string;
 }

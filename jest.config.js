@@ -1,16 +1,14 @@
 module.exports = {
-  roots: ['<rootDir>/test'],
-  verbose: true,
+  roots: ['<rootDir>/tests'],
   preset: 'ts-jest',
   testEnvironment: 'node',
   globals: {
     'ts-jest': {
-      compiler: 'ttypescript'
-    }
+      compiler: 'ttypescript',
+    },
   },
+  testMatch: ['**/?(*.)+(spec|test).+(ts|js)'],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.ts$': 'ts-jest',
   },
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
-  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
 };

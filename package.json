@@ -12,8 +12,8 @@
   "scripts": {
     "clean": "npx rimraf build && npx rimraf log",
     "update": "npx ncu -u && npm install",
-    "lint": "npx eslint --ext .ts \"src/**/*.ts\"",
-    "test": "jest --forceExit --no-watchman",
+    "lint": "npx eslint --ext .ts \"src/**/*.ts\" \"script/**/*.ts\" \"test/**/*.ts\"",
+    "test": "jest --forceExit --no-watchman --detectOpenHandles",
     "prebuild": "npm run clean",
     "build": "npx ttsc --p ./tsconfig.json",
     "postbuild": "npx ts-node script/build.ts",

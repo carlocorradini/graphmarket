@@ -3,23 +3,26 @@
   "env": {
     "es2020": true,
     "node": true,
-    "jest": true
+    "jest/globals": true
   },
   "plugins": [
     "@typescript-eslint",
     "prettier",
-    "import"
+    "import",
+    "jest"
   ],
   "extends": [
     "airbnb-typescript/base",
     "prettier",
     "prettier/@typescript-eslint",
-    "plugin:jest/recommended"
+    "plugin:jest/recommended",
+    "plugin:jest/style"
   ],
   "parserOptions": {
     "project": [
       "tsconfig.json",
-      "script/tsconfig.json"
+      "script/tsconfig.json",
+      "tests/tsconfig.json"
     ],
     "ecmaVersion": 2020,
     "sourceType": "module"

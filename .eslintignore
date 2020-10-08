@@ -5,3 +5,4 @@ node_modules/
 *.hbs
 *.ico
 *.css
+jest.config.js

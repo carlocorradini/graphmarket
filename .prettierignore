@@ -4,5 +4,3 @@ coverage/
 node_modules/
 *.gitkeep
 *.ico
-*.hbs
-tsconfig.json

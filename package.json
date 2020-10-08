@@ -12,11 +12,11 @@
   "scripts": {
     "clean": "npx rimraf build && npx rimraf log",
     "update": "npx ncu -u && npm install",
-    "lint": "npx eslint --ext .ts \"src/**/*.ts\" \"script/**/*.ts\" \"test/**/*.ts\"",
+    "lint": "npx eslint --ext .ts \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\"",
     "test": "jest --forceExit --no-watchman --detectOpenHandles",
     "prebuild": "npm run clean",
     "build": "npx ttsc --p ./tsconfig.json",
-    "postbuild": "npx ts-node script/build.ts",
+    "postbuild": "npx ts-node scripts/build.ts",
     "prestart": "npm install --only=prod",
     "start": "npx cross-env NODE_ENV=\"production\" node app.js",
     "prestart:prod": "cd build && npm install --only=prod",

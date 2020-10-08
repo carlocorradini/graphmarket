@@ -1,8 +1,18 @@
 import { Repository } from 'typeorm';
-import { Arg, Args, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Authorized,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import { User, Recipe } from '@app/entities';
+import User, { UserRoles } from '@app/entities/User';
+import Recipe from '@app/entities/Recipe';
 import { CryptUtil } from '@app/util';
 import { JWTHelper } from '@app/helper';
 import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '../scalars';
@@ -18,37 +28,36 @@ export default class UserResolver {
   ) {}
 
   @Query(() => User, { nullable: true })
+  @Authorized()
   user(@Arg('id', () => GraphQLUUID) id: string): Promise<User | undefined> {
     return this.userRepository.findOne(id);
   }
 
   @Query(() => [User])
+  @Authorized()
   users(@Args() { skip, take }: PaginationArgs): Promise<User[]> {
     return this.userRepository.find({ skip, take });
   }
 
-  // @ts-ignore
   @Mutation(() => User)
   createUser(@Arg('data') userInput: UserCreateInput): Promise<User> {
-    // TODO cambiare
-    // eslint-disable-next-line no-param-reassign
-    userInput.id = '12aad751-ec02-4c96-9441-1866a1c67f54';
     return this.userRepository.save(this.userRepository.create(userInput));
   }
 
   @Mutation(() => User)
-  async updateUser(@Arg('data') userInput: UserUpdateInput): Promise<User> {
-    const user: User = this.userRepository.create(userInput);
-    // TODO cambiare
-    user.id = '12aad751-ec02-4c96-9441-1866a1c67f54';
+  @Authorized(UserRoles.ADMIN)
+  async updateUser(
+    @Arg('id', () => GraphQLUUID) id: string,
+    @Arg('data') userInput: UserUpdateInput,
+  ): Promise<User> {
+    const user: User = this.userRepository.create({ ...userInput, id });
     await this.userRepository.save(user);
     return this.userRepository.findOneOrFail(user.id);
   }
 
   @Mutation(() => User)
-  async deleteUser(): Promise<User> {
-    // TODO cambiare
-    const id = '12aad751-ec02-4c96-9441-1866a1c67f54';
+  @Authorized(UserRoles.ADMIN)
+  async deleteUser(@Arg('id', () => GraphQLUUID) id: string): Promise<User> {
     const user: User = await this.userRepository.findOneOrFail(id);
     await this.userRepository.delete(user.id);
     return user;
@@ -62,11 +71,11 @@ export default class UserResolver {
   ): Promise<string> {
     const user: User | undefined = await this.userRepository.findOne(
       { username },
-      { select: ['id', 'username', 'password'] },
+      { select: ['id', 'password', 'roles'] },
     );
     if (!user) return '';
     if (!(await CryptUtil.compare(password, user.password!))) return '';
-    return JWTHelper.sign({ id: user.id, username: user.username });
+    return JWTHelper.sign({ id: user.id, roles: user.roles });
   }
 
   // TODO implementare

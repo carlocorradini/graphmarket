@@ -1,4 +1,4 @@
-import { IConfig } from '@app/typings';
+import { IConfig } from '@app/types';
 import logger from '@app/logger';
 import env from './env';
 
@@ -19,6 +19,7 @@ const config: IConfig = {
   },
   JWT: {
     SECRET: env.JWT_SECRET,
+    ALGORITHM: env.JWT_ALGORITHM,
     EXPIRATION_TIME: env.JWT_EXPIRATION_TIME,
   },
   GRAPHQL: {

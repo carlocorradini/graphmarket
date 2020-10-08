@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import config from '@app/config';
-import { IJWTPayload } from '@app/typings';
+import { IJWTPayload } from '@app/types';
 
 export default class JWTHelper {
   public static async sign(payload: IJWTPayload): Promise<string> {

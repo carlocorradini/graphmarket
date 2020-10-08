@@ -1,3 +1,6 @@
+import { UserRoles } from '@app/entities/User';
+import { Request } from 'express';
+
 export interface IConfig {
   NODE: {
     ENV: 'production' | 'development' | 'test';
@@ -15,6 +18,7 @@ export interface IConfig {
   };
   JWT: {
     SECRET: string;
+    ALGORITHM: string;
     EXPIRATION_TIME: string;
   };
   GRAPHQL: {
@@ -25,5 +29,10 @@ export interface IConfig {
 
 export interface IJWTPayload {
   id: string;
-  username: string;
+  roles: UserRoles[];
+}
+
+export interface IContext {
+  req: Request;
+  user?: IJWTPayload;
 }

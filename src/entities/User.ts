@@ -20,18 +20,21 @@ import { CryptUtil } from '@app/util';
 // eslint-disable-next-line import/no-cycle
 import Recipe from './Recipe';
 
-export enum UserGender {
+export enum UserGenders {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
 }
 
-export enum UserRole {
+export enum UserRoles {
+  USER = 'USER',
+  USER_ADVANCED = 'USER_ADVANCED',
+  USER_MODERATOR = 'USER_MODERATOR',
+  USER_ADMIN = 'USER_ADMIN',
   ADMIN = 'ADMIN',
-  STANDARD = 'STANDARD',
 }
 
-registerEnumType(UserGender, { name: 'UserGender' });
-registerEnumType(UserRole, { name: 'UserRole' });
+registerEnumType(UserGenders, { name: 'UserGenders' });
+registerEnumType(UserRoles, { name: 'UserRoles' });
 
 @Entity('user')
 @ObjectType()
@@ -59,9 +62,9 @@ export default class User {
   })
   password?: string;
 
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.STANDARD })
-  @Field(() => UserRole)
-  role!: UserRole;
+  @Column({ type: 'enum', enum: UserRoles, array: true, default: [UserRoles.USER] })
+  @Field(() => [UserRoles])
+  roles!: UserRoles[];
 
   @Column({
     type: 'varchar',
@@ -87,9 +90,9 @@ export default class User {
   @Field(() => GraphQLNonEmptyString, { nullable: true })
   surname?: string;
 
-  @Column({ type: 'enum', enum: UserGender })
-  @Field(() => UserGender)
-  gender!: UserGender;
+  @Column({ type: 'enum', enum: UserGenders })
+  @Field(() => UserGenders)
+  gender!: UserGenders;
 
   @Column({ type: 'date', nullable: true })
   @Field(() => GraphQLDate, { nullable: true })

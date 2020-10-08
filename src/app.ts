@@ -2,12 +2,18 @@ import 'reflect-metadata';
 import '@app/config/env';
 import path from 'path';
 import { createConnection, ConnectionOptions, useContainer } from 'typeorm';
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer } from 'apollo-server-express';
+import express from 'express';
+import jwt from 'express-jwt';
 import { Container } from 'typedi';
 import { buildSchema } from 'type-graphql';
+import { IContext } from '@app/types';
+import { AuthMiddleware } from '@app/middleware';
 import config from '@app/config';
 import logger from '@app/logger';
+import { AddressInfo } from 'net';
 
+// TODO change server style
 const boostrap = async () => {
   try {
     useContainer(Container);
@@ -16,15 +22,37 @@ const boostrap = async () => {
 
     const schema = await buildSchema({
       resolvers: [path.join(__dirname, config.GRAPHQL.RESOLVERS)],
+      authChecker: AuthMiddleware,
       container: Container,
     });
 
     logger.debug('GraphQL schema built');
 
+    const app = express();
+
     const server = new ApolloServer({
       schema,
       playground: config.GRAPHQL.PLAYGROUND,
+      context: ({ req }) => {
+        const context: IContext = {
+          req,
+          user: req.user,
+        };
+
+        return context;
+      },
     });
+
+    app.use(
+      '/graphql',
+      jwt({
+        secret: config.JWT.SECRET,
+        algorithms: [config.JWT.ALGORITHM],
+        credentialsRequired: false,
+      }),
+    );
+
+    server.applyMiddleware({ app, path: '/graphql' });
 
     logger.debug('Server configured');
 
@@ -43,9 +71,11 @@ const boostrap = async () => {
 
     logger.debug('Database connected');
 
-    const serverInfo = await server.listen(config.NODE.PORT);
-
-    logger.info(`Server running on ${serverInfo.url}`);
+    // TODO cambia
+    const serverListener = app.listen(config.NODE.PORT, () => {
+      const serverInfo = serverListener.address() as AddressInfo;
+      logger.info(`Server running on ${serverInfo.address} and port ${serverInfo.port}`);
+    });
   } catch (error) {
     logger.error(error);
     process.exit(1);

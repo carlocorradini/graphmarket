@@ -11,7 +11,7 @@ const env = envalid.cleanEnv(
     DATABASE_LOGGING: bool({ default: false }),
     JWT_SECRET: str(),
     JWT_ALGORITHM: str({ default: 'HS256' }),
-    JWT_EXPIRATION_TIME: str(),
+    JWT_EXPIRATION_TIME: str({ default: '7d' }),
     GRAPHQL_PLAYGROUND: bool({ default: false, devDefault: true }),
   },
   {

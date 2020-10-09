@@ -27,9 +27,7 @@ export enum UserGenders {
 
 export enum UserRoles {
   USER = 'USER',
-  USER_ADVANCED = 'USER_ADVANCED',
-  USER_MODERATOR = 'USER_MODERATOR',
-  USER_ADMIN = 'USER_ADMIN',
+  MODERATOR = 'MODERATOR',
   ADMIN = 'ADMIN',
 }
 
@@ -52,11 +50,7 @@ export default class User {
     length: 72,
     select: false,
     transformer: {
-      to: (value) => {
-        if (!value) return;
-        // eslint-disable-next-line consistent-return
-        return CryptUtil.hashSync(value);
-      },
+      to: (value) => (value ? CryptUtil.hashSync(value) : undefined),
       from: (value) => value,
     },
   })
@@ -70,8 +64,9 @@ export default class User {
     type: 'varchar',
     length: 64,
     nullable: true,
+    default: undefined,
     transformer: {
-      to: (value) => _.capitalize(value),
+      to: (value) => (value ? _.capitalize(value) : undefined),
       from: (value) => value,
     },
   })
@@ -82,8 +77,9 @@ export default class User {
     type: 'varchar',
     length: 64,
     nullable: true,
+    default: undefined,
     transformer: {
-      to: (value) => _.capitalize(value),
+      to: (value) => (value ? _.capitalize(value) : undefined),
       from: (value) => value,
     },
   })
@@ -94,7 +90,7 @@ export default class User {
   @Field(() => UserGenders)
   gender!: UserGenders;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ type: 'date', nullable: true, default: undefined })
   @Field(() => GraphQLDate, { nullable: true })
   date_of_birth?: Date;
 

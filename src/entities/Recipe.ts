@@ -27,7 +27,7 @@ export default class Recipe {
     type: 'varchar',
     length: 64,
     transformer: {
-      to: (value) => _.capitalize(value),
+      to: (value) => (value ? _.capitalize(value) : undefined),
       from: (value) => value,
     },
   })
@@ -38,8 +38,9 @@ export default class Recipe {
     type: 'varchar',
     length: 256,
     nullable: true,
+    default: undefined,
     transformer: {
-      to: (value) => _.capitalize(value),
+      to: (value) => (value ? _.capitalize(value) : undefined),
       from: (value) => value,
     },
   })

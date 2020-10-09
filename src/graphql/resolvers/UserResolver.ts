@@ -3,6 +3,7 @@ import {
   Arg,
   Args,
   Authorized,
+  Ctx,
   FieldResolver,
   Mutation,
   Query,
@@ -15,6 +16,7 @@ import User, { UserRoles } from '@app/entities/User';
 import Recipe from '@app/entities/Recipe';
 import { CryptUtil } from '@app/util';
 import { JWTHelper } from '@app/helper';
+import { IContext } from '@app/types';
 import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '../scalars';
 import { PaginationArgs } from '../args';
 import { UserCreateInput, UserUpdateInput } from '../inputs';
@@ -26,6 +28,12 @@ export default class UserResolver {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Recipe) private readonly recipeRepository: Repository<Recipe>,
   ) {}
+
+  @Authorized()
+  @Query(() => User)
+  me(@Ctx() ctx: IContext): Promise<User> {
+    return this.userRepository.findOneOrFail(ctx.user!.id);
+  }
 
   @Query(() => User, { nullable: true })
   @Authorized()
@@ -40,18 +48,26 @@ export default class UserResolver {
   }
 
   @Mutation(() => User)
-  createUser(@Arg('data') userInput: UserCreateInput): Promise<User> {
-    return this.userRepository.save(this.userRepository.create(userInput));
+  createUser(@Arg('data') data: UserCreateInput): Promise<User> {
+    return this.userRepository.save(this.userRepository.create(data));
   }
 
   @Mutation(() => User)
   @Authorized(UserRoles.ADMIN)
   async updateUser(
     @Arg('id', () => GraphQLUUID) id: string,
-    @Arg('data') userInput: UserUpdateInput,
+    @Arg('data') data: UserUpdateInput,
   ): Promise<User> {
-    const user: User = this.userRepository.create({ ...userInput, id });
-    await this.userRepository.save(user);
+    const user: User = this.userRepository.create({ ...data, id });
+    await this.userRepository.update(user.id, user);
+    return this.userRepository.findOneOrFail(user.id);
+  }
+
+  @Mutation(() => User)
+  @Authorized()
+  async updateMe(@Arg('data') data: UserUpdateInput, @Ctx() ctx: IContext) {
+    const user: User = this.userRepository.create({ ...data, id: ctx.user!.id });
+    await this.userRepository.update(user.id, user);
     return this.userRepository.findOneOrFail(user.id);
   }
 

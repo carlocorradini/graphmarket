@@ -8,6 +8,8 @@ import Server from '@app/server';
 
 const boostrap = async () => {
   try {
+    const server = Server.getInstance();
+
     await createConnection(<ConnectionOptions>{
       type: config.DATABASE.TYPE,
       url: config.DATABASE.URL,
@@ -23,7 +25,7 @@ const boostrap = async () => {
 
     logger.debug('Database connected');
 
-    const serverInfo = await Server.getInstance().listen(config.NODE.PORT);
+    const serverInfo = await server.listen(config.NODE.PORT);
 
     logger.info(`Server listening ${serverInfo.address} on port ${serverInfo.port}`);
   } catch (error) {

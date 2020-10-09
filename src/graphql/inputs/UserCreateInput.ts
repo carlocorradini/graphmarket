@@ -5,9 +5,6 @@ import { GraphQLDate, GraphQLEmailAddress, GraphQLNonEmptyString } from '../scal
 
 @InputType()
 export default class UserCreateInput implements Partial<User> {
-  // TODO RIMUOVERE!!
-  id!: string;
-
   @Field(() => GraphQLNonEmptyString)
   @Length(1, 64)
   username!: string;

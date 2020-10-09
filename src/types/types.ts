@@ -1,5 +1,5 @@
 import { UserRoles } from '@app/entities/User';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 export interface IConfig {
   NODE: {
@@ -22,6 +22,7 @@ export interface IConfig {
     EXPIRATION_TIME: string;
   };
   GRAPHQL: {
+    PATH: string;
     PLAYGROUND: boolean;
     RESOLVERS: string;
   };
@@ -34,5 +35,6 @@ export interface IJWTPayload {
 
 export interface IContext {
   req: Request;
+  res: Response;
   user?: IJWTPayload;
 }

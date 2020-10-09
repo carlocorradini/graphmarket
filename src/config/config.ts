@@ -23,6 +23,7 @@ const config: IConfig = {
     EXPIRATION_TIME: env.JWT_EXPIRATION_TIME,
   },
   GRAPHQL: {
+    PATH: env.GRAPHQL_PATH,
     PLAYGROUND: env.GRAPHQL_PLAYGROUND,
     RESOLVERS: 'graphql/resolvers/**/*.{ts,js}',
   },

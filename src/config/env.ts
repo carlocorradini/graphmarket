@@ -12,6 +12,7 @@ const env = envalid.cleanEnv(
     JWT_SECRET: str(),
     JWT_ALGORITHM: str({ default: 'HS256' }),
     JWT_EXPIRATION_TIME: str({ default: '7d' }),
+    GRAPHQL_PATH: str({ default: '/graphql' }),
     GRAPHQL_PLAYGROUND: bool({ default: false, devDefault: true }),
   },
   {

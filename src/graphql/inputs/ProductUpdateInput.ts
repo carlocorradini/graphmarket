@@ -1,10 +1,10 @@
 import { Field, InputType } from 'type-graphql';
 import { Length } from 'class-validator';
-import Recipe from '@app/entities/Recipe';
+import Product from '@app/entities/Product';
 import { GraphQLNonEmptyString, GraphQLPositiveInt } from '../scalars';
 
 @InputType()
-export default class RecipeUpdateInput implements Partial<Recipe> {
+export default class ProductUpdateInput implements Partial<Product> {
   @Field(() => GraphQLPositiveInt)
   id!: number;
 

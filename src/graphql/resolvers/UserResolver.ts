@@ -13,7 +13,7 @@ import {
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import User, { UserRoles } from '@app/entities/User';
-import Recipe from '@app/entities/Recipe';
+import Product from '@app/entities/Product';
 import { CryptUtil } from '@app/util';
 import { JWTHelper } from '@app/helper';
 import { IContext } from '@app/types';
@@ -26,7 +26,7 @@ import { UserCreateInput, UserUpdateInput } from '../inputs';
 export default class UserResolver {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Recipe) private readonly recipeRepository: Repository<Recipe>,
+    @InjectRepository(Product) private readonly productRepository: Repository<Product>,
   ) {}
 
   @Authorized()
@@ -102,7 +102,7 @@ export default class UserResolver {
   }
 
   @FieldResolver()
-  recipes(@Root() user: User): Promise<Recipe[]> {
-    return this.recipeRepository.findByIds(user.recipes_ids);
+  products(@Root() user: User): Promise<Product[]> {
+    return this.productRepository.findByIds(user.products_ids);
   }
 }

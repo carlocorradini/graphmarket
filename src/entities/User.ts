@@ -18,7 +18,7 @@ import {
 } from '@app/graphql/scalars';
 import { CryptUtil } from '@app/util';
 // eslint-disable-next-line import/no-cycle
-import Recipe from './Recipe';
+import Product from './Product';
 
 export enum UserGenders {
   MALE = 'MALE',
@@ -106,10 +106,10 @@ export default class User {
   @Field(() => GraphQLDateTime)
   updated_at!: Date;
 
-  @OneToMany(() => Recipe, (recipe) => recipe.author, { nullable: false })
-  @Field(() => [Recipe])
-  recipes!: Recipe[];
+  @OneToMany(() => Product, (product) => product.owner, { nullable: false })
+  @Field(() => [Product])
+  products!: Product[];
 
-  @RelationId((user: User) => user.recipes)
-  recipes_ids!: number[];
+  @RelationId((user: User) => user.products)
+  products_ids!: number[];
 }

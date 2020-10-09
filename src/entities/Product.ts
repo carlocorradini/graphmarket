@@ -15,9 +15,9 @@ import { GraphQLDateTime, GraphQLNonEmptyString } from '@app/graphql/scalars';
 // eslint-disable-next-line import/no-cycle
 import User from './User';
 
-@Entity('recipe')
+@Entity('product')
 @ObjectType()
-export default class Recipe {
+export default class Product {
   @PrimaryGeneratedColumn('increment')
   @Index()
   @Field(() => ID)
@@ -48,12 +48,12 @@ export default class Recipe {
   description?: string;
 
   @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'author_id' })
+  @JoinColumn({ name: 'owner_id' })
   @Field(() => User)
-  author!: User;
+  owner!: User;
 
-  @RelationId((recipe: Recipe) => recipe.author)
-  author_id!: string;
+  @RelationId((product: Product) => product.owner)
+  owner_id!: string;
 
   @CreateDateColumn({ update: false })
   @Field(() => GraphQLDateTime)

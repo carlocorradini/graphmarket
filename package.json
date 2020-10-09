@@ -41,7 +41,7 @@
     "graphql-scalars": "^1.4.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
-    "pg": "^8.4.0",
+    "pg": "^8.4.1",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.0.0",
     "typedi": "^0.8.0",

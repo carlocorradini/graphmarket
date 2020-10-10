@@ -22,7 +22,7 @@ COPY package-lock.json .
 RUN npm ci --only=prod
 
 # Copy all other source code to work directory
-ADD . /home/node/app
+COPY . /home/node/app
 
 # Compile TypeScript
 RUN npm run build

@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { Repository, TransactionRepository } from 'typeorm';
 import {
   Arg,
   Args,
@@ -14,9 +14,8 @@ import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import User, { UserRoles } from '@app/entities/User';
 import Product from '@app/entities/Product';
-import { CryptUtil } from '@app/util';
-import { JWTHelper } from '@app/helper';
 import { IContext } from '@app/types';
+import { UserRepository } from '@app/repositories';
 import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '../scalars';
 import { PaginationArgs } from '../args';
 import { UserCreateInput, UserUpdateInput } from '../inputs';
@@ -25,12 +24,14 @@ import { UserCreateInput, UserUpdateInput } from '../inputs';
 @Service()
 export default class UserResolver {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(UserRepository)
+    @TransactionRepository()
+    private readonly userRepository: UserRepository,
     @InjectRepository(Product) private readonly productRepository: Repository<Product>,
   ) {}
 
-  @Authorized()
   @Query(() => User)
+  @Authorized()
   me(@Ctx() ctx: IContext): Promise<User> {
     return this.userRepository.findOneOrFail(ctx.user!.id);
   }
@@ -49,49 +50,42 @@ export default class UserResolver {
 
   @Mutation(() => User)
   createUser(@Arg('data') data: UserCreateInput): Promise<User> {
-    return this.userRepository.save(this.userRepository.create(data));
-  }
-
-  @Mutation(() => User)
-  @Authorized(UserRoles.ADMIN)
-  async updateUser(
-    @Arg('id', () => GraphQLUUID) id: string,
-    @Arg('data') data: UserUpdateInput,
-  ): Promise<User> {
-    const user: User = this.userRepository.create({ ...data, id });
-    await this.userRepository.update(user.id, user);
-    return this.userRepository.findOneOrFail(user.id);
+    return this.userRepository.createOrFail(data);
   }
 
   @Mutation(() => User)
   @Authorized()
-  async updateMe(@Arg('data') data: UserUpdateInput, @Ctx() ctx: IContext) {
-    const user: User = this.userRepository.create({ ...data, id: ctx.user!.id });
-    await this.userRepository.update(user.id, user);
-    return this.userRepository.findOneOrFail(user.id);
+  updateMe(@Arg('data') data: UserUpdateInput, @Ctx() ctx: IContext): Promise<User> {
+    return this.userRepository.updateOrFail(ctx.user!.id, data);
   }
 
   @Mutation(() => User)
   @Authorized(UserRoles.ADMIN)
-  async deleteUser(@Arg('id', () => GraphQLUUID) id: string): Promise<User> {
-    const user: User = await this.userRepository.findOneOrFail(id);
-    await this.userRepository.delete(user.id);
-    return user;
+  updateUser(
+    @Arg('id', () => GraphQLUUID) id: string,
+    @Arg('data') data: UserUpdateInput,
+  ): Promise<User> {
+    return this.userRepository.updateOrFail(id, data);
   }
 
-  // TODO migliorare error
+  @Mutation(() => User)
+  @Authorized()
+  deleteMe(@Ctx() ctx: IContext): Promise<User> {
+    return this.userRepository.deleteOrFail(ctx.user!.id);
+  }
+
+  @Mutation(() => User)
+  @Authorized(UserRoles.ADMIN)
+  deleteUser(@Arg('id', () => GraphQLUUID) id: string): Promise<User> {
+    return this.userRepository.deleteOrFail(id);
+  }
+
   @Mutation(() => String)
-  async signIn(
+  signIn(
     @Arg('username', () => GraphQLNonEmptyString) username: string,
     @Arg('password', () => GraphQLNonEmptyString) password: string,
   ): Promise<string> {
-    const user: User | undefined = await this.userRepository.findOne(
-      { username },
-      { select: ['id', 'password', 'roles'] },
-    );
-    if (!user) return '';
-    if (!(await CryptUtil.compare(password, user.password!))) return '';
-    return JWTHelper.sign({ id: user.id, roles: user.roles });
+    return this.userRepository.signIn(username, password);
   }
 
   // TODO implementare

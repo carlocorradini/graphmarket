@@ -2,39 +2,39 @@ import { UserRoles } from '@app/entities/User';
 import { Request, Response } from 'express';
 
 export interface IConfig {
-  NODE: {
-    ENV: 'production' | 'development' | 'test';
-    PORT: number;
+  readonly NODE: {
+    readonly ENV: 'production' | 'development' | 'test';
+    readonly PORT: number;
   };
-  DATABASE: {
-    TYPE: string;
-    URL: string;
-    SSL: boolean;
-    SYNCHRONIZE: boolean;
-    LOGGING: boolean;
-    ENTITIES: string;
-    MIGRATIONS: string;
-    SUBSCRIBERS: string;
+  readonly DATABASE: {
+    readonly TYPE: string;
+    readonly URL: string;
+    readonly SSL: boolean;
+    readonly SYNCHRONIZE: boolean;
+    readonly LOGGING: boolean;
+    readonly ENTITIES: string;
+    readonly MIGRATIONS: string;
+    readonly SUBSCRIBERS: string;
   };
-  JWT: {
-    SECRET: string;
-    ALGORITHM: string;
-    EXPIRATION_TIME: string;
+  readonly JWT: {
+    readonly SECRET: string;
+    readonly ALGORITHM: string;
+    readonly EXPIRATION_TIME: string;
   };
-  GRAPHQL: {
-    PATH: string;
-    PLAYGROUND: boolean;
-    RESOLVERS: string;
+  readonly GRAPHQL: {
+    readonly PATH: string;
+    readonly PLAYGROUND: boolean;
+    readonly RESOLVERS: string;
   };
 }
 
 export interface IJWTPayload {
-  id: string;
-  roles: UserRoles[];
+  readonly id: string;
+  readonly roles: UserRoles[];
 }
 
 export interface IContext {
-  req: Request;
-  res: Response;
-  user?: IJWTPayload;
+  readonly req: Request;
+  readonly res: Response;
+  readonly user?: IJWTPayload;
 }

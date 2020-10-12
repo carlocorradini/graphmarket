@@ -80,7 +80,7 @@ export default class UserResolver {
     return this.userRepository.deleteOrFail(id);
   }
 
-  @Mutation(() => String)
+  @Mutation(() => GraphQLNonEmptyString)
   signIn(
     @Arg('username', () => GraphQLNonEmptyString) username: string,
     @Arg('password', () => GraphQLNonEmptyString) password: string,

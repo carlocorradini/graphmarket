@@ -2,6 +2,7 @@ import path from 'path';
 import { AddressInfo } from 'net';
 import express from 'express';
 import jwt from 'express-jwt';
+import compression from 'compression';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchemaSync } from 'type-graphql';
 import { useContainer } from 'typeorm';
@@ -28,14 +29,17 @@ export default class Server {
   }
 
   private configure(): void {
-    this.app.enable('trust proxy').use(
-      config.GRAPHQL.PATH,
-      jwt({
-        secret: config.JWT.SECRET,
-        algorithms: [config.JWT.ALGORITHM],
-        credentialsRequired: false,
-      }),
-    );
+    this.app
+      .enable('trust proxy')
+      .use(compression())
+      .use(
+        config.GRAPHQL.PATH,
+        jwt({
+          secret: config.JWT.SECRET,
+          algorithms: [config.JWT.ALGORITHM],
+          credentialsRequired: false,
+        }),
+      );
     logger.debug('Express configured');
 
     useContainer(Container);

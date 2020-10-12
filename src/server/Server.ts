@@ -12,6 +12,9 @@ import config from '@app/config';
 import logger from '@app/logger';
 import { IContext } from '@app/types';
 import { AuthorizationMiddleware } from '@app/middlewares';
+import { CacheService } from '@app/services';
+import { JWTHelper } from '@app/helper';
+import { UnauthorizedError } from '@app/error';
 
 export default class Server {
   public static readonly DEFAULT_PORT = 0;
@@ -26,11 +29,19 @@ export default class Server {
     this.app = express();
 
     this.configure();
-    logger.info('Server ready');
+    logger.info('Server is ready');
+  }
+
+  private configure(): void {
+    this.preConfigureChecks();
+    this.configureServices();
+    this.configureServer();
+
+    logger.debug('Server configured');
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private configureChecks(): void {
+  private preConfigureChecks(): void {
     try {
       getConnection();
       logger.error(
@@ -42,9 +53,12 @@ export default class Server {
     }
   }
 
-  private configure(): void {
-    this.configureChecks();
+  // eslint-disable-next-line class-methods-use-this
+  private configureServices(): void {
+    CacheService.mount(config.REDIS.URL);
+  }
 
+  private configureServer(): void {
     this.app
       .enable('trust proxy')
       .use(compression())
@@ -55,6 +69,15 @@ export default class Server {
           secret: config.JWT.SECRET,
           algorithms: [config.JWT.ALGORITHM],
           credentialsRequired: false,
+          isRevoked: async (req, _, done) => {
+            const token: string | undefined = JWTHelper.getToken(req);
+
+            if (!token || (await JWTHelper.isBlocked(token))) {
+              return done(new UnauthorizedError('The JWT token has been revoked'));
+            }
+
+            return done(null, !!token);
+          },
         }),
       );
     logger.debug('Express configured');
@@ -86,8 +109,6 @@ export default class Server {
 
     this.server.applyMiddleware({ app: this.app, path: config.GRAPHQL.PATH });
     logger.debug(`Express middleware applied to Apollo Server on path ${config.GRAPHQL.PATH}`);
-
-    logger.debug('Server configured');
   }
 
   public static getInstance(): Server {
@@ -95,6 +116,7 @@ export default class Server {
       Server.instance = new Server();
       logger.debug('Server instantiated');
     }
+
     return Server.instance;
   }
 

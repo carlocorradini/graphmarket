@@ -16,6 +16,7 @@ import User, { UserRoles } from '@app/entities/User';
 import Product from '@app/entities/Product';
 import { IContext } from '@app/types';
 import { UserRepository } from '@app/repositories';
+import { JWTHelper } from '@app/helper';
 import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '../scalars';
 import { PaginationArgs } from '../args';
 import { UserCreateInput, UserUpdateInput } from '../inputs';
@@ -89,11 +90,11 @@ export default class UserResolver {
     return this.userRepository.signIn(username, password);
   }
 
-  // TODO implementare
   @Mutation(() => GraphQLVoid)
-  async signOut(): Promise<void> {
-    // TODO delete
-    this.userRepository.findOne('');
+  @Authorized()
+  // eslint-disable-next-line class-methods-use-this
+  async signOut(@Ctx() ctx: IContext): Promise<void> {
+    await JWTHelper.block(JWTHelper.getToken(ctx.req)!);
   }
 
   @FieldResolver()

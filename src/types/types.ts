@@ -16,6 +16,10 @@ export interface IConfig {
     readonly MIGRATIONS: string;
     readonly SUBSCRIBERS: string;
   };
+  readonly REDIS: {
+    readonly URL: string;
+    readonly JWT_BLOCKLIST: string;
+  };
   readonly JWT: {
     readonly SECRET: string;
     readonly ALGORITHM: string;

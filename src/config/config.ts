@@ -17,6 +17,10 @@ const config: IConfig = {
     MIGRATIONS: 'migration/**/*.{ts,js}',
     SUBSCRIBERS: 'subscriber/**/*.{ts,js}',
   },
+  REDIS: {
+    URL: env.REDIS_URL,
+    JWT_BLOCKLIST: env.REDIS_JWT_BLOCKLIST,
+  },
   JWT: {
     SECRET: env.JWT_SECRET,
     ALGORITHM: env.JWT_ALGORITHM,

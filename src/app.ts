@@ -9,7 +9,7 @@ import Server from '@app/server';
 const boostrap = async () => {
   try {
     const server = Server.getInstance();
-
+    // TODO spostare in server
     await createConnection(<ConnectionOptions>{
       type: config.DATABASE.TYPE,
       url: config.DATABASE.URL,

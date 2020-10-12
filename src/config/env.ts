@@ -9,6 +9,8 @@ const env = envalid.cleanEnv(
     DATABASE_SSL: bool({ default: true, devDefault: false }),
     DATABASE_SYNCHRONIZE: bool({ default: false, devDefault: true }),
     DATABASE_LOGGING: bool({ default: false }),
+    REDIS_URL: url(),
+    REDIS_JWT_BLOCKLIST: str({ default: 'JWT_BLOCKLIST' }),
     JWT_SECRET: str(),
     JWT_ALGORITHM: str({ default: 'HS256' }),
     JWT_EXPIRATION_TIME: str({ default: '7d' }),

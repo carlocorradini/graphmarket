@@ -6,7 +6,7 @@ import compression from 'compression';
 import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchemaSync } from 'type-graphql';
-import { useContainer } from 'typeorm';
+import { getConnection, useContainer } from 'typeorm';
 import { Container } from 'typedi';
 import config from '@app/config';
 import logger from '@app/logger';
@@ -29,7 +29,22 @@ export default class Server {
     logger.info('Server ready');
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  private configureChecks(): void {
+    try {
+      getConnection();
+      logger.error(
+        'Server must be instantiated before database connection to allow dependency injection',
+      );
+      process.exit(1);
+    } catch (error) {
+      if (error.name !== 'ConnectionNotFoundError') throw error;
+    }
+  }
+
   private configure(): void {
+    this.configureChecks();
+
     this.app
       .enable('trust proxy')
       .use(compression())

@@ -25,7 +25,7 @@ export default class UserCreateInput implements Partial<User> {
   gender!: UserGenders;
 
   @Field(() => GraphQLDate, { nullable: true })
-  date_of_birth?: Date;
+  dateOfBirth?: Date;
 
   @Field(() => GraphQLEmailAddress)
   email!: string;

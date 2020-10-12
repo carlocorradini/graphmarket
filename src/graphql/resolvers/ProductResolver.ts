@@ -69,13 +69,13 @@ export default class ProductResolver {
   ): Promise<Product | undefined> {
     const product: Product | undefined = await this.productRepository.findOne(id);
     if (!product) return undefined;
-    if (product.owner_id !== ctx.user!.id) return undefined;
+    if (product.ownerId !== ctx.user!.id) return undefined;
     await this.productRepository.delete(product.id);
     return product;
   }
 
   @FieldResolver()
   owner(@Root() product: Product): Promise<User> {
-    return this.userRepository.findOneOrFail(product.owner_id);
+    return this.userRepository.findOneOrFail(product.ownerId);
   }
 }

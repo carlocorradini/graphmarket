@@ -53,13 +53,13 @@ export default class Product {
   owner!: User;
 
   @RelationId((product: Product) => product.owner)
-  owner_id!: string;
+  ownerId!: string;
 
-  @CreateDateColumn({ update: false })
+  @CreateDateColumn({ name: 'created_at', update: false })
   @Field(() => GraphQLDateTime)
-  created_at!: Date;
+  createdAt!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   @Field(() => GraphQLDateTime)
-  updated_at!: Date;
+  updatedAt!: Date;
 }

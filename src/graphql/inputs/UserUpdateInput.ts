@@ -18,5 +18,5 @@ export default class UserUpdateInput implements Partial<User> {
   surname?: string;
 
   @Field(() => GraphQLDate, { nullable: true })
-  date_of_birth?: Date;
+  dateOfBirth?: Date;
 }

@@ -97,6 +97,6 @@ export default class UserResolver {
 
   @FieldResolver()
   products(@Root() user: User): Promise<Product[]> {
-    return this.productRepository.findByIds(user.products_ids);
+    return this.productRepository.findByIds(user.productsIds);
   }
 }

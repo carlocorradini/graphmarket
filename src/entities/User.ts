@@ -90,26 +90,26 @@ export default class User {
   @Field(() => UserGenders)
   gender!: UserGenders;
 
-  @Column({ type: 'date', nullable: true, default: undefined })
+  @Column({ type: 'date', name: 'date_of_birth', nullable: true, default: undefined })
   @Field(() => GraphQLDate, { nullable: true })
-  date_of_birth?: Date;
+  dateOfBirth?: Date;
 
   @Column({ length: 128, unique: true, update: false })
   @Field(() => GraphQLEmailAddress)
   email!: string;
 
-  @CreateDateColumn({ update: false })
+  @CreateDateColumn({ name: 'created_at', update: false })
   @Field(() => GraphQLDateTime)
-  created_at!: Date;
+  createdAt!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   @Field(() => GraphQLDateTime)
-  updated_at!: Date;
+  updatedAt!: Date;
 
   @OneToMany(() => Product, (product) => product.owner, { nullable: false })
   @Field(() => [Product])
   products!: Product[];
 
   @RelationId((user: User) => user.products)
-  products_ids!: number[];
+  productsIds!: number[];
 }

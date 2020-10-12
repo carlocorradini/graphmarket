@@ -9,7 +9,7 @@ import { Container } from 'typedi';
 import config from '@app/config';
 import logger from '@app/logger';
 import { IContext } from '@app/types';
-import { AuthorizationMiddleware } from '@app/middleware';
+import { AuthorizationMiddleware } from '@app/middlewares';
 
 export default class Server {
   public static readonly DEFAULT_PORT = 0;

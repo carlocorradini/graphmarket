@@ -22,11 +22,9 @@ const boostrap = async () => {
       migrations: [path.join(__dirname, config.DATABASE.MIGRATIONS)],
       subscribers: [path.join(__dirname, config.DATABASE.SUBSCRIBERS)],
     });
-
     logger.debug('Database connected');
 
     const serverInfo = await server.listen(config.NODE.PORT);
-
     logger.info(`Server listening ${serverInfo.address} on port ${serverInfo.port}`);
   } catch (error) {
     logger.error(error);

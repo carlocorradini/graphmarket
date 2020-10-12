@@ -4,6 +4,7 @@ import express from 'express';
 import jwt from 'express-jwt';
 import compression from 'compression';
 import cors from 'cors';
+import helmet from 'helmet';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchemaSync } from 'type-graphql';
 import { useContainer } from 'typeorm';
@@ -34,6 +35,7 @@ export default class Server {
       .enable('trust proxy')
       .use(compression())
       .use(cors())
+      .use(helmet())
       .use(
         config.GRAPHQL.PATH,
         jwt({

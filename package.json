@@ -41,6 +41,7 @@
     "express-jwt": "^6.0.0",
     "graphql": "^15.3.0",
     "graphql-scalars": "^1.4.0",
+    "helmet": "^4.1.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
     "pg": "^8.4.1",

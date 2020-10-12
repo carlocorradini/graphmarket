@@ -85,7 +85,7 @@ export default class Server {
     logger.debug('Apollo server configured');
 
     this.server.applyMiddleware({ app: this.app, path: config.GRAPHQL.PATH });
-    logger.debug(`Express middleware applied to Apollo server on path ${config.GRAPHQL.PATH}`);
+    logger.debug(`Express middleware applied to Apollo Server on path ${config.GRAPHQL.PATH}`);
 
     logger.debug('Server configured');
   }

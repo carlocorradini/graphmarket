@@ -27,7 +27,8 @@ export default class UserResolver {
     @InjectRepository(UserRepository)
     @TransactionRepository()
     private readonly userRepository: UserRepository,
-    @InjectRepository(Product) private readonly productRepository: Repository<Product>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
   ) {}
 
   @Query(() => User)

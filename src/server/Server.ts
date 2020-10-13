@@ -4,6 +4,7 @@ import express from 'express';
 import jwt from 'express-jwt';
 import compression from 'compression';
 import cors from 'cors';
+import helmet from 'helmet';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchemaSync } from 'type-graphql';
 import { getConnection, useContainer } from 'typeorm';
@@ -15,6 +16,7 @@ import { AuthorizationMiddleware } from '@app/middlewares';
 import { CacheService } from '@app/services';
 import { JWTHelper } from '@app/helper';
 import { UnauthorizedError } from '@app/error';
+import { EnvUtil } from '@app/util';
 
 export default class Server {
   public static readonly DEFAULT_PORT = 0;
@@ -63,6 +65,7 @@ export default class Server {
       .enable('trust proxy')
       .use(compression())
       .use(cors())
+      .use(helmet({ contentSecurityPolicy: EnvUtil.isProduction() ? undefined : false }))
       .use(
         config.GRAPHQL.PATH,
         jwt({

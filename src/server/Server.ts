@@ -1,4 +1,5 @@
 import path from 'path';
+import http from 'http';
 import { AddressInfo } from 'net';
 import express from 'express';
 import jwt from 'express-jwt';
@@ -7,7 +8,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchemaSync } from 'type-graphql';
-import { getConnection, useContainer } from 'typeorm';
+import { ConnectionOptions, createConnection, getConnection, useContainer } from 'typeorm';
 import { Container } from 'typedi';
 import config from '@app/config';
 import logger from '@app/logger';
@@ -19,31 +20,32 @@ import { UnauthorizedError } from '@app/error';
 import { EnvUtil } from '@app/util';
 
 export default class Server {
-  public static readonly DEFAULT_PORT = 0;
-
   private static instance: Server;
 
   private readonly app: express.Application;
 
-  private server!: ApolloServer;
+  private server?: http.Server;
 
   private constructor() {
     this.app = express();
+    this.server = undefined;
 
     this.configure();
     logger.info('Server is ready');
   }
 
   private configure(): void {
-    this.preConfigureChecks();
+    logger.debug('Server configuration started');
+
+    this.configureChecks();
     this.configureServices();
     this.configureServer();
 
-    logger.debug('Server configured');
+    logger.debug('Server configuration finished');
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private preConfigureChecks(): void {
+  private configureChecks(): void {
     try {
       getConnection();
       logger.error(
@@ -61,6 +63,11 @@ export default class Server {
   }
 
   private configureServer(): void {
+    // Dependency injection
+    useContainer(Container);
+    logger.debug('Dependency injection configured');
+
+    // Express server
     this.app
       .enable('trust proxy')
       .use(compression())
@@ -84,21 +91,17 @@ export default class Server {
           },
         }),
       );
-    logger.debug('Express configured');
+    logger.debug('Express server configured');
 
-    useContainer(Container);
-    logger.debug('Dependency injection applied');
-
-    const schema = buildSchemaSync({
-      resolvers: [path.join(__dirname, '..', config.GRAPHQL.RESOLVERS)],
-      authChecker: AuthorizationMiddleware,
-      container: Container,
-    });
-    logger.debug('GraphQL schema built');
-
-    this.server = new ApolloServer({
-      schema,
+    // Apollo server
+    const server = new ApolloServer({
+      schema: buildSchemaSync({
+        resolvers: [path.join(__dirname, '..', config.GRAPHQL.RESOLVERS)],
+        authChecker: AuthorizationMiddleware,
+        container: Container,
+      }),
       playground: config.GRAPHQL.PLAYGROUND,
+      tracing: !EnvUtil.isProduction(),
       context: ({ req, res }) => {
         const context: IContext = {
           req,
@@ -111,7 +114,7 @@ export default class Server {
     });
     logger.debug('Apollo server configured');
 
-    this.server.applyMiddleware({ app: this.app, path: config.GRAPHQL.PATH });
+    server.applyMiddleware({ app: this.app, path: config.GRAPHQL.PATH });
     logger.debug(`Express middleware applied to Apollo Server on path ${config.GRAPHQL.PATH}`);
   }
 
@@ -124,15 +127,72 @@ export default class Server {
     return Server.instance;
   }
 
-  public listen(port: number = Server.DEFAULT_PORT): Promise<AddressInfo> {
+  public async start(port: number = config.NODE.PORT): Promise<AddressInfo> {
+    if (this.server) {
+      logger.warn('Server is already started');
+      return this.server.address() as AddressInfo;
+    }
+
+    await createConnection(<ConnectionOptions>{
+      type: config.DATABASE.TYPE,
+      url: config.DATABASE.URL,
+      extra: {
+        ssl: config.DATABASE.SSL,
+      },
+      synchronize: config.DATABASE.SYNCHRONIZE,
+      logging: config.DATABASE.LOGGING,
+      entities: [path.join(__dirname, config.DATABASE.ENTITIES)],
+      migrations: [path.join(__dirname, config.DATABASE.MIGRATIONS)],
+      subscribers: [path.join(__dirname, config.DATABASE.SUBSCRIBERS)],
+      cache: {
+        type: 'ioredis',
+        alwaysEnabled: true,
+        port: config.REDIS.URL,
+      },
+    });
+    logger.info('Database connected');
+
     return new Promise((resolve, reject) => {
-      const serverInfo = this.app
+      this.server = this.app
         .listen(port, () => {
-          resolve(serverInfo.address() as AddressInfo);
+          const addressInfo: AddressInfo = this.server!.address() as AddressInfo;
+          logger.info(
+            `Server started and listening at ${addressInfo.address} on port ${addressInfo.port}`,
+          );
+          resolve(addressInfo);
         })
         .on('error', (error) => {
+          logger.error(`Server not started due to ${error}`);
           reject(error);
         });
+    });
+  }
+
+  public async stop(): Promise<void> {
+    if (!this.server) {
+      logger.warn('Server is not started');
+      return undefined;
+    }
+
+    // Unmount services
+    await CacheService.unmount();
+
+    // Disconnect databse
+    await getConnection().close();
+    logger.info('Database disconnected');
+
+    // Shutdown server
+    return new Promise((resolve, reject) => {
+      this.server!.close((error) => {
+        if (error) {
+          logger.error(`Server not stopped due to ${error}`);
+          reject(error);
+        }
+
+        this.server = undefined;
+        logger.info('Server stopped');
+        resolve();
+      });
     });
   }
 }

@@ -1,35 +1,39 @@
+// --- ALWAYS FIRST
 import 'reflect-metadata';
 import '@app/config/env';
-import path from 'path';
-import { createConnection, ConnectionOptions } from 'typeorm';
+// --- END
+import readline from 'readline';
 import config from '@app/config';
 import logger from '@app/logger';
 import Server from '@app/server';
 
-const boostrap = async () => {
+// --- BOOTSTRAP
+(async () => {
   try {
-    const server = Server.getInstance();
-    // TODO spostare in server
-    await createConnection(<ConnectionOptions>{
-      type: config.DATABASE.TYPE,
-      url: config.DATABASE.URL,
-      extra: {
-        ssl: config.DATABASE.SSL,
-      },
-      synchronize: config.DATABASE.SYNCHRONIZE,
-      logging: config.DATABASE.LOGGING,
-      entities: [path.join(__dirname, config.DATABASE.ENTITIES)],
-      migrations: [path.join(__dirname, config.DATABASE.MIGRATIONS)],
-      subscribers: [path.join(__dirname, config.DATABASE.SUBSCRIBERS)],
-    });
-    logger.debug('Database connected');
-
-    const serverInfo = await server.listen(config.NODE.PORT);
-    logger.info(`Server listening ${serverInfo.address} on port ${serverInfo.port}`);
+    // Start Server
+    await Server.getInstance().start(config.NODE.PORT);
   } catch (error) {
     logger.error(error);
     process.exit(1);
   }
-};
+})();
+// --- END
 
-boostrap();
+// --- GRACEFUL SHUTDOWN
+if (process.platform === 'win32') {
+  readline
+    .createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    })
+    .on('SIGINT', () => {
+      // @ts-ignore: Argument of type '"SIGINT"' is not assignable to parameter of type '"disconnect"'.
+      process.emit('SIGINT');
+    });
+}
+
+process.on('SIGINT', async () => {
+  await Server.getInstance().stop();
+  process.exit(0);
+});
+// --- END

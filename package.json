@@ -17,8 +17,6 @@
     "prebuild": "npm run clean",
     "build": "npx ttsc --p ./tsconfig.json",
     "postbuild": "npx ts-node scripts/build.ts",
-    "prestart": "npm install --only=prod",
-    "start": "npx cross-env NODE_ENV=\"production\" node app.js",
     "prestart:prod": "cd build && npm install --only=prod",
     "start:prod": "cd build && npx cross-env NODE_ENV=\"production\" node app.js",
     "start:dev": "npx ts-node-dev --prefer-ts true --no-notify --rs --clear -r tsconfig-paths/register --watch src --respawn --transpile-only src/app.ts"

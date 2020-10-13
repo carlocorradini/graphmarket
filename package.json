@@ -19,7 +19,7 @@
     "postbuild": "npx ts-node scripts/build.ts",
     "prestart:prod": "cd build && npm install --only=prod",
     "start:prod": "cd build && npx cross-env NODE_ENV=\"production\" node app.js",
-    "start:dev": "npx ts-node-dev --prefer-ts true --no-notify --rs --clear -r tsconfig-paths/register --watch src --respawn --transpile-only src/app.ts"
+    "start:dev": "npx ts-node-dev --prefer-ts true --no-notify --rs --clear --exit-child -r tsconfig-paths/register --watch src --respawn --transpile-only src/app.ts"
   },
   "author": "Carlo Corradini",
   "engines": {
@@ -37,6 +37,7 @@
     "envalid": "^6.0.2",
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
+    "express-jwt-blacklist": "git+https://github.com/carlocorradini/express-jwt-blacklist.git",
     "graphql": "^15.3.0",
     "graphql-scalars": "^1.4.0",
     "helmet": "^4.1.1",

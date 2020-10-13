@@ -3,7 +3,7 @@ import logger from '@app/logger';
 import config from '@app/config';
 
 export default class CacheService extends Redis {
-  private static instance: CacheService;
+  private static instance?: CacheService;
 
   private constructor(url: string) {
     super(url);
@@ -25,8 +25,10 @@ export default class CacheService extends Redis {
       return;
     }
 
-    if (forced) this.instance.disconnect();
-    else await this.instance.quit();
+    if (forced) CacheService.instance.disconnect();
+    else await CacheService.instance.quit();
+
+    CacheService.instance = undefined;
     logger.info('Cache Service unmounted');
   }
 
@@ -38,6 +40,6 @@ export default class CacheService extends Redis {
       CacheService.mount(config.REDIS.URL);
     }
 
-    return CacheService.instance;
+    return CacheService.instance!;
   }
 }

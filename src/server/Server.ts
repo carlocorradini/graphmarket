@@ -10,13 +10,12 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchemaSync } from 'type-graphql';
 import { ConnectionOptions, createConnection, getConnection, useContainer } from 'typeorm';
 import { Container } from 'typedi';
+import blacklist from 'express-jwt-blacklist';
 import config from '@app/config';
 import logger from '@app/logger';
 import { IContext } from '@app/types';
 import { AuthorizationMiddleware } from '@app/middlewares';
 import { CacheService } from '@app/services';
-import { JWTHelper } from '@app/helper';
-import { UnauthorizedError } from '@app/error';
 import { EnvUtil } from '@app/util';
 
 export default class Server {
@@ -60,6 +59,15 @@ export default class Server {
   // eslint-disable-next-line class-methods-use-this
   private configureServices(): void {
     CacheService.mount(config.REDIS.URL);
+
+    // JWT blacklist
+    blacklist.configure({
+      strict: false,
+      store: {
+        type: 'redis',
+        url: config.REDIS.URL,
+      },
+    });
   }
 
   private configureServer(): void {
@@ -80,15 +88,7 @@ export default class Server {
           algorithms: [config.JWT.ALGORITHM],
           credentialsRequired: false,
           // TODO Problem in response when the token is revoked
-          isRevoked: async (req, _, done) => {
-            const token: string | undefined = JWTHelper.getToken(req);
-
-            if (!token || (await JWTHelper.isBlocked(token))) {
-              return done(new UnauthorizedError('The JWT token has been revoked'), true);
-            }
-
-            return done(undefined, false);
-          },
+          isRevoked: blacklist.isRevoked,
         }),
       );
     logger.debug('Express server configured');
@@ -141,9 +141,9 @@ export default class Server {
       },
       synchronize: config.DATABASE.SYNCHRONIZE,
       logging: config.DATABASE.LOGGING,
-      entities: [path.join(__dirname, config.DATABASE.ENTITIES)],
-      migrations: [path.join(__dirname, config.DATABASE.MIGRATIONS)],
-      subscribers: [path.join(__dirname, config.DATABASE.SUBSCRIBERS)],
+      entities: [path.join(__dirname, '..', config.DATABASE.ENTITIES)],
+      migrations: [path.join(__dirname, '..', config.DATABASE.MIGRATIONS)],
+      subscribers: [path.join(__dirname, '..', config.DATABASE.SUBSCRIBERS)],
       cache: {
         type: 'ioredis',
         alwaysEnabled: true,

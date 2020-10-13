@@ -6,12 +6,14 @@ import {
   Transaction,
   TransactionManager,
 } from 'typeorm';
+import blacklist from 'express-jwt-blacklist';
 import { UserCreateInput, UserUpdateInput } from '@app/graphql/inputs';
 import User from '@app/entities/User';
 import { CryptUtil } from '@app/util';
 import { JWTHelper } from '@app/helper';
 import { AuthenticationError } from '@app/error';
 import logger from '@app/logger';
+import { IJWT } from '@app/types';
 
 @EntityRepository(User)
 export default class UserRepository extends Repository<User> {
@@ -30,10 +32,15 @@ export default class UserRepository extends Repository<User> {
   public async updateOrFail(
     id: string,
     data: UserUpdateInput,
+    jwt: IJWT,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User> {
     const user: User = manager!.create(User, data);
     await manager!.update(User, id, user);
+
+    // Purge all jwt tokens if password exists
+    if (data.password) blacklist.purge(jwt);
+
     logger.info(`Updated user having id ${id}`);
 
     return manager!.findOneOrFail(User, id);
@@ -42,10 +49,15 @@ export default class UserRepository extends Repository<User> {
   @Transaction()
   public async deleteOrFail(
     id: string,
+    jwt: IJWT,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User> {
     const user: User = await manager!.findOneOrFail(User, id);
     await manager!.delete(User, id);
+
+    // Purge all jwt tokens
+    blacklist.purge(jwt);
+
     logger.info(`Deleted user having id ${id}`);
 
     return user;
@@ -65,5 +77,12 @@ export default class UserRepository extends Repository<User> {
     logger.info(`Signed in successfully user having id ${user.id}`);
 
     return JWTHelper.sign({ id: user.id, roles: user.roles });
+  }
+
+  async signOut(jwt: IJWT): Promise<boolean> {
+    // Revoke jwt token
+    blacklist.revoke(jwt);
+    logger.info(`Signed out successfullt user having id ${jwt.id}`);
+    return true;
   }
 }

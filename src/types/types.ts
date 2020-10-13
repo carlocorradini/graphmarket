@@ -37,8 +37,14 @@ export interface IJWTPayload {
   readonly roles: UserRoles[];
 }
 
+export interface IJWT extends IJWTPayload {
+  readonly iat: number;
+  readonly exp: number;
+  readonly sub: string;
+}
+
 export interface IContext {
   readonly req: Request;
   readonly res: Response;
-  readonly user?: IJWTPayload;
+  readonly user?: IJWT;
 }

@@ -1,37 +1,17 @@
-FROM node:14
+FROM node:alpine
 
-# Environment
-ENV TIME_ZONE=Europe/Rome
-ENV NODE_ENV=production
+RUN apk update
+RUN apk add git
 
-# Set the timezone in docker
-RUN apk --update add tzdata \\
-   && cp /usr/share/zoneinfo/Europe/Rome /etc/localtime \\
-   && echo "Europe/Rome" > /etc/timezone \\
-   && apk del tzdata
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 
-# Container app directory
-WORKDIR /home/node/app
+COPY package.json /usr/src/app/
+COPY package-lock.json /usr/src/app/
+RUN npm ci
 
-# Copy package.json file to work directory
-COPY package.json .
-# Copy package-lock.json file to work directory
-COPY package-lock.json .
-
-# Install all production packages
-RUN npm ci --only=prod
-
-# Copy all other source code to work directory
-COPY . /home/node/app
-
-# Compile TypeScript
+COPY . /usr/src/app
 RUN npm run build
 
-# Set user
-USER node
-
-# Expose port
 EXPOSE 8080
-
-# Start
-CMD [ "node", "build/app.js" ]
+CMD [ "npm", "start" ]

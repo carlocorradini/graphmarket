@@ -15,7 +15,6 @@ import config from '@app/config';
 import logger from '@app/logger';
 import { IContext } from '@app/types';
 import { AuthorizationMiddleware } from '@app/middlewares';
-import { CacheService } from '@app/services';
 import { EnvUtil } from '@app/util';
 
 export default class Server {
@@ -58,8 +57,6 @@ export default class Server {
 
   // eslint-disable-next-line class-methods-use-this
   private configureServices(): void {
-    CacheService.mount(config.REDIS.URL);
-
     // JWT blacklist
     blacklist.configure({
       strict: false,
@@ -173,9 +170,6 @@ export default class Server {
       logger.warn('Server is not started');
       return undefined;
     }
-
-    // Unmount services
-    await CacheService.unmount();
 
     // Disconnect databse
     await getConnection().close();

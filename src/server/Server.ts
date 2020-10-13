@@ -69,14 +69,15 @@ export default class Server {
           secret: config.JWT.SECRET,
           algorithms: [config.JWT.ALGORITHM],
           credentialsRequired: false,
+          // TODO Problem in response when the token is revoked
           isRevoked: async (req, _, done) => {
             const token: string | undefined = JWTHelper.getToken(req);
 
             if (!token || (await JWTHelper.isBlocked(token))) {
-              return done(new UnauthorizedError('The JWT token has been revoked'));
+              return done(new UnauthorizedError('The JWT token has been revoked'), true);
             }
 
-            return done(null, !!token);
+            return done(undefined, false);
           },
         }),
       );

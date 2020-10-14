@@ -10,7 +10,6 @@ import Server from '@app/server';
 // --- BOOTSTRAP
 (async () => {
   try {
-    // Start Server
     await Server.getInstance().start(config.NODE.PORT);
   } catch (error) {
     logger.error(error);

@@ -1,8 +1,9 @@
 /* eslint-disable class-methods-use-this */
 import {
+  AbstractRepository,
   EntityManager,
   EntityRepository,
-  Repository,
+  FindManyOptions,
   Transaction,
   TransactionManager,
 } from 'typeorm';
@@ -16,7 +17,7 @@ import logger from '@app/logger';
 import { IJWT } from '@app/types';
 
 @EntityRepository(User)
-export default class UserRepository extends Repository<User> {
+export default class UserRepository extends AbstractRepository<User> {
   @Transaction()
   public async createOrFail(
     data: UserCreateInput,
@@ -26,6 +27,14 @@ export default class UserRepository extends Repository<User> {
     logger.info(`Created user having id ${user.id}`);
 
     return user;
+  }
+
+  public readOneOrFail(id: string): Promise<User> {
+    return this.manager.findOneOrFail(User, id, { cache: true });
+  }
+
+  public readOrFail(options?: FindManyOptions): Promise<User[]> {
+    return this.manager.find(User, { ...options, cache: true });
   }
 
   @Transaction()

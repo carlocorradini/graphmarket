@@ -34,19 +34,19 @@ export default class UserResolver {
   @Query(() => User)
   @Authorized()
   me(@Ctx() ctx: IContext): Promise<User> {
-    return this.userRepository.findOneOrFail(ctx.user!.id);
+    return this.userRepository.readOneOrFail(ctx.user!.id);
   }
 
   @Query(() => User, { nullable: true })
   @Authorized()
   user(@Arg('id', () => GraphQLUUID) id: string): Promise<User | undefined> {
-    return this.userRepository.findOne(id);
+    return this.userRepository.readOneOrFail(id);
   }
 
   @Query(() => [User])
   @Authorized()
   users(@Args() { skip, take }: PaginationArgs): Promise<User[]> {
-    return this.userRepository.find({ skip, take });
+    return this.userRepository.readOrFail({ skip, take });
   }
 
   @Mutation(() => User)

@@ -1,8 +1,9 @@
 /* eslint-disable class-methods-use-this */
 import {
+  AbstractRepository,
   EntityManager,
   EntityRepository,
-  Repository,
+  FindManyOptions,
   Transaction,
   TransactionManager,
 } from 'typeorm';
@@ -12,7 +13,7 @@ import { UnauthorizedError } from '@app/error';
 import logger from '@app/logger';
 
 @EntityRepository(Product)
-export default class ProductRepository extends Repository<Product> {
+export default class ProductRepository extends AbstractRepository<Product> {
   private createOwner(owner: User | string): User {
     return this.manager.create(User, {
       id: owner instanceof User ? owner.id : owner,
@@ -34,6 +35,14 @@ export default class ProductRepository extends Repository<Product> {
     logger.info(`Created product having id ${product.id}`);
 
     return product;
+  }
+
+  public readOneOrFail(id: string): Promise<Product> {
+    return this.manager.findOneOrFail(Product, id, { cache: true });
+  }
+
+  public readOrFail(options?: FindManyOptions): Promise<Product[]> {
+    return this.manager.find(Product, { ...options, cache: true });
   }
 
   @Transaction()

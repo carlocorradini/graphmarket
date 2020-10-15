@@ -33,13 +33,13 @@ export default class ProductResolver {
   @Query(() => Product, { nullable: true })
   @Authorized()
   product(@Arg('id', () => GraphQLPositiveInt) id: number): Promise<Product | undefined> {
-    return this.productRepository.findOne(id);
+    return this.productRepository.readOneOrFail(id);
   }
 
   @Query(() => [Product])
   @Authorized()
   products(@Args() { skip, take }: PaginationArgs): Promise<Product[]> {
-    return this.productRepository.find({ skip, take });
+    return this.productRepository.readOrFail({ skip, take });
   }
 
   @Mutation(() => Product)

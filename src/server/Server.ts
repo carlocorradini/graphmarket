@@ -143,7 +143,6 @@ export default class Server {
       subscribers: [path.join(__dirname, '..', config.DATABASE.SUBSCRIBERS)],
       cache: {
         type: 'ioredis',
-        alwaysEnabled: true,
         port: config.REDIS.URL,
       },
     });

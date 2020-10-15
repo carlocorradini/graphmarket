@@ -37,7 +37,7 @@ export default class ProductRepository extends AbstractRepository<Product> {
     return product;
   }
 
-  public readOneOrFail(id: string): Promise<Product> {
+  public readOneOrFail(id: number): Promise<Product> {
     return this.manager.findOneOrFail(Product, id, { cache: true });
   }
 

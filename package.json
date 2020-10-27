@@ -36,7 +36,7 @@
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
     "express-jwt-blacklist": "git+https://github.com/carlocorradini/express-jwt-blacklist.git",
-    "graphql": "^15.3.0",
+    "graphql": "^15.4.0",
     "graphql-scalars": "^1.4.1",
     "helmet": "^4.1.1",
     "ioredis": "^4.17.3",

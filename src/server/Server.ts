@@ -17,13 +17,30 @@ import { IContext } from '@app/types';
 import { AuthorizationMiddleware } from '@app/middlewares';
 import { EnvUtil } from '@app/util';
 
+/**
+ * Application Server.
+ *
+ * @author Carlo Corradini
+ */
 export default class Server {
+  /**
+   * Singleton server instance.
+   */
   private static instance: Server;
 
+  /**
+   * Express instance.
+   */
   private readonly app: express.Application;
 
+  /**
+   * Http server instance.
+   */
   private server?: http.Server;
 
+  /**
+   * Construct the server.
+   */
   private constructor() {
     this.app = express();
     this.server = undefined;
@@ -32,6 +49,9 @@ export default class Server {
     logger.info('Server is ready');
   }
 
+  /**
+   * Configure the server and services applying checks.
+   */
   private configure(): void {
     logger.debug('Server configuration started');
 
@@ -42,6 +62,9 @@ export default class Server {
     logger.debug('Server configuration finished');
   }
 
+  /**
+   * Check if the server can be correctly instantiated.
+   */
   // eslint-disable-next-line class-methods-use-this
   private configureChecks(): void {
     try {
@@ -55,6 +78,9 @@ export default class Server {
     }
   }
 
+  /**
+   * Configure application services.
+   */
   // eslint-disable-next-line class-methods-use-this
   private configureServices(): void {
     // JWT blacklist
@@ -67,6 +93,9 @@ export default class Server {
     });
   }
 
+  /**
+   * Configure the server.
+   */
   private configureServer(): void {
     // Dependency injection
     useContainer(Container);
@@ -115,6 +144,12 @@ export default class Server {
     logger.debug(`Express middleware applied to Apollo Server on path ${config.GRAPHQL.PATH}`);
   }
 
+  /**
+   * Return the current server instance.
+   * If the instance is undefined a new instance is created.
+   *
+   * @returns {Server} Current server instance
+   */
   public static getInstance(): Server {
     if (!Server.instance) {
       Server.instance = new Server();
@@ -124,6 +159,12 @@ export default class Server {
     return Server.instance;
   }
 
+  /**
+   * Start the server listening for connections.
+   *
+   * @param port {number} - Listening port
+   * @returns {Promise<AddressInfo>} Server listening address information
+   */
   public async start(port: number = config.NODE.PORT): Promise<AddressInfo> {
     if (this.server) {
       logger.warn('Server is already started');
@@ -164,6 +205,9 @@ export default class Server {
     });
   }
 
+  /**
+   * Stop the server.
+   */
   public async stop(): Promise<void> {
     if (!this.server) {
       logger.warn('Server is not started');

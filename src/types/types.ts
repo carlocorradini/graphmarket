@@ -1,6 +1,9 @@
 import { UserRoles } from '@app/entities/User';
 import { Request, Response } from 'express';
 
+/**
+ * Configuration interface
+ */
 export interface IConfig {
   readonly NODE: {
     readonly ENV: 'production' | 'development' | 'test';
@@ -32,17 +35,26 @@ export interface IConfig {
   };
 }
 
+/**
+ * JWT custom payload
+ */
 export interface IJWTPayload {
   readonly id: string;
   readonly roles: UserRoles[];
 }
 
+/**
+ * JWT full payload
+ */
 export interface IJWT extends IJWTPayload {
   readonly iat: number;
   readonly exp: number;
   readonly sub: string;
 }
 
+/**
+ * GraphQL context
+ */
 export interface IContext {
   readonly req: Request;
   readonly res: Response;

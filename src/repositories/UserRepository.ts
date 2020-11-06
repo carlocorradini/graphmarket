@@ -26,8 +26,8 @@ export default class UserRepository extends AbstractRepository<User> {
   /**
    * Create a new user from data.
    *
-   * @param data {UserCreateInput} - User data input properties
-   * @param manager {EntityManager} - Transaction's entity manager
+   * @param {UserCreateInput} data - User data input properties
+   * @param {EntityManager} manager - Transaction's entity manager
    * @returns {Promise<User>} Newly created user
    */
   @Transaction()
@@ -44,7 +44,7 @@ export default class UserRepository extends AbstractRepository<User> {
   /**
    * Read a user that matches the given id.
    *
-   * @param id {string} - User's id
+   * @param {string} id - User's id
    * @returns {Promise<User>} User with the corresponding id
    */
   public readOneOrFail(id: string): Promise<User> {
@@ -54,7 +54,7 @@ export default class UserRepository extends AbstractRepository<User> {
   /**
    * Read multiple users that match given options.
    *
-   * @param options {FindManyOptions} - Find options
+   * @param {FindManyOptions} options - Find options
    * @returns {Promise<User[]>} Users that match given options.
    */
   public readOrFail(options?: FindManyOptions): Promise<User[]> {
@@ -65,10 +65,10 @@ export default class UserRepository extends AbstractRepository<User> {
    * Update a user that matches the id with the given data.
    * If the password is updated the authentication JWT is purged.
    *
-   * @param id {string} - User's id
-   * @param data {UserUpdateInput} - User data update input properties
-   * @param jwt {IJWT} - User's authentication JWT decoded token
-   * @param manager {EntityManager} - Transaction's entity manager
+   * @param {string} id - User's id
+   * @param {UserUpdateInput} data - User data update input properties
+   * @param {IJWT} jwt - User's authentication JWT decoded token
+   * @param {EntityManager} manager - Transaction's entity manager
    * @returns {Promise<User>}
    */
   @Transaction()
@@ -93,9 +93,9 @@ export default class UserRepository extends AbstractRepository<User> {
    * Delete a user that matches the given id.
    * All user's JWT authentication tokens are purged.
    *
-   * @param id {string} - User's id
-   * @param jwt {IJWT} - User's authentication JWT decoded token
-   * @param manager {EntityManager} - Transaction's entity manager
+   * @param {string} id - User's id
+   * @param {IJWT} jwt - User's authentication JWT decoded token
+   * @param {EntityManager} manager - Transaction's entity manager
    * @returns {Promise<User>} Deleted user
    */
   @Transaction()
@@ -118,8 +118,8 @@ export default class UserRepository extends AbstractRepository<User> {
   /**
    * User's sign in procedure.
    *
-   * @param username {string} - User's username
-   * @param password {string} - User's password
+   * @param {string} username - User's username
+   * @param {string} password - User's password
    * @returns {string} Encoded JWT authentication token
    */
   async signIn(username: string, password: string): Promise<string> {
@@ -142,7 +142,7 @@ export default class UserRepository extends AbstractRepository<User> {
    * User's sign out procedure.
    * User's JWT authentication token is revoked.
    *
-   * @param jwt {IJWT} - User's authentication JWT decoded token
+   * @param {IJWT} jwt - User's authentication JWT decoded token
    * @returns {Promise<boolean>} True if signed out, false otherwise
    */
   async signOut(jwt: IJWT): Promise<boolean> {

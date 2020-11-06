@@ -162,7 +162,7 @@ export default class Server {
   /**
    * Start the server listening for connections.
    *
-   * @param port {number} - Listening port
+   * @param {number} port - Listening port
    * @returns {Promise<AddressInfo>} Server listening address information
    */
   public async start(port: number = config.NODE.PORT): Promise<AddressInfo> {

@@ -19,8 +19,6 @@ import { EnvUtil } from '@app/util';
 
 /**
  * Application Server.
- *
- * @author Carlo Corradini
  */
 export default class Server {
   /**
@@ -148,7 +146,7 @@ export default class Server {
    * Return the current server instance.
    * If the instance is undefined a new instance is created.
    *
-   * @returns {Server} Current server instance
+   * @returns Current server instance
    */
   public static getInstance(): Server {
     if (!Server.instance) {
@@ -162,8 +160,8 @@ export default class Server {
   /**
    * Start the server listening for connections.
    *
-   * @param {number} port - Listening port
-   * @returns {Promise<AddressInfo>} Server listening address information
+   * @param port - Listening port
+   * @returns Server listening address information
    */
   public async start(port: number = config.NODE.PORT): Promise<AddressInfo> {
     if (this.server) {

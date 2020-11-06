@@ -2,8 +2,6 @@ import env from '@app/config/env';
 
 /**
  * Environment utilities.
- *
- * @author Carlo Corradini
  */
 export default class EnvUtil {
   /**
@@ -24,7 +22,7 @@ export default class EnvUtil {
   /**
    * Return the current environment.
    *
-   * @returns {string | undefined} Current environment
+   * @returns Current environment
    */
   public static getCurrent(): string | undefined {
     return process.env.NODE_ENV || env.NODE_ENV;
@@ -33,7 +31,7 @@ export default class EnvUtil {
   /**
    * Check if the current environment is production
    *
-   * @returns {boolean} True if production, false otherwise
+   * @returns True if production, false otherwise
    */
   public static isProduction(): boolean {
     return this.getCurrent() === this.ENV_PRODUCTION;
@@ -42,7 +40,7 @@ export default class EnvUtil {
   /**
    * Check if the current environment is development
    *
-   * @returns {boolean} True if development, false otherwise
+   * @returns True if development, false otherwise
    */
   public static isDevelopment(): boolean {
     return this.getCurrent() === this.ENV_DEVELOPMENT;
@@ -51,7 +49,7 @@ export default class EnvUtil {
   /**
    * Check if the current environment is test
    *
-   * @returns {boolean} True if test, false otherwise
+   * @returns True if test, false otherwise
    */
   public static isTest(): boolean {
     return this.getCurrent() === this.ENV_TEST;

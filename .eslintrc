@@ -7,6 +7,7 @@
   },
   "plugins": [
     "@typescript-eslint",
+    "eslint-plugin-tsdoc",
     "prettier",
     "import",
     "jest"
@@ -28,6 +29,7 @@
     "sourceType": "module"
   },
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "tsdoc/syntax": "warn"
   }
 }

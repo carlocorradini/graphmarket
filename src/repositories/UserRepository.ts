@@ -16,8 +16,20 @@ import { AuthenticationError } from '@app/error';
 import logger from '@app/logger';
 import { IJWT } from '@app/types';
 
+/**
+ * User database repository.
+ *
+ * @author Carlo Corradini
+ */
 @EntityRepository(User)
 export default class UserRepository extends AbstractRepository<User> {
+  /**
+   * Create a new user from data.
+   *
+   * @param data {UserCreateInput} - User data input properties
+   * @param manager {EntityManager} - Transaction's entity manager
+   * @returns {Promise<User>} Newly created user
+   */
   @Transaction()
   public async createOrFail(
     data: UserCreateInput,
@@ -29,14 +41,36 @@ export default class UserRepository extends AbstractRepository<User> {
     return user;
   }
 
+  /**
+   * Read a user that matches the given id.
+   *
+   * @param id {string} - User's id
+   * @returns {Promise<User>} User with the corresponding id
+   */
   public readOneOrFail(id: string): Promise<User> {
     return this.manager.findOneOrFail(User, id, { cache: true });
   }
 
+  /**
+   * Read multiple users that match given options.
+   *
+   * @param options {FindManyOptions} - Find options
+   * @returns {Promise<User[]>} Users that match given options.
+   */
   public readOrFail(options?: FindManyOptions): Promise<User[]> {
     return this.manager.find(User, { ...options, cache: true });
   }
 
+  /**
+   * Update a user that matches the id with the given data.
+   * If the password is updated the authentication JWT is purged.
+   *
+   * @param id {string} - User's id
+   * @param data {UserUpdateInput} - User data update input properties
+   * @param jwt {IJWT} - User's authentication JWT decoded token
+   * @param manager {EntityManager} - Transaction's entity manager
+   * @returns {Promise<User>}
+   */
   @Transaction()
   public async updateOrFail(
     id: string,
@@ -55,6 +89,15 @@ export default class UserRepository extends AbstractRepository<User> {
     return manager!.findOneOrFail(User, id);
   }
 
+  /**
+   * Delete a user that matches the given id.
+   * All user's JWT authentication tokens are purged.
+   *
+   * @param id {string} - User's id
+   * @param jwt {IJWT} - User's authentication JWT decoded token
+   * @param manager {EntityManager} - Transaction's entity manager
+   * @returns {Promise<User>} Deleted user
+   */
   @Transaction()
   public async deleteOrFail(
     id: string,
@@ -72,6 +115,13 @@ export default class UserRepository extends AbstractRepository<User> {
     return user;
   }
 
+  /**
+   * User's sign in procedure.
+   *
+   * @param username {string} - User's username
+   * @param password {string} - User's password
+   * @returns {string} Encoded JWT authentication token
+   */
   async signIn(username: string, password: string): Promise<string> {
     const user: User | undefined = await this.manager.findOne(
       User,
@@ -88,6 +138,13 @@ export default class UserRepository extends AbstractRepository<User> {
     return JWTHelper.sign({ id: user.id, roles: user.roles });
   }
 
+  /**
+   * User's sign out procedure.
+   * User's JWT authentication token is revoked.
+   *
+   * @param jwt {IJWT} - User's authentication JWT decoded token
+   * @returns {Promise<boolean>} True if signed out, false otherwise
+   */
   async signOut(jwt: IJWT): Promise<boolean> {
     // Revoke jwt token
     blacklist.revoke(jwt);

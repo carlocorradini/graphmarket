@@ -2,7 +2,16 @@ import jwt from 'jsonwebtoken';
 import config from '@app/config';
 import { IJWT, IJWTPayload } from '@app/types';
 
+/**
+ * JSON Web Token helper.
+ */
 export default class JWTHelper {
+  /**
+   * Sign the given payload into a JSON Web Token string payload.
+   *
+   * @param payload - Payload to sign
+   * @returns JSON Web Token string payload
+   */
   public static async sign(payload: IJWTPayload): Promise<string> {
     return new Promise((resolve, reject) => {
       jwt.sign(
@@ -20,6 +29,12 @@ export default class JWTHelper {
     });
   }
 
+  /**
+   * Verify the given token.
+   *
+   * @param token - JSON Web Token string to verify
+   * @returns Decoded token
+   */
   public static async verify(token: string): Promise<IJWT> {
     return new Promise((resolve, reject) => {
       jwt.verify(token, config.JWT.SECRET, (error, decoded) => {

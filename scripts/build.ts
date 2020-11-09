@@ -2,8 +2,12 @@
 import shell from 'shelljs';
 import * as build from '../build.json';
 
-// Copy Folders
+/**
+ * Copy folders recursively.
+ */
 if (build.copy.folders.length > 0) shell.cp('-R', build.copy.folders, build.target);
 
-// Copy Files
+/**
+ * Copy files.
+ */
 if (build.copy.files.length > 0) shell.cp(build.copy.files, build.target);

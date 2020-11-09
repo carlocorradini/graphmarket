@@ -2,6 +2,11 @@ import { IConfig } from '@app/types';
 import logger from '@app/logger';
 import env from './env';
 
+/**
+ * Configuration object.
+ *
+ * @see env
+ */
 const config: IConfig = {
   NODE: {
     ENV: env.NODE_ENV,

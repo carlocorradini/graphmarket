@@ -1,5 +1,8 @@
 import envalid, { str, port, bool, url } from 'envalid';
 
+/**
+ * Environment variables sanitized and immutable.
+ */
 const env = envalid.cleanEnv(
   process.env,
   {

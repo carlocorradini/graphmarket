@@ -119,6 +119,7 @@ export default class UserRepository extends AbstractRepository<User> {
    * @param username - User's username
    * @param password - User's password
    * @returns Encoded JWT authentication token
+   * @see JWTHelper
    */
   async signIn(username: string, password: string): Promise<string> {
     const user: User | undefined = await this.manager.findOne(

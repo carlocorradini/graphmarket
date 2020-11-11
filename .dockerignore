@@ -41,9 +41,6 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
-# dotenv environment variables file
-.env
-
 # Distribution | compiled code/library
 dist/
 build/

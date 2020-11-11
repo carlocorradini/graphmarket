@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - '8080:8080'
+      - "9229:9229"
+    depends_on:
+      - database
+      - redis
+    environment:
+      NODE_ENV: development
+      DATABASE_USER: ${POSTGRES_USER}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_HOST: database
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${POSTGRES_DB}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET}
+    command: npm run start:debug
+
+  database:
+    image: postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+  redis:
+    image: redis
+    ports:
+      - '6379:6379'
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+

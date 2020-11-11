@@ -8,26 +8,23 @@ services:
     depends_on:
       - database
       - redis
-    links:
-      - database
-      - redis
     environment:
-      - NODE_ENV=development
-      - PORT=8080
-      - DATABASE_URL=postgres://postgres:password@database:5432/graphql_db
-      - REDIS_URL=redis://redis:6379/0
-      - JWT_SECRET=secret
+      NODE_ENV=development
+      PORT=${PORT}
+      DATABASE_URL=${DATABASE_URL}
+      REDIS_URL=${REDIS_URL}
+      JWT_SECRET=${JWT_SECRET}
 
   database:
     image: postgres
     ports:
       - '5432:5432'
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=graphql_db
+      POSTGRES_USER=postgres
+      POSTGRES_PASSWORD=password
+      POSTGRES_DB=graphql_db
 
   redis:
-    image: redis:3.2.8
+    image: redis
     ports:
       - '6379:6379'

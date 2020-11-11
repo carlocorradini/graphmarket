@@ -1,0 +1,6 @@
+{
+  "out": "docs",
+  "tsconfig": "tsconfig.json",
+  "mode": "modules",
+  "name": "GraphQL Template"
+}

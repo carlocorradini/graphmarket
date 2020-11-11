@@ -43,7 +43,8 @@
     },
     // "rootDirs": [],                          /* List of root folders whose combined content represents the structure of the project at runtime. */
     "typeRoots": [
-      /* List of folders to include type definitions from. */ "node_modules/@types",
+      /* List of folders to include type definitions from. */
+      "node_modules/@types",
       "src/typings"
     ],
     // "types": [],                             /* Type declaration files to be included in compilation. */
@@ -69,7 +70,8 @@
     ]
   },
   "include": [
-    /* Specifies an array of filenames or patterns to include in the program. */ "src/**/*"
+    /* Specifies an array of filenames or patterns to include in the program. */
+    "src/**/*"
   ],
   "exclude": [
     /* Specifies an array of filenames or patterns that should be skipped when resolving include. */

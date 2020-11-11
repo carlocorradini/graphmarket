@@ -1,4 +1,4 @@
-import envalid, { str, port, bool, url } from 'envalid';
+import envalid, { str, host, port, bool } from 'envalid';
 
 /**
  * Environment variables sanitized and immutable.
@@ -8,11 +8,19 @@ const env = envalid.cleanEnv(
   {
     NODE_ENV: str({ default: 'production', choices: ['production', 'development', 'test'] }),
     PORT: port({ devDefault: 8080 }),
-    DATABASE_URL: url(),
+    // Database
+    DATABASE_USER: str(),
+    DATABASE_PASSWORD: str(),
+    DATABASE_HOST: host(),
+    DATABASE_PORT: port(),
+    DATABASE_NAME: str(),
     DATABASE_SSL: bool({ default: true, devDefault: false }),
     DATABASE_SYNCHRONIZE: bool({ default: false, devDefault: true }),
     DATABASE_LOGGING: bool({ default: false }),
-    REDIS_URL: url(),
+    // Redis
+    REDIS_PASSWORD: str(),
+    REDIS_HOST: host(),
+    REDIS_PORT: port(),
     REDIS_JWT_BLOCKLIST: str({ default: 'JWT_BLOCKLIST' }),
     JWT_SECRET: str(),
     JWT_ALGORITHM: str({ default: 'HS256' }),

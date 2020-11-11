@@ -182,7 +182,11 @@ export default class Server {
       subscribers: [path.join(__dirname, '..', config.DATABASE.SUBSCRIBERS)],
       cache: {
         type: 'ioredis',
-        port: config.REDIS.URL,
+        options: {
+          password: config.REDIS.PASSWORD,
+          host: config.REDIS.HOST,
+          port: config.REDIS.PORT,
+        },
       },
     });
     logger.info('Database connected');

@@ -14,7 +14,12 @@ const config: IConfig = {
   },
   DATABASE: {
     TYPE: 'postgres',
-    URL: env.DATABASE_URL,
+    USER: env.DATABASE_USER,
+    PASSWORD: env.DATABASE_PASSWORD,
+    HOST: env.DATABASE_HOST,
+    PORT: env.DATABASE_PORT,
+    NAME: env.DATABASE_NAME,
+    URL: `postgres://${env.DATABASE_USER}:${env.DATABASE_PASSWORD}@${env.DATABASE_HOST}:${env.DATABASE_PORT}/${env.DATABASE_NAME}`,
     SSL: env.DATABASE_SSL,
     SYNCHRONIZE: env.DATABASE_SYNCHRONIZE,
     LOGGING: env.DATABASE_LOGGING,
@@ -23,7 +28,10 @@ const config: IConfig = {
     SUBSCRIBERS: 'subscriber/**/*.{ts,js}',
   },
   REDIS: {
-    URL: env.REDIS_URL,
+    PASSWORD: env.REDIS_PASSWORD,
+    HOST: env.REDIS_HOST,
+    PORT: env.REDIS_PORT,
+    URL: `redis://:${env.REDIS_PASSWORD}@${env.REDIS_HOST}:${env.REDIS_PORT}/0`,
     JWT_BLOCKLIST: env.REDIS_JWT_BLOCKLIST,
   },
   JWT: {

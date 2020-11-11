@@ -11,6 +11,11 @@ export interface IConfig {
   };
   readonly DATABASE: {
     readonly TYPE: string;
+    readonly USER: string;
+    readonly PASSWORD: string;
+    readonly HOST: string;
+    readonly PORT: number;
+    readonly NAME: string;
     readonly URL: string;
     readonly SSL: boolean;
     readonly SYNCHRONIZE: boolean;
@@ -20,6 +25,9 @@ export interface IConfig {
     readonly SUBSCRIBERS: string;
   };
   readonly REDIS: {
+    readonly PASSWORD: string;
+    readonly HOST: string;
+    readonly PORT: number;
     readonly URL: string;
     readonly JWT_BLOCKLIST: string;
   };

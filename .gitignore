@@ -51,6 +51,10 @@ build/
 # Coverage
 coverage/
 
+# Docs
+doc/
+docs/
+
 # Exceptions
 !.gitignore
 !src/typings/

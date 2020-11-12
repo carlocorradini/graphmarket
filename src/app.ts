@@ -12,7 +12,7 @@ import Server from '@app/server';
   try {
     await Server.getInstance().start(config.NODE.PORT);
   } catch (error) {
-    logger.error(error);
+    logger.error('Cannot get server instance', error);
     process.exit(1);
   }
 })();

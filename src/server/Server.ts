@@ -9,6 +9,7 @@ import helmet from 'helmet';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchemaSync } from 'type-graphql';
 import { ConnectionOptions, createConnection, getConnection, useContainer } from 'typeorm';
+import { AlreadyHasActiveConnectionError } from 'typeorm/error/AlreadyHasActiveConnectionError';
 import { Container } from 'typedi';
 import blacklist from 'express-jwt-blacklist';
 import config from '@app/config';
@@ -37,13 +38,13 @@ export default class Server {
   private server?: http.Server;
 
   /**
-   * Construct the server.
+   * Construct the server. Throw errors if configuration fails.
    */
   private constructor() {
     this.app = express();
     this.server = undefined;
-
     this.configure();
+
     logger.info('Server is ready');
   }
 
@@ -53,34 +54,28 @@ export default class Server {
   private configure(): void {
     logger.debug('Server configuration started');
 
-    this.configureChecks();
-    this.configureServices();
+    Server.configureChecks();
+    Server.configureServices();
     this.configureServer();
 
     logger.debug('Server configuration finished');
   }
 
   /**
-   * Check if the server can be correctly instantiated.
+   * To allow dependency injection, the server must be instantiated
+   * before connecting to the database.
    */
   // eslint-disable-next-line class-methods-use-this
-  private configureChecks(): void {
-    try {
-      getConnection();
-      logger.error(
-        'Server must be instantiated before database connection to allow dependency injection',
-      );
-      process.exit(1);
-    } catch (error) {
-      if (error.name !== 'ConnectionNotFoundError') throw error;
-    }
+  private static configureChecks(): void {
+    const conn = getConnection();
+    throw new AlreadyHasActiveConnectionError(conn.name);
   }
 
   /**
    * Configure application services.
    */
   // eslint-disable-next-line class-methods-use-this
-  private configureServices(): void {
+  private static configureServices(): void {
     // JWT blacklist
     blacklist.configure({
       strict: false,

@@ -1,11 +1,6 @@
 import path from 'path';
 import http from 'http';
 import { AddressInfo } from 'net';
-import express from 'express';
-import jwt from 'express-jwt';
-import compression from 'compression';
-import cors from 'cors';
-import helmet from 'helmet';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchemaSync } from 'type-graphql';
 import { ConnectionOptions, createConnection, getConnection, useContainer } from 'typeorm';
@@ -17,6 +12,7 @@ import logger from '@app/logger';
 import { IContext } from '@app/types';
 import { AuthorizationMiddleware } from '@app/middlewares';
 import { EnvUtil } from '@app/util';
+import app from '@app/server/App';
 
 /**
  * Application Server.
@@ -28,11 +24,6 @@ export default class Server {
   private static instance: Server;
 
   /**
-   * Express instance.
-   */
-  private readonly app: express.Application;
-
-  /**
    * Http server instance.
    */
   private server?: http.Server;
@@ -41,7 +32,7 @@ export default class Server {
    * Construct the server. Throw errors if configuration fails.
    */
   private constructor() {
-    this.app = express();
+    // this.app = express();
     this.server = undefined;
     this.configure();
 
@@ -89,28 +80,10 @@ export default class Server {
   /**
    * Configure the server.
    */
+  // eslint-disable-next-line class-methods-use-this
   private configureServer(): void {
     // Dependency injection
     useContainer(Container);
-    logger.debug('Dependency injection configured');
-
-    // Express server
-    this.app
-      .enable('trust proxy')
-      .use(compression())
-      .use(cors())
-      .use(helmet({ contentSecurityPolicy: EnvUtil.isProduction() ? undefined : false }))
-      .use(
-        config.GRAPHQL.PATH,
-        jwt({
-          secret: config.JWT.SECRET,
-          algorithms: [config.JWT.ALGORITHM],
-          credentialsRequired: false,
-          // TODO Problem in response when the token is revoked
-          isRevoked: blacklist.isRevoked,
-        }),
-      );
-    logger.debug('Express server configured');
 
     // Apollo server
     const server = new ApolloServer({
@@ -133,7 +106,7 @@ export default class Server {
     });
     logger.debug('Apollo server configured');
 
-    server.applyMiddleware({ app: this.app, path: config.GRAPHQL.PATH });
+    server.applyMiddleware({ app, path: config.GRAPHQL.PATH });
     logger.debug(`Express middleware applied to Apollo Server on path ${config.GRAPHQL.PATH}`);
   }
 
@@ -187,7 +160,7 @@ export default class Server {
     logger.info('Database connected');
 
     return new Promise((resolve, reject) => {
-      this.server = this.app
+      this.server = app
         .listen(port, () => {
           const addressInfo: AddressInfo = this.server!.address() as AddressInfo;
           logger.info(

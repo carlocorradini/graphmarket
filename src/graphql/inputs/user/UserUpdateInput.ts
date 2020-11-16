@@ -1,7 +1,7 @@
 import { Field, InputType } from 'type-graphql';
 import { Length } from 'class-validator';
 import { User } from '@app/entities';
-import { GraphQLDate, GraphQLNonEmptyString } from '../scalars';
+import { GraphQLDate, GraphQLNonEmptyString } from '@app/graphql/scalars';
 
 /**
  * User update input.

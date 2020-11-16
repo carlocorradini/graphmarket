@@ -1,7 +1,7 @@
 import { Field, InputType } from 'type-graphql';
 import { Length } from 'class-validator';
 import User, { UserGenders } from '@app/entities/User';
-import { GraphQLDate, GraphQLEmailAddress, GraphQLNonEmptyString } from '../scalars';
+import { GraphQLDate, GraphQLEmailAddress, GraphQLNonEmptyString } from '@app/graphql/scalars';
 
 /**
  * User creation input.

@@ -1,7 +1,7 @@
 import { Field, InputType } from 'type-graphql';
 import { Length } from 'class-validator';
 import Product from '@app/entities/Product';
-import { GraphQLNonEmptyString } from '../scalars';
+import { GraphQLNonEmptyString } from '@app/graphql/scalars';
 
 @InputType()
 export default class ProductUpdateInput implements Partial<Product> {

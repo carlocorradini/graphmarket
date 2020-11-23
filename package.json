@@ -86,6 +86,6 @@
     "ttypescript": "^1.5.12",
     "typedoc": "^0.19.2",
     "typescript": "^4.0.5",
-    "typescript-transform-paths": "^2.0.3"
+    "typescript-transform-paths": "^2.0.4"
   }
 }

@@ -6,27 +6,70 @@ import envalid, { str, host, port, bool } from 'envalid';
 const env = envalid.cleanEnv(
   process.env,
   {
-    NODE_ENV: str({ default: 'production', choices: ['production', 'development', 'test'] }),
-    PORT: port({ devDefault: 8080 }),
+    NODE_ENV: str({
+      default: 'production',
+      devDefault: 'development',
+      choices: ['production', 'development', 'test'],
+    }),
+    PORT: port({
+      default: 80,
+      devDefault: 8000,
+    }),
     // Database
-    DATABASE_USER: str(),
-    DATABASE_PASSWORD: str(),
-    DATABASE_HOST: host(),
-    DATABASE_PORT: port(),
-    DATABASE_NAME: str(),
-    DATABASE_SSL: bool({ default: true, devDefault: false }),
-    DATABASE_SYNCHRONIZE: bool({ default: false, devDefault: true }),
-    DATABASE_LOGGING: bool({ default: false }),
+    DATABASE_USER: str({
+      devDefault: 'postgres',
+    }),
+    DATABASE_PASSWORD: str({
+      devDefault: 'password',
+    }),
+    DATABASE_HOST: host({
+      devDefault: 'localhost',
+    }),
+    DATABASE_PORT: port({
+      devDefault: 5000,
+    }),
+    DATABASE_NAME: str({
+      devDefault: 'graphqldb',
+    }),
+    DATABASE_SSL: bool({
+      default: true,
+      devDefault: false,
+    }),
+    DATABASE_SYNCHRONIZE: bool({
+      default: false,
+      devDefault: true,
+    }),
+    DATABASE_LOGGING: bool({
+      default: false,
+      devDefault: true,
+    }),
     // Redis
-    REDIS_PASSWORD: str(),
-    REDIS_HOST: host(),
-    REDIS_PORT: port(),
-    REDIS_JWT_BLOCKLIST: str({ default: 'JWT_BLOCKLIST' }),
+    REDIS_PASSWORD: str({
+      devDefault: 'password',
+    }),
+    REDIS_HOST: host({
+      devDefault: 'localhost',
+    }),
+    REDIS_PORT: port({
+      devDefault: 6379,
+    }),
+    REDIS_JWT_BLOCKLIST: str({
+      default: 'JWT_BLOCKLIST',
+    }),
     JWT_SECRET: str(),
-    JWT_ALGORITHM: str({ default: 'HS256' }),
-    JWT_EXPIRATION_TIME: str({ default: '7d' }),
-    GRAPHQL_PATH: str({ default: '/graphql' }),
-    GRAPHQL_PLAYGROUND: bool({ default: false, devDefault: true }),
+    JWT_ALGORITHM: str({
+      default: 'HS256',
+    }),
+    JWT_EXPIRATION_TIME: str({
+      default: '7d',
+    }),
+    GRAPHQL_PATH: str({
+      default: '/graphql',
+    }),
+    GRAPHQL_PLAYGROUND: bool({
+      default: false,
+      devDefault: true,
+    }),
   },
   {
     strict: true,

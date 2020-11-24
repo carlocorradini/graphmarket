@@ -13,7 +13,11 @@ const app = express();
 app.use('trust proxy');
 app.use(compression());
 app.use(cors());
-app.use(helmet({ contentSecurityPolicy: EnvUtil.isProduction() ? undefined : false }));
+app.use(
+  helmet({
+    contentSecurityPolicy: EnvUtil.isProduction() ? undefined : false,
+  }),
+);
 app.use(
   config.GRAPHQL.PATH,
   jwt({

@@ -6,15 +6,37 @@ import readline from 'readline';
 import config from '@app/config';
 import logger from '@app/logger';
 import Server from '@app/server';
+import { AddressInfo } from 'net';
 
 // --- BOOTSTRAP
 (async () => {
+  logger.info('Getting a server instance...');
+  let server: Server;
   try {
-    await Server.getInstance().start(config.NODE.PORT);
+    server = Server.getInstance();
   } catch (error) {
-    logger.error('Cannot get server instance', error);
+    logger.error(`Cannot get server instance due to ${error}`);
     process.exit(1);
   }
+
+  logger.info('Server instance obtained. Connecting database...');
+  try {
+    await Server.connectDatabase();
+  } catch (error) {
+    logger.error(`Cannot connect database due to ${error}`);
+    process.exit(1);
+  }
+
+  logger.info('Database connected. Staring the server...');
+  let addressInfo: AddressInfo;
+  try {
+    addressInfo = await server.start(config.NODE.PORT);
+  } catch (error) {
+    logger.error(`Cannot start the server due to ${error}`);
+    process.exit(1);
+  }
+
+  logger.info(`Server started. Listening at ${addressInfo.address} on port ${addressInfo.port}`);
 })();
 // --- END
 
@@ -32,7 +54,22 @@ if (process.platform === 'win32') {
 }
 
 process.on('SIGINT', async () => {
-  await Server.getInstance().stop();
+  logger.info('Stopping the server...');
+  try {
+    await Server.getInstance()!.stop();
+  } catch (error) {
+    logger.error(`Cannot stop the server due to ${error}`);
+  }
+
+  logger.info('Server stopped. Disconnecting database...');
+
+  try {
+    await Server.disconnectDatabase();
+  } catch (error) {
+    logger.error(`Cannot disconnect the database due to ${error}`);
+  }
+
+  logger.info('Exiting');
   process.exit(0);
 });
 // --- END

@@ -1,4 +1,4 @@
-import envalid, { str, host, port, bool } from 'envalid';
+import envalid, { str, host, port, bool, url } from 'envalid';
 
 /**
  * Environment variables sanitized and immutable.
@@ -8,28 +8,15 @@ const env = envalid.cleanEnv(
   {
     NODE_ENV: str({
       default: 'production',
-      devDefault: 'development',
       choices: ['production', 'development', 'test'],
     }),
     PORT: port({
       default: 80,
-      devDefault: 8000,
+      devDefault: 8080,
     }),
     // Database
-    DATABASE_USER: str({
-      devDefault: 'postgres',
-    }),
-    DATABASE_PASSWORD: str({
-      devDefault: 'password',
-    }),
-    DATABASE_HOST: host({
-      devDefault: 'localhost',
-    }),
-    DATABASE_PORT: port({
-      devDefault: 5000,
-    }),
-    DATABASE_NAME: str({
-      devDefault: 'graphqldb',
+    DATABASE_URL: url({
+      devDefault: 'postgres://postgres:@localhost:5432/graphqldb',
     }),
     DATABASE_SSL: bool({
       default: true,
@@ -41,11 +28,13 @@ const env = envalid.cleanEnv(
     }),
     DATABASE_LOGGING: bool({
       default: false,
-      devDefault: true,
     }),
     // Redis
+    REDIS_URL: url({
+      devDefault: 'redis://localhost:6379/0',
+    }),
     REDIS_PASSWORD: str({
-      devDefault: 'password',
+      devDefault: '',
     }),
     REDIS_HOST: host({
       devDefault: 'localhost',
@@ -56,7 +45,9 @@ const env = envalid.cleanEnv(
     REDIS_JWT_BLOCKLIST: str({
       default: 'JWT_BLOCKLIST',
     }),
-    JWT_SECRET: str(),
+    JWT_SECRET: str({
+      devDefault: 'secret',
+    }),
     JWT_ALGORITHM: str({
       default: 'HS256',
     }),

@@ -3,8 +3,8 @@ import http from 'http';
 import { AddressInfo } from 'net';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchemaSync } from 'type-graphql';
-import { ConnectionOptions, createConnection, getConnection, useContainer } from 'typeorm';
-import { AlreadyHasActiveConnectionError } from 'typeorm/error/AlreadyHasActiveConnectionError';
+import { Connection, ConnectionOptions, createConnection, getConnection, useContainer } from 'typeorm';
+import { ConnectionNotFoundError } from 'typeorm/error/ConnectionNotFoundError';
 import { Container } from 'typedi';
 import blacklist from 'express-jwt-blacklist';
 import config from '@app/config';
@@ -32,42 +32,38 @@ export default class Server {
    * Construct the server. Throw errors if configuration fails.
    */
   private constructor() {
-    // this.app = express();
     this.server = undefined;
-    this.configure();
 
-    logger.info('Server is ready');
-  }
+    logger.info('Configuration started. Doing preliminary checks...');
+    Server.doChecks();
 
-  /**
-   * Configure the server and services applying checks.
-   */
-  private configure(): void {
-    logger.debug('Server configuration started');
-
-    Server.configureChecks();
+    logger.info('Checks passed. Configuring services...');
     Server.configureServices();
-    this.configureServer();
 
-    logger.debug('Server configuration finished');
+    logger.info('Services configured. Configuring server...');
+    Server.configureServer();
+
+    logger.info('Configuration successful');
   }
 
   /**
-   * To allow dependency injection, the server must be instantiated
-   * before connecting to the database.
+   * Performs the preliminary checks before starting the server.
    */
-  // eslint-disable-next-line class-methods-use-this
-  private static configureChecks(): void {
-    const conn = getConnection();
-    throw new AlreadyHasActiveConnectionError(conn.name);
+  private static doChecks(): void {
+    // Make sure there is no connection to the database.
+    try {
+      getConnection();
+    } catch (error) {
+      if (error instanceof ConnectionNotFoundError) return;
+      // Probably AlreadyHasActiveConnectionError
+      throw error;
+    }
   }
 
   /**
-   * Configure application services.
+   * Configures the app services.
    */
-  // eslint-disable-next-line class-methods-use-this
   private static configureServices(): void {
-    // JWT blacklist
     blacklist.configure({
       strict: false,
       store: {
@@ -78,14 +74,12 @@ export default class Server {
   }
 
   /**
-   * Configure the server.
+   * Configure the app server.
    */
-  // eslint-disable-next-line class-methods-use-this
-  private configureServer(): void {
+  private static configureServer(): void {
     // Dependency injection
     useContainer(Container);
 
-    // Apollo server
     const server = new ApolloServer({
       schema: buildSchemaSync({
         resolvers: [path.join(__dirname, '..', config.GRAPHQL.RESOLVERS)],
@@ -104,10 +98,8 @@ export default class Server {
         return context;
       },
     });
-    logger.debug('Apollo server configured');
 
     server.applyMiddleware({ app, path: config.GRAPHQL.PATH });
-    logger.debug(`Express middleware applied to Apollo Server on path ${config.GRAPHQL.PATH}`);
   }
 
   /**
@@ -117,26 +109,58 @@ export default class Server {
    * @returns Current server instance
    */
   public static getInstance(): Server {
-    if (!Server.instance) {
-      Server.instance = new Server();
-      logger.debug('Server instantiated');
-    }
-
+    if (!Server.instance) Server.instance = new Server();
     return Server.instance;
   }
 
   /**
-   * Start the server listening for connections.
+   * Connects the database and starts the server.
    *
    * @param port - Listening port
    * @returns Server listening address information
    */
   public async start(port: number = config.NODE.PORT): Promise<AddressInfo> {
     if (this.server) {
-      logger.warn('Server is already started');
+      logger.warn(`Attempted to start the server while it was already started`);
       return this.server.address() as AddressInfo;
     }
 
+    // Test if we can get a connection. If not, error is thrown.
+    await getConnection();
+
+    return new Promise((resolve, reject) => {
+      this.server = app
+        .listen(port, () => {
+          resolve(this.server!.address() as AddressInfo);
+        })
+        .on('error', (error) => {
+          reject(error);
+        });
+    });
+  }
+
+  /**
+   *  Stops the server.
+   */
+  public async stop(): Promise<void> {
+    if (!this.server) {
+      logger.warn(`Attempted to stop the server but server was undefined`);
+      return;
+    }
+    if (!this.server!.listening) {
+      logger.warn(`Attempted to stop the server but it was not listening`);
+      return;
+    }
+
+    this.server!.close(() => {
+      this.server = undefined;
+    });
+  }
+
+  /**
+   * Connects the database.
+   */
+  public static async connectDatabase(): Promise<void> {
     await createConnection(<ConnectionOptions>{
       type: config.DATABASE.TYPE,
       url: config.DATABASE.URL,
@@ -151,55 +175,30 @@ export default class Server {
       cache: {
         type: 'ioredis',
         options: {
-          password: config.REDIS.PASSWORD,
           host: config.REDIS.HOST,
           port: config.REDIS.PORT,
+          password: config.REDIS,
         },
       },
-    });
-    logger.info('Database connected');
-
-    return new Promise((resolve, reject) => {
-      this.server = app
-        .listen(port, () => {
-          const addressInfo: AddressInfo = this.server!.address() as AddressInfo;
-          logger.info(
-            `Server started and listening at ${addressInfo.address} on port ${addressInfo.port}`,
-          );
-          resolve(addressInfo);
-        })
-        .on('error', (error) => {
-          logger.error(`Server not started due to ${error}`);
-          reject(error);
-        });
     });
   }
 
   /**
-   * Stop the server.
+   * Disconnects the database.
    */
-  public async stop(): Promise<void> {
-    if (!this.server) {
-      logger.warn('Server is not started');
-      return undefined;
+  public static async disconnectDatabase(): Promise<void> {
+    let conn: Connection;
+    try {
+      conn = getConnection();
+    } catch (error) {
+      // ConnectionNotFoundError
+      return error;
     }
 
-    // Disconnect databse
-    await getConnection().close();
-    logger.info('Database disconnected');
-
-    // Shutdown server
-    return new Promise((resolve, reject) => {
-      this.server!.close((error) => {
-        if (error) {
-          logger.error(`Server not stopped due to ${error}`);
-          reject(error);
-        }
-
-        this.server = undefined;
-        logger.info('Server stopped');
-        resolve();
-      });
-    });
+    if (!conn.isConnected) {
+      logger.warn('Attempted to disconnect the database but database is not connected');
+      return undefined;
+    }
+    return conn.close();
   }
 }

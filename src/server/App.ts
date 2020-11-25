@@ -10,7 +10,7 @@ import blacklist from 'express-jwt-blacklist';
 
 const app = express();
 
-app.use('trust proxy');
+app.enable('trust proxy');
 app.use(compression());
 app.use(cors());
 app.use(

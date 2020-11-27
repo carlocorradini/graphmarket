@@ -177,7 +177,7 @@ export default class Server {
         options: {
           host: config.REDIS.HOST,
           port: config.REDIS.PORT,
-          password: config.REDIS,
+          password: config.REDIS.PASSWORD,
         },
       },
     });

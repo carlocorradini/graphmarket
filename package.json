@@ -1,14 +1,35 @@
 {
-  "name": "graphql-template",
+  "name": "graphmarket",
   "version": "1.0.0",
-  "description": "GraphQL template",
-  "homepage": "https://github.com/carlocorradini/graphql-template",
+  "description": "Online e-commerce API in GraphQL",
+  "engines": {
+    "node": "^10.3",
+    "npm": "^6.9.0"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/carlocorradini/graphmarket",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carlocorradini/graphmarket"
+  },
   "bugs": {
-    "url": "https://github.com/carlocorradini/graphql-template/issues",
+    "url": "https://github.com/carlocorradini/graphmarket/issues",
     "email": "carlo.corradini@studenti.unitn.it"
   },
   "main": "./build/app.js",
   "private": true,
+  "author": {
+    "name": "Carlo Corradini",
+    "email": "carlo.corradini@studenti.unitn.it",
+    "url": "https://github.com/carlocorradini"
+  },
+  "contributors": [
+    {
+      "name": "Andrea Stedile",
+      "email": "andrea.stedile@studenti.unitn.it",
+      "url": "https://github.com/andreastedile"
+    }
+  ],
   "scripts": {
     "clean": "npx rimraf build docs log",
     "update": "npx ncu -u && npm install",
@@ -22,12 +43,6 @@
     "start": "node build/app.js",
     "start:dev": "npx ts-node-dev --prefer-ts true --no-notify --rs --clear --exit-child -r tsconfig-paths/register --watch src --respawn --transpile-only src/app.ts"
   },
-  "author": "Carlo Corradini",
-  "engines": {
-    "node": "^10.16.0",
-    "npm": "^6.9.0"
-  },
-  "license": "MIT",
   "dependencies": {
     "apollo-server-express": "^2.19.0",
     "bcryptjs": "^2.4.3",

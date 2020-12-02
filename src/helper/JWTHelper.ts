@@ -23,7 +23,8 @@ export default class JWTHelper {
         },
         (error, token) => {
           if (error) reject(error);
-          resolve(token);
+
+          resolve(token as string);
         },
       );
     });
@@ -39,6 +40,7 @@ export default class JWTHelper {
     return new Promise((resolve, reject) => {
       jwt.verify(token, config.JWT.SECRET, (error, decoded) => {
         if (error) reject(error);
+
         resolve(decoded as IJWT);
       });
     });

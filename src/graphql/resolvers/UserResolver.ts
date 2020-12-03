@@ -16,6 +16,9 @@ import { UserCreateInput, UserUpdateInput } from '../inputs';
 @Resolver(User)
 @Service()
 export default class UserResolver {
+  /**
+   * User service.
+   */
   @Inject()
   private readonly userService!: UserService;
 

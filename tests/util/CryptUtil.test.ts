@@ -1,55 +1,51 @@
-/* eslint-disable no-restricted-syntax */
 import CryptUtil from '../../src/utils/CryptUtil';
 
-const STRINGS: string[] = ['password', '1234', 'LongPasswordTest', 'Pa$$word1$'];
-const STRING_HASHED_LENGTH: number = 60;
-
 describe('CryptUtil testing', () => {
-  const STRINGS_HASHED_SYNC: string[] = [];
-  const STRINGS_HASHED_ASYNC: string[] = [];
-
-  beforeAll(async () => {
-    for (const s of STRINGS) {
-      STRINGS_HASHED_SYNC.push(CryptUtil.hashSync(s));
-      // eslint-disable-next-line no-await-in-loop
-      STRINGS_HASHED_ASYNC.push(await CryptUtil.hash(s));
-    }
+  test('it should hash synchronously', () => {
+    expect(CryptUtil.hashSync('password')).toBeDefined();
+    expect(CryptUtil.hashSync('password')).not.toEqual(CryptUtil.hashSync('password'));
+    expect(CryptUtil.hashSync('password')).toHaveLength(60);
   });
 
-  it('should hashed synchronously', () => {
-    for (const s of STRINGS_HASHED_SYNC) {
-      expect(s).toHaveLength(STRING_HASHED_LENGTH);
-    }
+  test('it should hashed asynchronously', async () => {
+    await expect(CryptUtil.hash('password')).resolves.not.toThrow();
+    await expect(CryptUtil.hash('password')).resolves.not.toEqual(await CryptUtil.hash('password'));
+    await expect(CryptUtil.hash('password')).resolves.toHaveLength(60);
   });
 
-  it('should hashed asynchronously', () => {
-    for (const s of STRINGS_HASHED_ASYNC) {
-      expect(s).toHaveLength(STRING_HASHED_LENGTH);
-    }
+  test('it should compare synchronously', () => {
+    const hashHello = CryptUtil.hashSync('hello');
+    const hashWorld = CryptUtil.hashSync('world');
+    const hashHelloWorld = CryptUtil.hashSync('hello world');
+
+    expect(CryptUtil.compareSync('hello', hashHello)).toBeTruthy();
+    expect(CryptUtil.compareSync('hello', hashWorld)).toBeFalsy();
+    expect(CryptUtil.compareSync('hello', hashHelloWorld)).toBeFalsy();
+
+    expect(CryptUtil.compareSync('world', hashWorld)).toBeTruthy();
+    expect(CryptUtil.compareSync('world', hashHello)).toBeFalsy();
+    expect(CryptUtil.compareSync('world', hashHelloWorld)).toBeFalsy();
+
+    expect(CryptUtil.compareSync('hello world', hashHelloWorld)).toBeTruthy();
+    expect(CryptUtil.compareSync('hello world', hashHello)).toBeFalsy();
+    expect(CryptUtil.compareSync('hello world', hashWorld)).toBeFalsy();
   });
 
-  it('should compare synchronously', () => {
-    for (const [i, s] of STRINGS_HASHED_SYNC.entries()) {
-      expect(CryptUtil.compareSync(STRINGS[i], s)).toBeTruthy();
-    }
-  });
+  test('it should compare asynchronously', async () => {
+    const hashHello = await CryptUtil.hash('hello');
+    const hashWorld = await CryptUtil.hash('world');
+    const hashHelloWorld = await CryptUtil.hash('hello world');
 
-  it('should compare asynchronously', async () => {
-    for (const [i, s] of STRINGS_HASHED_ASYNC.entries()) {
-      // eslint-disable-next-line no-await-in-loop
-      expect(await CryptUtil.compare(STRINGS[i], s)).toBeTruthy();
-    }
-  });
+    await expect(CryptUtil.compare('hello', hashHello)).resolves.toBeTruthy();
+    await expect(CryptUtil.compare('hello', hashWorld)).resolves.toBeFalsy();
+    await expect(CryptUtil.compare('hello', hashHelloWorld)).resolves.toBeFalsy();
 
-  it('should not compare synchronously', () => {
-    for (const s of STRINGS_HASHED_SYNC) {
-      expect(CryptUtil.compareSync('', s)).toBeFalsy();
-    }
-  });
+    await expect(CryptUtil.compare('world', hashWorld)).resolves.toBeTruthy();
+    await expect(CryptUtil.compare('world', hashHello)).resolves.toBeFalsy();
+    await expect(CryptUtil.compare('world', hashHelloWorld)).resolves.toBeFalsy();
 
-  it('should not compare asynchronously', () => {
-    for (const s of STRINGS_HASHED_ASYNC) {
-      expect(CryptUtil.compareSync('', s)).toBeFalsy();
-    }
+    await expect(CryptUtil.compare('hello world', hashHelloWorld)).resolves.toBeTruthy();
+    await expect(CryptUtil.compare('hello world', hashHello)).resolves.toBeFalsy();
+    await expect(CryptUtil.compare('hello world', hashWorld)).resolves.toBeFalsy();
   });
 });

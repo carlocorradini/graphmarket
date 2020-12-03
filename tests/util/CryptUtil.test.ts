@@ -7,7 +7,7 @@ describe('CryptUtil testing', () => {
     expect(CryptUtil.hashSync('password')).toHaveLength(60);
   });
 
-  test('it should hashed asynchronously', async () => {
+  test('it should hash asynchronously', async () => {
     await expect(CryptUtil.hash('password')).resolves.not.toThrow();
     await expect(CryptUtil.hash('password')).resolves.not.toEqual(await CryptUtil.hash('password'));
     await expect(CryptUtil.hash('password')).resolves.toHaveLength(60);

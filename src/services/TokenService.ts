@@ -53,9 +53,28 @@ export default class TokenService {
     });
   }
 
-  // TODO comments
+  /**
+   * Revoke the token.
+   *
+   * @param token - Token to revoke
+   * @returns True if revoked, false otherwise
+   */
   public async revoke(token: IJWT): Promise<boolean>;
+
+  /**
+   * Revoke the token identified by token identifier.
+   *
+   * @param tokenId - Token identifier
+   * @returns True if revoked, false otherwise
+   */
   public async revoke(tokenId: string): Promise<boolean>;
+
+  /**
+   * Revoke the token.
+   *
+   * @param tokenOrTokenId - Token or token identifier
+   * @returns True if revoked, false otherwise
+   */
   public async revoke(tokenOrTokenId: IJWT | string): Promise<boolean> {
     const token: IJWT =
       typeof tokenOrTokenId !== 'string' ? tokenOrTokenId : ({ sub: tokenOrTokenId } as IJWT);
@@ -71,9 +90,28 @@ export default class TokenService {
     });
   }
 
-  // TODO comments
+  /**
+   * Purge all tokens before token (inclusive).
+   *
+   * @param token - Token to purge
+   * @returns True if purged, false otherwise
+   */
   public async purge(token: IJWT): Promise<boolean>;
+
+  /**
+   * Purge all tokens before token (inclusive) identified by token identifier.
+   *
+   * @param tokenId - Token identifier to purge
+   * @returns True if purged, false otherwise
+   */
   public async purge(tokenId: string): Promise<boolean>;
+
+  /**
+   * Purge all tokens before token (inclusive).
+   *
+   * @param tokenOrTokenId - Token or token identifier to purge
+   * @returns True if purged, false otherwise
+   */
   public async purge(tokenOrTokenId: IJWT | string): Promise<boolean> {
     const token: IJWT =
       typeof tokenOrTokenId !== 'string' ? tokenOrTokenId : ({ sub: tokenOrTokenId } as IJWT);

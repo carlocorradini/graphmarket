@@ -1,9 +1,12 @@
 import { Connection } from 'typeorm';
 import { isEmail, isISO8601, isPhoneNumber, isUUID, isDate } from 'class-validator';
 import faker from 'faker';
+import Container from 'typedi';
 import createTestConnection from '../../createTestConnection';
 import graphqlTestCall from '../../graphqlTestCall';
 import User, { UserGenders, UserRoles } from '../../../src/entities/User';
+import { UserCreateInput } from '../../../src/graphql/inputs/user';
+import { UserService } from '../../../src/services';
 
 const MUTATION_CREATE_USER = `
   mutation CreateUser(
@@ -68,6 +71,7 @@ const QUERY_ME = `
 `;
 
 describe('UserResolver testing', () => {
+  const userService: UserService = Container.get(UserService);
   let conn: Connection;
 
   beforeAll(async () => {
@@ -79,12 +83,12 @@ describe('UserResolver testing', () => {
   });
 
   test('it should create a user with minimum parameters', async () => {
-    const user: User = conn.manager.create(User, {
+    const user: UserCreateInput = {
       username: faker.internet.userName(),
       password: faker.internet.password(8),
       email: faker.internet.email(),
       phone: faker.phone.phoneNumber('+393#########'),
-    });
+    };
     const response = await graphqlTestCall(MUTATION_CREATE_USER, user);
 
     expect(response).toBeDefined();
@@ -130,16 +134,16 @@ describe('UserResolver testing', () => {
   });
 
   test('it should create a user with maximum parameters', async () => {
-    const user: User = conn.manager.create(User, {
+    const user: Required<UserCreateInput> = {
       username: faker.internet.userName(),
       password: faker.internet.password(8),
       name: faker.name.firstName(),
       surname: faker.name.lastName(),
       gender: UserGenders.OTHER,
-      dateOfBirth: faker.date.past().toISOString().split('T')[0],
+      dateOfBirth: (faker.date.past().toISOString().split('T')[0] as unknown) as Date,
       email: faker.internet.email(),
       phone: faker.phone.phoneNumber('+393#########'),
-    });
+    };
     const response = await graphqlTestCall(MUTATION_CREATE_USER, user);
 
     expect(response).toBeDefined();
@@ -189,22 +193,16 @@ describe('UserResolver testing', () => {
     expect(isDate(data!.updatedAt)).toBeTruthy();
   });
 
-  test('it should return current authenticated user', async () => {
-    const user: User = conn.manager.create(User, {
+  test('it should return authenticated user', async () => {
+    const user: UserCreateInput = {
       username: faker.internet.userName(),
       password: faker.internet.password(8),
       email: faker.internet.email(),
       phone: faker.phone.phoneNumber('+393#########'),
-    });
+    };
+    const { id } = await userService.create(user);
+    const response = await graphqlTestCall(QUERY_ME, {}, { id });
 
-    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
-    expect(response).toBeDefined();
-    expect(response.errors).toBeUndefined();
-    expect(response.data).toBeDefined();
-    expect(response.data!.createUser).toBeDefined();
-    user.id = response.data!.createUser.id;
-
-    response = await graphqlTestCall(QUERY_ME, {}, { id: user.id });
     expect(response).toBeDefined();
     expect(response.errors).toBeUndefined();
     expect(response.data).toBeDefined();
@@ -214,7 +212,7 @@ describe('UserResolver testing', () => {
 
     expect(data!.id).toBeDefined();
     expect(isUUID(data!.id)).toBeTruthy();
-    expect(data!.id).toStrictEqual(user.id);
+    expect(data!.id).toStrictEqual(id);
 
     expect(data!.username).toBeDefined();
     expect(data!.username).toStrictEqual(user.username);

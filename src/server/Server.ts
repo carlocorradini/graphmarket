@@ -81,6 +81,7 @@ export default class Server {
    */
   // eslint-disable-next-line class-methods-use-this
   private configureServices(): void {
+    // TODO strict che cazzo e'
     // JWT blacklist
     blacklist.configure({
       strict: false,

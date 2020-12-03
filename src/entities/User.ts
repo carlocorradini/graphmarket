@@ -101,7 +101,7 @@ registerEnumType(UserGenders, { name: 'UserGenders' });
 export enum UserRoles {
   USER = 'USER',
   MODERATOR = 'MODERATOR',
-  ADMIN = 'ADMIN',
+  ADMINISTRATOR = 'ADMINISTRATOR',
 }
 registerEnumType(UserRoles, { name: 'UserRoles' });
 

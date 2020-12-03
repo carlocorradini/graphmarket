@@ -4,7 +4,7 @@ import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 
 import { UserCreateInput, UserUpdateInput } from '@app/graphql';
 import { User } from '@app/entities';
 import logger from '@app/logger';
-import { CryptUtil } from '@app/util';
+import { CryptUtil } from '@app/utils';
 import { AuthenticationError } from '@app/error';
 import TokenService from './TokenService';
 

@@ -7,6 +7,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  Check,
 } from 'typeorm';
 import {
   GraphQLNonEmptyString,
@@ -15,7 +16,7 @@ import {
   GraphQLEmailAddress,
   GraphQLPhoneNumber,
 } from '@app/graphql/scalars';
-import { CryptUtil } from '@app/util';
+import { CryptUtil } from '@app/utils';
 
 /**
  * User genders.
@@ -110,6 +111,7 @@ registerEnumType(UserRoles, { name: 'UserRoles' });
  * User entity.
  */
 @Entity('user')
+@Check(`length("password") = 60`)
 @ObjectType()
 export default class User {
   /**
@@ -131,7 +133,7 @@ export default class User {
    * User's password.
    */
   @Column({
-    length: 72,
+    type: 'bytea',
     select: false,
     transformer: {
       to: (value) => (value ? CryptUtil.hashSync(value) : undefined),

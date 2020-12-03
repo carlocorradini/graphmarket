@@ -15,7 +15,7 @@ import config from '@app/config';
 import logger from '@app/logger';
 import { IContext } from '@app/types';
 import { AuthorizationMiddleware } from '@app/middlewares';
-import { EnvUtil } from '@app/util';
+import { EnvUtil } from '@app/utils';
 
 /**
  * Application Server.

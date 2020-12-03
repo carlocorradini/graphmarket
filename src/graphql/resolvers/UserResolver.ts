@@ -114,7 +114,7 @@ export default class UserResolver {
    *
    * @param ctx - Request context
    */
-  @Mutation(() => GraphQLVoid)
+  @Mutation(() => GraphQLVoid, { nullable: true })
   @Authorized()
   signOut(@Ctx() ctx: IContext): Promise<void> {
     return this.userService.signOut(ctx.user!.id);

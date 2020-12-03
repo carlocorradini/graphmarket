@@ -167,7 +167,7 @@ export default class UserService {
       throw new AuthenticationError();
     }
 
-    logger.info(`Sign in procedure successed for user ${user.id}`);
+    logger.info(`Sign in procedure succeeded for user ${user.id}`);
 
     return this.tokenService.sign({ id: user.id, roles: user.roles });
   }
@@ -182,6 +182,6 @@ export default class UserService {
     // Revoke token
     this.tokenService.revoke(id);
 
-    logger.info(`Sign out procedure successed for user ${id}`);
+    logger.info(`Sign out procedure succeeded for user ${id}`);
   }
 }

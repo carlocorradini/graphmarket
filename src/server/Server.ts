@@ -84,7 +84,7 @@ export default class Server {
     // TODO strict che cazzo e'
     // JWT blacklist
     blacklist.configure({
-      strict: false,
+      strict: true,
       store: {
         type: 'redis',
         url: config.REDIS.URL,

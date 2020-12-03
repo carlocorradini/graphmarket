@@ -81,10 +81,10 @@ export default class Server {
    */
   // eslint-disable-next-line class-methods-use-this
   private configureServices(): void {
-    // TODO strict che cazzo e'
+    // TODO strict ????
     // JWT blacklist
     blacklist.configure({
-      strict: true,
+      strict: false,
       store: {
         type: 'redis',
         url: config.REDIS.URL,

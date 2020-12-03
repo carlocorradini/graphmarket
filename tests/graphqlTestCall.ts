@@ -3,6 +3,7 @@ import { buildSchemaSync } from 'type-graphql';
 import { Container } from 'typedi';
 import { UserResolver } from '../src/graphql/resolvers';
 import { AuthorizationMiddleware } from '../src/middlewares';
+import { IJWT } from '../src/types';
 
 const schema = buildSchemaSync({
   resolvers: [UserResolver],
@@ -10,8 +11,16 @@ const schema = buildSchemaSync({
   container: Container,
 });
 
-const graphqlTestCall = async (query: any, variables?: any) => {
-  return graphql(schema, query, undefined, {}, variables);
+const graphqlTestCall = async (query: any, variables?: any, token?: Partial<IJWT>) => {
+  return graphql(
+    schema,
+    query,
+    undefined,
+    {
+      user: token,
+    },
+    variables,
+  );
 };
 
 export default graphqlTestCall;

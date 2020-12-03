@@ -13,6 +13,7 @@ import {
   GraphQLDate,
   GraphQLDateTime,
   GraphQLEmailAddress,
+  GraphQLPhoneNumber,
 } from '@app/graphql/scalars';
 import { CryptUtil } from '@app/util';
 
@@ -150,7 +151,6 @@ export default class User {
    * User's name.
    */
   @Column({
-    type: 'varchar',
     length: 64,
     nullable: true,
     default: undefined,
@@ -166,7 +166,6 @@ export default class User {
    * User's surname.
    */
   @Column({
-    type: 'varchar',
     length: 64,
     nullable: true,
     default: undefined,
@@ -181,9 +180,9 @@ export default class User {
   /**
    * User's gender.
    */
-  @Column({ type: 'enum', enum: UserGenders })
-  @Field(() => UserGenders)
-  gender!: UserGenders;
+  @Column({ type: 'enum', enum: UserGenders, nullable: true, default: undefined })
+  @Field(() => UserGenders, { nullable: true })
+  gender?: UserGenders;
 
   /**
    * User's date of birth.
@@ -198,6 +197,13 @@ export default class User {
   @Column({ length: 128, unique: true, update: false })
   @Field(() => GraphQLEmailAddress)
   email!: string;
+
+  /**
+   * User's phone.
+   */
+  @Column({ length: 16, unique: true, update: false })
+  @Field(() => GraphQLPhoneNumber)
+  phone!: string;
 
   /**
    * User creation date and time.

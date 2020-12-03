@@ -1,6 +1,6 @@
 import { Field, InputType } from 'type-graphql';
 import { Length } from 'class-validator';
-import { User } from '@app/entities';
+import User, { UserGenders } from '@app/entities/User';
 import { GraphQLDate, GraphQLNonEmptyString } from '@app/graphql/scalars';
 
 /**
@@ -28,6 +28,12 @@ export default class UserUpdateInput implements Partial<User> {
   @Field(() => GraphQLNonEmptyString, { nullable: true })
   @Length(1, 64)
   surname?: string;
+
+  /**
+   * User's gender.
+   */
+  @Field(() => UserGenders, { nullable: true })
+  gender?: UserGenders;
 
   /**
    * User's date of birth.

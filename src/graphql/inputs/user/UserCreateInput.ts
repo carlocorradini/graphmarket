@@ -1,7 +1,12 @@
 import { Field, InputType } from 'type-graphql';
 import { Length } from 'class-validator';
 import User, { UserGenders } from '@app/entities/User';
-import { GraphQLDate, GraphQLEmailAddress, GraphQLNonEmptyString } from '@app/graphql/scalars';
+import {
+  GraphQLDate,
+  GraphQLEmailAddress,
+  GraphQLNonEmptyString,
+  GraphQLPhoneNumber,
+} from '@app/graphql/scalars';
 
 /**
  * User creation input.
@@ -39,8 +44,8 @@ export default class UserCreateInput implements Partial<User> {
   /**
    * User's gender.
    */
-  @Field(() => UserGenders)
-  gender!: UserGenders;
+  @Field(() => UserGenders, { nullable: true })
+  gender?: UserGenders;
 
   /**
    * User's date of birth.
@@ -53,4 +58,10 @@ export default class UserCreateInput implements Partial<User> {
    */
   @Field(() => GraphQLEmailAddress)
   email!: string;
+
+  /**
+   * User's phone.
+   */
+  @Field(() => GraphQLPhoneNumber)
+  phone!: string;
 }

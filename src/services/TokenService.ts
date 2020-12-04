@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import jwt from 'jsonwebtoken';
-import blacklist from 'express-jwt-blacklist';
+// TODO
+// import blacklist from 'express-jwt-blacklist';
 import config from '@app/config';
 import logger from '@app/logger';
 import { IJWT, IJWTPayload } from '@app/types';
@@ -76,7 +77,8 @@ export default class TokenService {
    * @returns True if revoked, false otherwise
    */
   public async revoke(tokenOrTokenId: IJWT | string): Promise<boolean> {
-    const token: IJWT =
+    // TODO
+    /* const token: IJWT =
       typeof tokenOrTokenId !== 'string' ? tokenOrTokenId : ({ sub: tokenOrTokenId } as IJWT);
 
     return new Promise((resolve, reject) => {
@@ -87,7 +89,9 @@ export default class TokenService {
 
         resolve(revoked);
       });
-    });
+    }); */
+    logger.info(typeof tokenOrTokenId === 'string');
+    return true;
   }
 
   /**
@@ -113,7 +117,8 @@ export default class TokenService {
    * @returns True if purged, false otherwise
    */
   public async purge(tokenOrTokenId: IJWT | string): Promise<boolean> {
-    const token: IJWT =
+    // TODO
+    /* const token: IJWT =
       typeof tokenOrTokenId !== 'string' ? tokenOrTokenId : ({ sub: tokenOrTokenId } as IJWT);
 
     return new Promise((resolve, reject) => {
@@ -124,6 +129,8 @@ export default class TokenService {
 
         resolve(purged);
       });
-    });
+    }); */
+    logger.info(typeof tokenOrTokenId === 'string');
+    return true;
   }
 }

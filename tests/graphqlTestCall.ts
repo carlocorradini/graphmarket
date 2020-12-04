@@ -1,9 +1,11 @@
-import { graphql } from 'graphql';
+import { graphql, Source } from 'graphql';
 import { buildSchemaSync } from 'type-graphql';
 import { Container } from 'typedi';
 import { UserResolver } from '../src/graphql/resolvers';
 import { AuthorizationMiddleware } from '../src/middlewares';
 import { IJWT } from '../src/types';
+
+export type Maybe<T> = null | undefined | T;
 
 const schema = buildSchemaSync({
   resolvers: [UserResolver],
@@ -11,10 +13,14 @@ const schema = buildSchemaSync({
   container: Container,
 });
 
-const graphqlTestCall = async (query: any, variables?: any, token?: Partial<IJWT>) => {
+const graphqlTestCall = async (
+  source: Source | string,
+  variables?: Maybe<{ [key: string]: any }>,
+  token?: Partial<IJWT>,
+) => {
   return graphql(
     schema,
-    query,
+    source,
     undefined,
     {
       user: token,

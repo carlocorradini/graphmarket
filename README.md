@@ -1,6 +1,6 @@
 # Graph Market
 
-## Online e-commerce API in GraphQL
+### Online e-commerce API in GraphQL
 
 [![CI](https://github.com/carlocorradini/graphmarket/workflows/CI/badge.svg)](https://github.com/carlocorradini/graphmarket/actions)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/eab19cd392424e41afec10b001aaeadd)](https://www.codacy.com/gh/carlocorradini/graphmarket/dashboard?utm_source=github.com&utm_medium=referral&utm_content=carlocorradini/graphmarket&utm_campaign=Badge_Grade)

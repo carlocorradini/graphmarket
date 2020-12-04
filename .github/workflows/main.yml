@@ -10,16 +10,15 @@ on:
 
 jobs:
   build:
-    name: Test on node ${{ matrix.node }} and ${{ matrix.os }}
+    name: Test on node ${{ matrix.node }}
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     container: node:${{ matrix.node }}-jessie
 
     strategy:
       matrix:
         node: [10, 12, 14]
-        os: [ubuntu-latest]
 
      services:
       postgres:
@@ -32,6 +31,15 @@ jobs:
           POSTGRES_DB: graphmarket-test
         options: >-
           --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        # Docker Hub image
+        image: redis
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5

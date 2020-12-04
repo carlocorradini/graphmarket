@@ -29,7 +29,7 @@ jobs:
           POSTGRES_PASSWORD: password
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
-          POSTGRES_DB: graphmarket
+          POSTGRES_DB: graphmarket-test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -53,7 +53,7 @@ jobs:
       - name: Testing
         run: npm test
         env:
-          DATABASE_URL: postgres://postgres:password@localhost:5432/graphmarket
+          DATABASE_URL: postgres://postgres:password@localhost:5432/graphmarket-test
       - name: Generate coverage
         run: npm run coverage
       - name: Upload coverage

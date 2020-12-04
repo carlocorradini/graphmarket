@@ -21,8 +21,8 @@ const logger = createLogger({
   ),
   transports: [
     fileTransport,
-    // Remove unnecessary transports in production
-    ...(EnvUtil.isProduction() ? [] : [consoleTransport]),
+    // Remove console transport if not in development
+    ...(EnvUtil.isProduction() || EnvUtil.isTest() ? [] : [consoleTransport]),
   ],
 });
 

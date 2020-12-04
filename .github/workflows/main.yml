@@ -34,6 +34,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 6379:6379
 
     steps:
       - name: Checkout main
@@ -48,6 +50,7 @@ jobs:
         run: npm test
         env:
           DATABASE_URL: postgres://postgres:password@localhost:5432/graphmarket-test
+          REDIS_URL: redis://:@localhost:6379/0
       - name: Generate coverage
         run: npm run coverage
       - name: Upload coverage

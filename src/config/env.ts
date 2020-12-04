@@ -1,4 +1,9 @@
-import envalid, { str, port, bool, url } from 'envalid';
+import envalid, { str, port, bool, url, num } from 'envalid';
+
+/**
+ * One week in seconds
+ */
+const ONE_WEEK_IN_SECONDS: number = 60 * 60 * 24 * 7;
 
 /**
  * Environment variables sanitized and immutable.
@@ -16,7 +21,7 @@ const env = envalid.cleanEnv(
     REDIS_JWT_BLOCKLIST: str({ default: 'JWT_BLOCKLIST' }),
     JWT_SECRET: str(),
     JWT_ALGORITHM: str({ default: 'HS256' }),
-    JWT_EXPIRATION_TIME: str({ default: '7d' }),
+    JWT_EXPIRATION_TIME: num({ default: ONE_WEEK_IN_SECONDS }),
     GRAPHQL_PATH: str({ default: '/graphql' }),
     GRAPHQL_PLAYGROUND: bool({ default: false, devDefault: true }),
   },

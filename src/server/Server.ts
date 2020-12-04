@@ -15,7 +15,7 @@ import config from '@app/config';
 import logger from '@app/logger';
 import { IContext } from '@app/types';
 import { AuthorizationMiddleware } from '@app/middlewares';
-import { EnvUtil } from '@app/util';
+import { EnvUtil } from '@app/utils';
 
 /**
  * Application Server.
@@ -81,6 +81,7 @@ export default class Server {
    */
   // eslint-disable-next-line class-methods-use-this
   private configureServices(): void {
+    // TODO strict ????
     // JWT blacklist
     blacklist.configure({
       strict: false,

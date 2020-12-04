@@ -178,6 +178,7 @@ export default class Server {
         ssl: config.DATABASE.SSL,
       },
       synchronize: config.DATABASE.SYNCHRONIZE,
+      dropSchema: config.DATABASE.DROP_SCHEMA,
       logging: config.DATABASE.LOGGING,
       entities: [path.join(__dirname, '..', config.DATABASE.ENTITIES)],
       migrations: [path.join(__dirname, '..', config.DATABASE.MIGRATIONS)],

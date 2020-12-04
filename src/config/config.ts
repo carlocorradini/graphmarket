@@ -17,6 +17,7 @@ const config: IConfig = {
     URL: env.DATABASE_URL,
     SSL: env.DATABASE_SSL,
     SYNCHRONIZE: env.DATABASE_SYNCHRONIZE,
+    DROP_SCHEMA: env.DATABASE_DROP_SCHEMA,
     LOGGING: env.DATABASE_LOGGING,
     ENTITIES: 'entities/**/*.{ts,js}',
     MIGRATIONS: 'migration/**/*.{ts,js}',

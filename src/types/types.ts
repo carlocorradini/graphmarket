@@ -14,6 +14,7 @@ export interface IConfig {
     readonly URL: string;
     readonly SSL: boolean;
     readonly SYNCHRONIZE: boolean;
+    readonly DROP_SCHEMA: boolean;
     readonly LOGGING: boolean;
     readonly ENTITIES: string;
     readonly MIGRATIONS: string;

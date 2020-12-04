@@ -13,10 +13,12 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
+      database:
         image: postgres
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: graphmarket-test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -46,16 +48,13 @@ jobs:
       - name: Testing
         run: npm test
         env:
-          # Postgres
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: password
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
-          POSTGRES_DB: postgres
-          # Redis
+          POSTGRES_DB: graphmarket-test
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-          # JWT
           JWT_SECRET: 'password'
       - name: Generate coverage
         run: npm run coverage

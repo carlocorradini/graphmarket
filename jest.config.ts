@@ -5,6 +5,7 @@ const config: Config.InitialOptions = {
   roots: ['<rootDir>/tests'],
   preset: 'ts-jest',
   testEnvironment: 'node',
+  testTimeout: 10000,
   globalSetup: './tests/globalSetup.ts',
   globalTeardown: './tests/globalTeardown.ts',
   globals: {

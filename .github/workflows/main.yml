@@ -38,11 +38,6 @@ jobs:
     steps:
       - name: Checkout main
         uses: actions/checkout@v2
-      - name: Use node ${{ matrix.node }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node }}
-          registry-url: https://registry.npmjs.org/
       - name: Install dependencies
         run: npm ci
       - name: Linting

@@ -6,6 +6,7 @@ const config: Config.InitialOptions = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testTimeout: 10000,
+  silent: true,
   globalSetup: './tests/globalSetup.ts',
   globalTeardown: './tests/globalTeardown.ts',
   globals: {

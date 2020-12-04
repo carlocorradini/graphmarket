@@ -35,6 +35,7 @@
     "update": "npx ncu -u && npm install",
     "lint": "npx eslint --ext .ts \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\"",
     "test": "jest --no-watchman",
+    "coverage": "jest --coverage",
     "predocs": "npm run clean",
     "docs": "npx typedoc",
     "prebuild": "npm run clean",

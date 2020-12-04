@@ -49,9 +49,8 @@ jobs:
         run: npm test
         env:
           DATABASE_URL: postgres://postgres:password@localhost:5432/graphmarket-test
-          REDIS_HOST: localhost
-          REDIS_PORT: 6379
-          JWT_SECRET: 'password'
+          REDIS_URL: redis://:@localhost:6379/1
+          JWT_SECRET: password
       - name: Generate coverage
         run: npm run coverage
       - name: Upload coverage

@@ -14,7 +14,7 @@ jobs:
     container: node:14-alpine
 
     services:
-      postgres:
+      database:
         image: postgres
         env:
           POSTGRES_USER: postgres

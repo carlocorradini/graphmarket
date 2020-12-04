@@ -13,6 +13,6 @@ export default class UnauthorizedError extends Error {
   constructor() {
     super();
     Object.setPrototypeOf(this, UnauthorizedError.prototype);
-    this.message = 'Insufficient permissions to execute the operation';
+    this.message = 'Insufficient permissions to execute the procedure';
   }
 }

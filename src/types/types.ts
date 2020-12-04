@@ -29,7 +29,7 @@ export interface IConfig {
   readonly JWT: {
     readonly SECRET: string;
     readonly ALGORITHM: string;
-    readonly EXPIRATION_TIME: string;
+    readonly EXPIRATION_TIME: number;
   };
   readonly GRAPHQL: {
     readonly PATH: string;

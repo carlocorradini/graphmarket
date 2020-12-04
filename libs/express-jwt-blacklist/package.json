@@ -1,0 +1,29 @@
+{
+  "name": "express-jwt-blacklist",
+  "version": "1.1.0",
+  "description": "express-jwt plugin for token blacklisting",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha test/",
+    "test:integration": "mocha test/integration/"
+  },
+  "keywords": [
+    "express",
+    "jwt",
+    "express-jwt",
+    "jsonwebtoken",
+    "blacklist",
+    "session"
+  ],
+  "author": "Nil Gradisnik <nil@layer.com>",
+  "license": "Apache-2.0",
+  "repository": "layerhq/express-jwt-blacklist",
+  "dependencies": {
+    "memcached": "^2.2.1",
+    "redis": "^2.5.3"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.4",
+    "should": "^8.0.1"
+  }
+}

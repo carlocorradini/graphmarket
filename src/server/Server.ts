@@ -3,7 +3,13 @@ import http from 'http';
 import { AddressInfo } from 'net';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchemaSync } from 'type-graphql';
-import { Connection, ConnectionOptions, createConnection, getConnection, useContainer } from 'typeorm';
+import {
+  Connection,
+  ConnectionOptions,
+  createConnection,
+  getConnection,
+  useContainer,
+} from 'typeorm';
 import { ConnectionNotFoundError } from 'typeorm/error/ConnectionNotFoundError';
 import { Container } from 'typedi';
 import blacklist from 'express-jwt-blacklist';
@@ -11,8 +17,8 @@ import config from '@app/config';
 import logger from '@app/logger';
 import { IContext } from '@app/types';
 import { AuthorizationMiddleware } from '@app/middlewares';
-import { EnvUtil } from '@app/util';
 import app from '@app/server/App';
+import { EnvUtil } from '@app/utils';
 
 /**
  * Application Server.
@@ -64,6 +70,8 @@ export default class Server {
    * Configures the app services.
    */
   private static configureServices(): void {
+    // TODO strict ????
+    // JWT blacklist
     blacklist.configure({
       strict: false,
       store: {

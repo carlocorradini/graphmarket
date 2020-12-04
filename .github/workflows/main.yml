@@ -10,23 +10,35 @@ on:
 
 jobs:
   build:
-    name: Test on node ${{ matrix.node }} and ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    container: node:14-alpine
 
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        node: [10, 12, 14]
-        os: [ubuntu-latest, macos-latest, windows-latest]
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: graphmarket-test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
 
     steps:
       - name: Checkout main
         uses: actions/checkout@v2
-      - name: Use node ${{ matrix.node }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node }}
-          registry-url: https://registry.npmjs.org/
       - name: Install dependencies
         run: npm ci
       - name: Linting
@@ -35,3 +47,17 @@ jobs:
         run: npm run build
       - name: Testing
         run: npm test
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          DATABASE_URL: 'postgres://postgres:password@localhost:5432/graphmarket-test'
+          REDIS_URL: 'redis://:@localhost:6379/0'
+          JWT_SECRET: 'password'
+      - name: Generate coverage
+        run: npm run coverage
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          verbose: true

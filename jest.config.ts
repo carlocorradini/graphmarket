@@ -1,7 +1,12 @@
-module.exports = {
+import type { Config } from '@jest/types';
+
+const config: Config.InitialOptions = {
+  verbose: true,
   roots: ['<rootDir>/tests'],
   preset: 'ts-jest',
   testEnvironment: 'node',
+  globalSetup: './tests/globalSetup.ts',
+  globalTeardown: './tests/globalTeardown.ts',
   globals: {
     'ts-jest': {
       compiler: 'ttypescript',
@@ -12,3 +17,5 @@ module.exports = {
     '^.+\\.ts$': 'ts-jest',
   },
 };
+
+export default config;

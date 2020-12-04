@@ -1,5 +1,5 @@
 import { createLogger, format } from 'winston';
-import { EnvUtil } from '@app/util';
+import { EnvUtil } from '@app/utils';
 import { consoleTransport, fileTransport } from './transports';
 
 /**

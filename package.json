@@ -34,7 +34,7 @@
     "clean": "npx rimraf build docs log",
     "update": "npx ncu -u && npm install",
     "lint": "npx eslint --ext .ts \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\"",
-    "test": "jest --forceExit --no-watchman --detectOpenHandles",
+    "test": "jest --no-watchman",
     "predocs": "npm run clean",
     "docs": "npx typedoc",
     "prebuild": "npm run clean",

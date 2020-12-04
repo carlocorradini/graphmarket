@@ -1,51 +1,62 @@
+import faker from 'faker';
 import CryptUtil from '../../src/utils/CryptUtil';
 
 describe('CryptUtil testing', () => {
   test('it should hash synchronously', () => {
-    expect(CryptUtil.hashSync('password')).toBeDefined();
-    expect(CryptUtil.hashSync('password')).not.toEqual(CryptUtil.hashSync('password'));
-    expect(CryptUtil.hashSync('password')).toHaveLength(60);
+    const password: string = faker.internet.password(16);
+
+    expect(CryptUtil.hashSync(password)).toBeDefined();
+    expect(CryptUtil.hashSync(password)).not.toEqual(CryptUtil.hashSync(password));
+    expect(CryptUtil.hashSync(password)).toHaveLength(60);
   });
 
   test('it should hash asynchronously', async () => {
-    await expect(CryptUtil.hash('password')).resolves.not.toThrow();
-    await expect(CryptUtil.hash('password')).resolves.not.toEqual(await CryptUtil.hash('password'));
-    await expect(CryptUtil.hash('password')).resolves.toHaveLength(60);
+    const password: string = faker.internet.password(16);
+
+    await expect(CryptUtil.hash(password)).resolves.not.toThrow();
+    await expect(CryptUtil.hash(password)).resolves.not.toEqual(await CryptUtil.hash(password));
+    await expect(CryptUtil.hash(password)).resolves.toHaveLength(60);
   });
 
   test('it should compare synchronously', () => {
-    const hashHello = CryptUtil.hashSync('hello');
-    const hashWorld = CryptUtil.hashSync('world');
-    const hashHelloWorld = CryptUtil.hashSync('hello world');
+    const password1 = faker.internet.password(16);
+    const password1Hash = CryptUtil.hashSync(password1);
+    const password2 = faker.internet.password(16);
+    const password2Hash = CryptUtil.hashSync(password2);
+    const password1And2 = `${password1} ${password2}`;
+    const password1And2Hash = CryptUtil.hashSync(password1And2);
 
-    expect(CryptUtil.compareSync('hello', hashHello)).toBeTruthy();
-    expect(CryptUtil.compareSync('hello', hashWorld)).toBeFalsy();
-    expect(CryptUtil.compareSync('hello', hashHelloWorld)).toBeFalsy();
+    expect(CryptUtil.compareSync(password1, password1Hash)).toBeTruthy();
+    expect(CryptUtil.compareSync(password1, password2Hash)).toBeFalsy();
+    expect(CryptUtil.compareSync(password1, password1And2Hash)).toBeFalsy();
 
-    expect(CryptUtil.compareSync('world', hashWorld)).toBeTruthy();
-    expect(CryptUtil.compareSync('world', hashHello)).toBeFalsy();
-    expect(CryptUtil.compareSync('world', hashHelloWorld)).toBeFalsy();
+    expect(CryptUtil.compareSync(password2, password2Hash)).toBeTruthy();
+    expect(CryptUtil.compareSync(password2, password1Hash)).toBeFalsy();
+    expect(CryptUtil.compareSync(password2, password1And2Hash)).toBeFalsy();
 
-    expect(CryptUtil.compareSync('hello world', hashHelloWorld)).toBeTruthy();
-    expect(CryptUtil.compareSync('hello world', hashHello)).toBeFalsy();
-    expect(CryptUtil.compareSync('hello world', hashWorld)).toBeFalsy();
+    expect(CryptUtil.compareSync(password1And2, password1And2Hash)).toBeTruthy();
+    expect(CryptUtil.compareSync(password1And2, password1Hash)).toBeFalsy();
+    expect(CryptUtil.compareSync(password1And2, password2Hash)).toBeFalsy();
   });
 
   test('it should compare asynchronously', async () => {
-    const hashHello = await CryptUtil.hash('hello');
-    const hashWorld = await CryptUtil.hash('world');
-    const hashHelloWorld = await CryptUtil.hash('hello world');
+    const password1 = faker.internet.password(16);
+    const password1Hash = await CryptUtil.hash(password1);
+    const password2 = faker.internet.password(16);
+    const password2Hash = await CryptUtil.hash(password2);
+    const password1And2 = `${password1} ${password2}`;
+    const password1And2Hash = await CryptUtil.hash(password1And2);
 
-    await expect(CryptUtil.compare('hello', hashHello)).resolves.toBeTruthy();
-    await expect(CryptUtil.compare('hello', hashWorld)).resolves.toBeFalsy();
-    await expect(CryptUtil.compare('hello', hashHelloWorld)).resolves.toBeFalsy();
+    await expect(CryptUtil.compare(password1, password1Hash)).resolves.toBeTruthy();
+    await expect(CryptUtil.compare(password1, password2Hash)).resolves.toBeFalsy();
+    await expect(CryptUtil.compare(password1, password1And2Hash)).resolves.toBeFalsy();
 
-    await expect(CryptUtil.compare('world', hashWorld)).resolves.toBeTruthy();
-    await expect(CryptUtil.compare('world', hashHello)).resolves.toBeFalsy();
-    await expect(CryptUtil.compare('world', hashHelloWorld)).resolves.toBeFalsy();
+    await expect(CryptUtil.compare(password2, password2Hash)).resolves.toBeTruthy();
+    await expect(CryptUtil.compare(password2, password1Hash)).resolves.toBeFalsy();
+    await expect(CryptUtil.compare(password2, password1And2Hash)).resolves.toBeFalsy();
 
-    await expect(CryptUtil.compare('hello world', hashHelloWorld)).resolves.toBeTruthy();
-    await expect(CryptUtil.compare('hello world', hashHello)).resolves.toBeFalsy();
-    await expect(CryptUtil.compare('hello world', hashWorld)).resolves.toBeFalsy();
+    await expect(CryptUtil.compare(password1And2, password1And2Hash)).resolves.toBeTruthy();
+    await expect(CryptUtil.compare(password1And2, password1Hash)).resolves.toBeFalsy();
+    await expect(CryptUtil.compare(password1And2, password2Hash)).resolves.toBeFalsy();
   });
 });

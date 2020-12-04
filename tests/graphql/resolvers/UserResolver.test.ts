@@ -8,7 +8,7 @@ import User, { UserGenders, UserRoles } from '../../../src/entities/User';
 import { UserCreateInput } from '../../../src/graphql/inputs/user';
 import { UserService } from '../../../src/services';
 
-const createMinimalValidUser = (): UserCreateInput => {
+const createMinimalUser = (): UserCreateInput => {
   return {
     username: faker.internet.userName(),
     password: faker.internet.password(8),
@@ -92,7 +92,7 @@ describe('UserResolver testing', () => {
   });
 
   test('it should create a user with minimum parameters', async () => {
-    const user: UserCreateInput = createMinimalValidUser();
+    const user: UserCreateInput = createMinimalUser();
     const response = await graphqlTestCall(MUTATION_CREATE_USER, user);
 
     expect(response).toBeDefined();
@@ -139,7 +139,7 @@ describe('UserResolver testing', () => {
 
   test('it should create a user with maximum parameters', async () => {
     const user: Required<UserCreateInput> = {
-      ...createMinimalValidUser(),
+      ...createMinimalUser(),
       name: faker.name.firstName(),
       surname: faker.name.lastName(),
       gender: UserGenders.OTHER,
@@ -195,7 +195,7 @@ describe('UserResolver testing', () => {
   });
 
   test('it should not create a user due to invalid username', async () => {
-    const user: UserCreateInput = createMinimalValidUser();
+    const user: UserCreateInput = createMinimalUser();
 
     // Null
     user.username = (null as unknown) as string;
@@ -230,7 +230,7 @@ describe('UserResolver testing', () => {
   });
 
   test('it should not create a user due to invalid password', async () => {
-    const user: UserCreateInput = createMinimalValidUser();
+    const user: UserCreateInput = createMinimalUser();
 
     // Null
     user.password = (null as unknown) as string;
@@ -263,7 +263,7 @@ describe('UserResolver testing', () => {
   });
 
   test('it should not create a user due to invalid name', async () => {
-    const user: UserCreateInput = createMinimalValidUser();
+    const user: UserCreateInput = createMinimalUser();
 
     // Length < 1
     user.name = '';
@@ -287,7 +287,7 @@ describe('UserResolver testing', () => {
   });
 
   test('it should not create a user due to invalid surname', async () => {
-    const user: UserCreateInput = createMinimalValidUser();
+    const user: UserCreateInput = createMinimalUser();
 
     // Length < 1
     user.surname = '';
@@ -311,7 +311,7 @@ describe('UserResolver testing', () => {
   });
 
   test('it should return authenticated user', async () => {
-    const user: UserCreateInput = createMinimalValidUser();
+    const user: UserCreateInput = createMinimalUser();
     const { id } = await userService.create(user);
     const response = await graphqlTestCall(QUERY_ME, {}, { id });
 

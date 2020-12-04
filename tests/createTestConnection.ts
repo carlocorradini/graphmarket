@@ -15,7 +15,7 @@ export default async () => {
     entities: [User],
     cache: {
       type: 'ioredis',
-      port: 'redis://:password@localhost:6379/1',
+      port: 'redis://:@localhost:6379/1',
     },
   });
 };

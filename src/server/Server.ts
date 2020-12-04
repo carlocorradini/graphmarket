@@ -10,7 +10,8 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchemaSync } from 'type-graphql';
 import { ConnectionOptions, createConnection, getConnection, useContainer } from 'typeorm';
 import { Container } from 'typedi';
-import blacklist from 'express-jwt-blacklist';
+// TODO
+// import blacklist from 'express-jwt-blacklist';
 import config from '@app/config';
 import logger from '@app/logger';
 import { IContext } from '@app/types';
@@ -83,13 +84,13 @@ export default class Server {
   private configureServices(): void {
     // TODO strict ????
     // JWT blacklist
-    blacklist.configure({
+    /* blacklist.configure({
       strict: false,
       store: {
         type: 'redis',
         url: config.REDIS.URL,
       },
-    });
+    }); */
   }
 
   /**
@@ -113,7 +114,7 @@ export default class Server {
           algorithms: [config.JWT.ALGORITHM],
           credentialsRequired: false,
           // TODO Problem in response when the token is revoked
-          isRevoked: blacklist.isRevoked,
+          // isRevoked: blacklist.isRevoked,
         }),
       );
     logger.debug('Express server configured');

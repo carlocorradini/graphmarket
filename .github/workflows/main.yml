@@ -14,12 +14,11 @@ jobs:
     container: node:14-alpine
 
     services:
-      postgres:
+      database:
         image: postgres
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_PORT: 5432
+          POSTGRES_PASSWORD: password
           POSTGRES_DB: graphmarket-test
         options: >-
           --health-cmd pg_isready
@@ -48,10 +47,16 @@ jobs:
       - name: Testing
         run: npm test
         env:
-          POSTGRES_HOST: localhost
+          # Postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_HOST: database
           POSTGRES_PORT: 5432
-          DATABASE_URL: 'postgres://postgres:password@localhost:5432/graphmarket-test'
-          REDIS_URL: 'redis://:@localhost:6379/0'
+          POSTGRES_DB: graphmarket-test
+          # Redis
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
+          # JWT
           JWT_SECRET: 'password'
       - name: Generate coverage
         run: npm run coverage

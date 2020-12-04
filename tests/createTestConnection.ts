@@ -4,18 +4,21 @@ import { User } from '../src/entities';
 export default async () => {
   return createConnection(<ConnectionOptions>{
     type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'postgres',
-    password: 'password',
-    database: 'graphmarket-test',
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    host: process.env.POSTGRES_HOST,
+    port: process.env.POSTGRES_PORT,
+    database: process.env.POSTGRES_DB,
     synchronize: true,
     dropSchema: true,
     logging: false,
     entities: [User],
     cache: {
       type: 'ioredis',
-      port: 'redis://:password@localhost:6379/1',
+      options: {
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT,
+      },
     },
   });
 };

@@ -4,7 +4,11 @@ import { User } from '../src/entities';
 export default async () => {
   return createConnection(<ConnectionOptions>{
     type: 'postgres',
-    url: 'postgres://postgres:postgres@localhost:5432/graphmarket-test',
+    username: 'postgres',
+    password: 'postgres',
+    host: process.env.POSTGRES_HOST,
+    port: process.env.POSTGRES_PORT,
+    database: 'graphmarket-test',
     synchronize: true,
     dropSchema: true,
     logging: false,

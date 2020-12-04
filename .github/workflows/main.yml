@@ -11,20 +11,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: node:12.6-buster-slim
 
     services:
-      database:
+      postgres:
         image: postgres
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: graphmarket-test
+          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
       redis:
         image: redis
         options: >-
@@ -49,12 +48,12 @@ jobs:
         env:
           # Postgres
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_HOST: database
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
-          POSTGRES_DB: graphmarket-test
+          POSTGRES_DB: postgres
           # Redis
-          REDIS_HOST: redis
+          REDIS_HOST: localhost
           REDIS_PORT: 6379
           # JWT
           JWT_SECRET: 'password'

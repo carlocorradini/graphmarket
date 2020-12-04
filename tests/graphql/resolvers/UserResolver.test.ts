@@ -1,8 +1,7 @@
-import { Connection } from 'typeorm';
 import { isEmail, isISO8601, isPhoneNumber, isUUID, isDate } from 'class-validator';
 import faker from 'faker';
 import Container from 'typedi';
-import createTestConnection from '../../createTestConnection';
+import '@test/__setups/databaseConnection/';
 import graphqlTestCall from '../../graphqlTestCall';
 import User, { UserGenders, UserRoles } from '../../../src/entities/User';
 import { UserCreateInput } from '../../../src/graphql/inputs/user';
@@ -81,15 +80,6 @@ const QUERY_ME = `
 
 describe('UserResolver testing', () => {
   const userService: UserService = Container.get(UserService);
-  let conn: Connection;
-
-  beforeAll(async () => {
-    conn = await createTestConnection();
-  });
-
-  afterAll(async () => {
-    await conn.close();
-  });
 
   test('it should create a user with minimum parameters', async () => {
     const user: UserCreateInput = createMinimalUser();

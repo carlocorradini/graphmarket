@@ -1,8 +1,11 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "noEmit": true,
     "baseUrl": ".",
-    "noEmit": true
+    "paths": {
+      "@test/*": ["./*"]
+    }
   },
   "include": ["../jest.config.ts", "**/*"]
 }

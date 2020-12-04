@@ -31,7 +31,7 @@
     }
   ],
   "scripts": {
-    "clean": "npx rimraf build docs log",
+    "clean": "npx rimraf build docs log coverage",
     "update": "npx ncu -u && npm install",
     "lint": "npx eslint --ext .ts \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\"",
     "test": "jest --no-watchman",

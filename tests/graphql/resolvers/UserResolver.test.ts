@@ -62,7 +62,7 @@ const MUTATION_CREATE_USER = `
 `; */
 
 const QUERY_ME = `
-  query Me {
+  query {
     me {
       id
       username
@@ -310,10 +310,132 @@ describe('UserResolver testing', () => {
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
   });
 
+  test('it should not create a user due to invalid gender', async () => {
+    const user: UserCreateInput = createMinimalUser();
+
+    // Length < 1
+    user.gender = 'GENDER_WITH_UNKNOWN_VALUE' as UserGenders;
+    const response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeUndefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Variable "$gender" got invalid value "GENDER_WITH_UNKNOWN_VALUE"; Value "GENDER_WITH_UNKNOWN_VALUE" does not exist in "UserGenders" enum.`,
+    );
+  });
+
+  test('it should not create a user due to invalid dateOfBirth', async () => {
+    const user: UserCreateInput = createMinimalUser();
+
+    // Date type
+    user.dateOfBirth = faker.date.past();
+    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeUndefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Variable "$dateOfBirth" got invalid value {}; Expected type "Date". Date cannot represent non string type "${user.dateOfBirth.toISOString()}"`,
+    );
+
+    // DateTime
+    user.dateOfBirth = (faker.date.past().toISOString() as unknown) as Date;
+    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeUndefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Variable "$dateOfBirth" got invalid value "${user.dateOfBirth}"; Expected type "Date". Date cannot represent an invalid date-string ${user.dateOfBirth}.`,
+    );
+
+    // Invalid
+    user.dateOfBirth = ('2020-12-32' as unknown) as Date;
+    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeUndefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Variable "$dateOfBirth" got invalid value "${user.dateOfBirth}"; Expected type "Date". Date cannot represent an invalid date-string ${user.dateOfBirth}.`,
+    );
+
+    // Future
+    user.dateOfBirth = (faker.date.future().toISOString().split('T')[0] as unknown) as Date;
+    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeNull();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
+  });
+
+  test('it should not create a user due to invalid email', async () => {
+    const user: UserCreateInput = createMinimalUser();
+
+    // Null
+    user.email = (null as unknown) as string;
+    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeUndefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Variable "$email" of non-null type "EmailAddress!" must not be null.`,
+    );
+
+    // Invalid
+    user.email = faker.internet.email().replace(/@/g, '');
+    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeUndefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Variable "$email" got invalid value "${user.email}"; Expected type "EmailAddress". Value is not a valid email address: ${user.email}`,
+    );
+  });
+
+  test('it should not create a user due to invalid phone', async () => {
+    const user: UserCreateInput = createMinimalUser();
+
+    // Null
+    user.phone = (null as unknown) as string;
+    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeUndefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Variable "$phone" of non-null type "PhoneNumber!" must not be null.`,
+    );
+
+    // Length < 10
+    user.phone = faker.phone.phoneNumber('+39#######');
+    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeNull();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
+
+    // Length > 15
+    user.phone = faker.phone.phoneNumber('+################');
+    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeUndefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Variable "$phone" got invalid value "${user.phone}"; Expected type "PhoneNumber". Value is not a valid phone number of the form +17895551234 (10-15 digits): ${user.phone}`,
+    );
+  });
+
   test('it should return authenticated user', async () => {
     const user: UserCreateInput = createMinimalUser();
-    const { id } = await userService.create(user);
-    const response = await graphqlTestCall(QUERY_ME, {}, { id });
+    const { id, roles } = await userService.create(user);
+    const response = await graphqlTestCall(QUERY_ME, undefined, { id, roles });
 
     expect(response).toBeDefined();
     expect(response.errors).toBeUndefined();

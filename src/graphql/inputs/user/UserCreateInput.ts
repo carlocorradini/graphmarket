@@ -1,5 +1,5 @@
 import { Field, InputType } from 'type-graphql';
-import { Length } from 'class-validator';
+import { IsPhoneNumber, Length, MaxDate } from 'class-validator';
 import User, { UserGenders } from '@app/entities/User';
 import {
   GraphQLDate,
@@ -51,6 +51,7 @@ export default class UserCreateInput implements Partial<User> {
    * User's date of birth.
    */
   @Field(() => GraphQLDate, { nullable: true })
+  @MaxDate(new Date())
   dateOfBirth?: Date;
 
   /**
@@ -63,5 +64,6 @@ export default class UserCreateInput implements Partial<User> {
    * User's phone.
    */
   @Field(() => GraphQLPhoneNumber)
+  @IsPhoneNumber(null)
   phone!: string;
 }

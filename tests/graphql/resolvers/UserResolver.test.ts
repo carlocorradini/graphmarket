@@ -212,7 +212,7 @@ describe('UserResolver testing', () => {
       `Variable "$username" of non-null type "NonEmptyString!" must not be null.`,
     );
 
-    // Empty
+    // Length < 1
     user.username = '';
     response = await graphqlTestCall(MUTATION_CREATE_USER, user);
     expect(response).toBeDefined();
@@ -223,8 +223,46 @@ describe('UserResolver testing', () => {
       `Variable "$username" got invalid value ""; Expected type "NonEmptyString". Value cannot be an empty string: `,
     );
 
-    // Length > 64 characters
+    // Length > 64
     user.username = faker.random.alphaNumeric(65);
+    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeNull();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
+  });
+
+  test('it should not create a user due to invalid password', async () => {
+    const user: UserCreateInput = {
+      username: faker.internet.userName(),
+      password: faker.internet.password(8),
+      email: faker.internet.email(),
+      phone: faker.phone.phoneNumber('+3932########'),
+    };
+
+    // Null
+    user.password = (null as unknown) as string;
+    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeUndefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Variable "$password" of non-null type "NonEmptyString!" must not be null.`,
+    );
+
+    // Length < 8
+    user.password = faker.internet.password(7);
+    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeNull();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
+
+    // Length > 64 characters
+    user.password = faker.internet.password(65);
     response = await graphqlTestCall(MUTATION_CREATE_USER, user);
     expect(response).toBeDefined();
     expect(response.data).toBeNull();

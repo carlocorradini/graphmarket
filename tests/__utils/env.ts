@@ -1,10 +1,6 @@
 import path from 'path';
 import envalid, { url } from 'envalid';
-
-export interface ITestEnv {
-  DATABASE_URL: string;
-  REDIS_URL: string;
-}
+import _ from 'lodash';
 
 const env = envalid.cleanEnv(
   process.env,
@@ -17,5 +13,10 @@ const env = envalid.cleanEnv(
     strict: true,
   },
 );
+
+process.env = {
+  ...process.env,
+  ..._.omit({ ...env }, 'isDev', 'isDevelopment', 'isProd', 'isProduction', 'isTest'),
+};
 
 export default env;

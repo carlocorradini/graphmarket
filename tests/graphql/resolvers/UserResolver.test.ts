@@ -8,6 +8,15 @@ import User, { UserGenders, UserRoles } from '../../../src/entities/User';
 import { UserCreateInput } from '../../../src/graphql/inputs/user';
 import { UserService } from '../../../src/services';
 
+const createMinimalValidUser = (): UserCreateInput => {
+  return {
+    username: faker.internet.userName(),
+    password: faker.internet.password(8),
+    email: faker.internet.email(),
+    phone: faker.phone.phoneNumber('+3932########'),
+  };
+};
+
 const MUTATION_CREATE_USER = `
   mutation CreateUser(
     $username: NonEmptyString!
@@ -83,12 +92,7 @@ describe('UserResolver testing', () => {
   });
 
   test('it should create a user with minimum parameters', async () => {
-    const user: UserCreateInput = {
-      username: faker.internet.userName(),
-      password: faker.internet.password(8),
-      email: faker.internet.email(),
-      phone: faker.phone.phoneNumber('+3932########'),
-    };
+    const user: UserCreateInput = createMinimalValidUser();
     const response = await graphqlTestCall(MUTATION_CREATE_USER, user);
 
     expect(response).toBeDefined();
@@ -135,14 +139,11 @@ describe('UserResolver testing', () => {
 
   test('it should create a user with maximum parameters', async () => {
     const user: Required<UserCreateInput> = {
-      username: faker.internet.userName(),
-      password: faker.internet.password(8),
+      ...createMinimalValidUser(),
       name: faker.name.firstName(),
       surname: faker.name.lastName(),
       gender: UserGenders.OTHER,
       dateOfBirth: (faker.date.past().toISOString().split('T')[0] as unknown) as Date,
-      email: faker.internet.email(),
-      phone: faker.phone.phoneNumber('+3932########'),
     };
     const response = await graphqlTestCall(MUTATION_CREATE_USER, user);
 
@@ -194,12 +195,7 @@ describe('UserResolver testing', () => {
   });
 
   test('it should not create a user due to invalid username', async () => {
-    const user: UserCreateInput = {
-      username: faker.internet.userName(),
-      password: faker.internet.password(8),
-      email: faker.internet.email(),
-      phone: faker.phone.phoneNumber('+3932########'),
-    };
+    const user: UserCreateInput = createMinimalValidUser();
 
     // Null
     user.username = (null as unknown) as string;
@@ -234,12 +230,7 @@ describe('UserResolver testing', () => {
   });
 
   test('it should not create a user due to invalid password', async () => {
-    const user: UserCreateInput = {
-      username: faker.internet.userName(),
-      password: faker.internet.password(8),
-      email: faker.internet.email(),
-      phone: faker.phone.phoneNumber('+3932########'),
-    };
+    const user: UserCreateInput = createMinimalValidUser();
 
     // Null
     user.password = (null as unknown) as string;
@@ -271,13 +262,56 @@ describe('UserResolver testing', () => {
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
   });
 
+  test('it should not create a user due to invalid name', async () => {
+    const user: UserCreateInput = createMinimalValidUser();
+
+    // Length < 1
+    user.name = '';
+    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeUndefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Variable "$name" got invalid value ""; Expected type "NonEmptyString". Value cannot be an empty string: `,
+    );
+
+    // Length > 64
+    user.name = faker.random.alpha({ count: 65 });
+    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeNull();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
+  });
+
+  test('it should not create a user due to invalid surname', async () => {
+    const user: UserCreateInput = createMinimalValidUser();
+
+    // Length < 1
+    user.surname = '';
+    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeUndefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Variable "$surname" got invalid value ""; Expected type "NonEmptyString". Value cannot be an empty string: `,
+    );
+
+    // Length > 64
+    user.surname = faker.random.alpha({ count: 65 });
+    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    expect(response).toBeDefined();
+    expect(response.data).toBeNull();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
+  });
+
   test('it should return authenticated user', async () => {
-    const user: UserCreateInput = {
-      username: faker.internet.userName(),
-      password: faker.internet.password(8),
-      email: faker.internet.email(),
-      phone: faker.phone.phoneNumber('+3932########'),
-    };
+    const user: UserCreateInput = createMinimalValidUser();
     const { id } = await userService.create(user);
     const response = await graphqlTestCall(QUERY_ME, {}, { id });
 

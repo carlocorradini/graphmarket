@@ -3,14 +3,14 @@ import { graphql, Source } from 'graphql';
 import { buildSchemaSync } from 'type-graphql';
 import { Container } from 'typedi';
 import { AuthorizationMiddleware } from '../../src/middlewares';
-import { IJWT } from '../../src/types';
+import { IToken } from '../../src/types';
 
 export type Maybe<T> = null | undefined | T;
 
 export interface IGraphQlRequest {
   source: Source | string;
   variables?: Maybe<{ [key: string]: any }>;
-  token?: Partial<IJWT>;
+  token?: Partial<IToken>;
 }
 
 const schema = buildSchemaSync({

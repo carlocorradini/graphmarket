@@ -1,8 +1,7 @@
+import path from 'path';
 import { graphql, Source } from 'graphql';
 import { buildSchemaSync } from 'type-graphql';
 import { Container } from 'typedi';
-// TODO
-import { UserResolver } from '../../src/graphql/resolvers';
 import { AuthorizationMiddleware } from '../../src/middlewares';
 import { IJWT } from '../../src/types';
 
@@ -15,7 +14,7 @@ export interface IGraphQlRequest {
 }
 
 const schema = buildSchemaSync({
-  resolvers: [UserResolver],
+  resolvers: [path.resolve(__dirname, '../../src/graphql/resolvers/**/*.ts')],
   authChecker: AuthorizationMiddleware,
   container: Container,
 });

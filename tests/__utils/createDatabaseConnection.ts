@@ -1,6 +1,5 @@
+import path from 'path';
 import { ConnectionOptions, createConnection } from 'typeorm';
-// TODO
-import { User } from '../../src/entities';
 import env from './env';
 
 export default () => {
@@ -11,7 +10,7 @@ export default () => {
     dropSchema: true,
     logging: false,
     ssl: false,
-    entities: [User],
+    entities: [path.resolve(__dirname, '../../src/entities/**/*.ts')],
     cache: {
       type: 'ioredis',
       port: env.REDIS_URL,

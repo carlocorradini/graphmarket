@@ -14,11 +14,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container: node:${{ matrix.node }}-jessie
-
-    strategy:
-      matrix:
-        node: [10, 12, 14]
+    container: node:12-jessie
 
      services:
       postgres:

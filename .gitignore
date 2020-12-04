@@ -43,6 +43,7 @@ typings/
 
 # dotenv environment variables file
 .env
+.env.test
 
 # Distribution | compiled code/library
 dist/

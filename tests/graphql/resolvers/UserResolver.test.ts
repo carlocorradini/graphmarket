@@ -1,8 +1,8 @@
 import { isEmail, isISO8601, isPhoneNumber, isUUID, isDate } from 'class-validator';
 import faker from 'faker';
 import Container from 'typedi';
-import '@test/__setups/databaseConnection/';
-import graphqlTestCall from '../../graphqlTestCall';
+import { Connection } from 'typeorm';
+import { createDatabaseConnection, makeGraphQlRequest } from '../../__utils';
 import User, { UserGenders, UserRoles } from '../../../src/entities/User';
 import { UserCreateInput } from '../../../src/graphql/inputs/user';
 import { UserService } from '../../../src/services';
@@ -80,10 +80,19 @@ const QUERY_ME = `
 
 describe('UserResolver testing', () => {
   const userService: UserService = Container.get(UserService);
+  let connection: Connection;
+
+  beforeAll(async () => {
+    connection = await createDatabaseConnection();
+  });
+
+  afterAll(async () => {
+    await connection.close();
+  });
 
   test('it should create a user with minimum parameters', async () => {
     const user: UserCreateInput = createMinimalUser();
-    const response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    const response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
 
     expect(response).toBeDefined();
     expect(response.errors).toBeUndefined();
@@ -135,7 +144,7 @@ describe('UserResolver testing', () => {
       gender: UserGenders.OTHER,
       dateOfBirth: (faker.date.past().toISOString().split('T')[0] as unknown) as Date,
     };
-    const response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    const response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
 
     expect(response).toBeDefined();
     expect(response.errors).toBeUndefined();
@@ -189,7 +198,7 @@ describe('UserResolver testing', () => {
 
     // Null
     user.username = (null as unknown) as string;
-    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -200,7 +209,7 @@ describe('UserResolver testing', () => {
 
     // Length < 1
     user.username = '';
-    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -211,7 +220,7 @@ describe('UserResolver testing', () => {
 
     // Length > 64
     user.username = faker.random.alphaNumeric(65);
-    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeNull();
     expect(response.errors).toBeDefined();
@@ -224,7 +233,7 @@ describe('UserResolver testing', () => {
 
     // Null
     user.password = (null as unknown) as string;
-    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -235,7 +244,7 @@ describe('UserResolver testing', () => {
 
     // Length < 8
     user.password = faker.internet.password(7);
-    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeNull();
     expect(response.errors).toBeDefined();
@@ -244,7 +253,7 @@ describe('UserResolver testing', () => {
 
     // Length > 64 characters
     user.password = faker.internet.password(65);
-    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeNull();
     expect(response.errors).toBeDefined();
@@ -257,7 +266,7 @@ describe('UserResolver testing', () => {
 
     // Length < 1
     user.name = '';
-    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -268,7 +277,7 @@ describe('UserResolver testing', () => {
 
     // Length > 64
     user.name = faker.random.alpha({ count: 65 });
-    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeNull();
     expect(response.errors).toBeDefined();
@@ -281,7 +290,7 @@ describe('UserResolver testing', () => {
 
     // Length < 1
     user.surname = '';
-    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -292,7 +301,7 @@ describe('UserResolver testing', () => {
 
     // Length > 64
     user.surname = faker.random.alpha({ count: 65 });
-    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeNull();
     expect(response.errors).toBeDefined();
@@ -305,7 +314,7 @@ describe('UserResolver testing', () => {
 
     // Length < 1
     user.gender = 'GENDER_WITH_UNKNOWN_VALUE' as UserGenders;
-    const response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    const response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -320,7 +329,7 @@ describe('UserResolver testing', () => {
 
     // Date type
     user.dateOfBirth = faker.date.past();
-    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -331,7 +340,7 @@ describe('UserResolver testing', () => {
 
     // DateTime
     user.dateOfBirth = (faker.date.past().toISOString() as unknown) as Date;
-    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -342,7 +351,7 @@ describe('UserResolver testing', () => {
 
     // Invalid
     user.dateOfBirth = ('2020-12-32' as unknown) as Date;
-    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -353,7 +362,7 @@ describe('UserResolver testing', () => {
 
     // Future
     user.dateOfBirth = (faker.date.future().toISOString().split('T')[0] as unknown) as Date;
-    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeNull();
     expect(response.errors).toBeDefined();
@@ -366,7 +375,7 @@ describe('UserResolver testing', () => {
 
     // Null
     user.email = (null as unknown) as string;
-    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -377,7 +386,7 @@ describe('UserResolver testing', () => {
 
     // Invalid
     user.email = faker.internet.email().replace(/@/g, '');
-    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -392,7 +401,7 @@ describe('UserResolver testing', () => {
 
     // Null
     user.phone = (null as unknown) as string;
-    let response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -403,7 +412,7 @@ describe('UserResolver testing', () => {
 
     // Length < 10
     user.phone = faker.phone.phoneNumber('+39#######');
-    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeNull();
     expect(response.errors).toBeDefined();
@@ -412,7 +421,7 @@ describe('UserResolver testing', () => {
 
     // Length > 15
     user.phone = faker.phone.phoneNumber('+################');
-    response = await graphqlTestCall(MUTATION_CREATE_USER, user);
+    response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
     expect(response).toBeDefined();
     expect(response.data).toBeUndefined();
     expect(response.errors).toBeDefined();
@@ -425,7 +434,11 @@ describe('UserResolver testing', () => {
   test('it should return authenticated user', async () => {
     const user: UserCreateInput = createMinimalUser();
     const { id, roles } = await userService.create(user);
-    const response = await graphqlTestCall(QUERY_ME, undefined, { id, roles });
+    const response = await makeGraphQlRequest({
+      source: QUERY_ME,
+      variables: user,
+      token: { id, roles },
+    });
 
     expect(response).toBeDefined();
     expect(response.errors).toBeUndefined();

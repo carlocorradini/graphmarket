@@ -4,29 +4,29 @@ import jwt from 'jsonwebtoken';
 // import blacklist from 'express-jwt-blacklist';
 import config from '@app/config';
 import logger from '@app/logger';
-import { IJWT, IJWTPayload } from '@app/types';
+import { IToken, ITokenPayload } from '@app/types';
 import { Service } from 'typedi';
 
 /**
  * Token service.
  *
- * @see IJWT
+ * @see IToken
  */
 @Service()
 export default class TokenService {
   /**
-   * Sign the given payload into a JSON Web Token string payload.
+   * Sign the given payload into a token string payload.
    *
    * @param payload - Payload to sign
-   * @returns JSON Web Token string payload
+   * @returns Token string payload
    */
-  public async sign(payload: IJWTPayload): Promise<string> {
+  public async sign(payload: ITokenPayload): Promise<string> {
     return new Promise((resolve, reject) => {
       jwt.sign(
         payload,
-        config.JWT.SECRET,
+        config.TOKEN.SECRET,
         {
-          expiresIn: config.JWT.EXPIRATION_TIME,
+          expiresIn: config.TOKEN.EXPIRATION_TIME,
           subject: payload.id,
         },
         (error, token) => {
@@ -41,15 +41,15 @@ export default class TokenService {
   /**
    * Verify the given token.
    *
-   * @param token - JSON Web Token string to verify
+   * @param token - Token string to verify
    * @returns Decoded token
    */
-  public async verify(token: string): Promise<IJWT> {
+  public async verify(token: string): Promise<IToken> {
     return new Promise((resolve, reject) => {
-      jwt.verify(token, config.JWT.SECRET, (error, decoded) => {
+      jwt.verify(token, config.TOKEN.SECRET, (error, decoded) => {
         if (error) reject(error);
 
-        resolve(decoded as IJWT);
+        resolve(decoded as IToken);
       });
     });
   }
@@ -60,7 +60,7 @@ export default class TokenService {
    * @param token - Token to revoke
    * @returns True if revoked, false otherwise
    */
-  public async revoke(token: IJWT): Promise<boolean>;
+  public async revoke(token: IToken): Promise<boolean>;
 
   /**
    * Revoke the token identified by token identifier.
@@ -76,7 +76,7 @@ export default class TokenService {
    * @param tokenOrTokenId - Token or token identifier
    * @returns True if revoked, false otherwise
    */
-  public async revoke(tokenOrTokenId: IJWT | string): Promise<boolean> {
+  public async revoke(tokenOrTokenId: IToken | string): Promise<boolean> {
     // TODO
     /* const token: IJWT =
       typeof tokenOrTokenId !== 'string' ? tokenOrTokenId : ({ sub: tokenOrTokenId } as IJWT);
@@ -100,7 +100,7 @@ export default class TokenService {
    * @param token - Token to purge
    * @returns True if purged, false otherwise
    */
-  public async purge(token: IJWT): Promise<boolean>;
+  public async purge(token: IToken): Promise<boolean>;
 
   /**
    * Purge all tokens before token (inclusive) identified by token identifier.
@@ -116,7 +116,7 @@ export default class TokenService {
    * @param tokenOrTokenId - Token or token identifier to purge
    * @returns True if purged, false otherwise
    */
-  public async purge(tokenOrTokenId: IJWT | string): Promise<boolean> {
+  public async purge(tokenOrTokenId: IToken | string): Promise<boolean> {
     // TODO
     /* const token: IJWT =
       typeof tokenOrTokenId !== 'string' ? tokenOrTokenId : ({ sub: tokenOrTokenId } as IJWT);

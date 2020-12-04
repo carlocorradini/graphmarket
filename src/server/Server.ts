@@ -83,7 +83,7 @@ export default class Server {
   // eslint-disable-next-line class-methods-use-this
   private configureServices(): void {
     // TODO strict ????
-    // JWT blacklist
+    // Token blacklist
     /* blacklist.configure({
       strict: false,
       store: {
@@ -110,8 +110,8 @@ export default class Server {
       .use(
         config.GRAPHQL.PATH,
         jwt({
-          secret: config.JWT.SECRET,
-          algorithms: [config.JWT.ALGORITHM],
+          secret: config.TOKEN.SECRET,
+          algorithms: [config.TOKEN.ALGORITHM],
           credentialsRequired: false,
           // TODO Problem in response when the token is revoked
           // isRevoked: blacklist.isRevoked,

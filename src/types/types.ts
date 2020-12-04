@@ -22,9 +22,9 @@ export interface IConfig {
   };
   readonly REDIS: {
     readonly URL: string;
-    readonly JWT_BLOCKLIST: string;
+    readonly TOKEN_BLOCKLIST: string;
   };
-  readonly JWT: {
+  readonly TOKEN: {
     readonly SECRET: string;
     readonly ALGORITHM: string;
     readonly EXPIRATION_TIME: number;
@@ -37,17 +37,17 @@ export interface IConfig {
 }
 
 /**
- * JWT custom payload
+ * Token custom payload
  */
-export interface IJWTPayload {
+export interface ITokenPayload {
   readonly id: string;
   readonly roles: UserRoles[];
 }
 
 /**
- * JWT full payload
+ * Token full payload
  */
-export interface IJWT extends IJWTPayload {
+export interface IToken extends ITokenPayload {
   readonly iat: number;
   readonly exp: number;
   readonly sub: string;
@@ -59,5 +59,5 @@ export interface IJWT extends IJWTPayload {
 export interface IContext {
   readonly req: Request;
   readonly res: Response;
-  readonly user?: IJWT;
+  readonly user?: IToken;
 }

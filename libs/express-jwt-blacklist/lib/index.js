@@ -130,8 +130,7 @@ function middleware(req, user, fn) {
     debug('middleware [' + key + ']', res);
 
     if (res[TYPE.revoke] && res[TYPE.revoke].indexOf(index) !== -1) revoked = true;
-    else if (res[TYPE.purge] >= user.iat) revoked = true;
-    else revoked = false;
+    else revoked = res[TYPE.purge] >= user.iat;
 
     fn(null, revoked);
   });

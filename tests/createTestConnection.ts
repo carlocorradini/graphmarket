@@ -4,7 +4,7 @@ import { User } from '../src/entities';
 export default async () => {
   return createConnection(<ConnectionOptions>{
     type: 'postgres',
-    url: 'postgres://postgres:password@localhost:5432/graphmarket-test',
+    url: 'postgres://postgres:postgres@localhost:5432/graphmarket-test',
     synchronize: true,
     dropSchema: true,
     logging: false,

@@ -2,7 +2,7 @@
 
 ### Online e-commerce API in GraphQL
 
-[![CI](https://github.com/carlocorradini/graphmarket/workflows/CI/badge.svg)](https://github.com/carlocorradini/graphmarket/actions)
+[![Build](https://github.com/carlocorradini/graphmarket/workflows/build/badge.svg)](https://github.com/carlocorradini/graphmarket/actions)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/eab19cd392424e41afec10b001aaeadd)](https://www.codacy.com/gh/carlocorradini/graphmarket/dashboard?utm_source=github.com&utm_medium=referral&utm_content=carlocorradini/graphmarket&utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/carlocorradini/graphmarket/branch/main/graph/badge.svg?token=VKZLWJYNY2)](https://codecov.io/gh/carlocorradini/graphmarket)
 [![Known Vulnerabilities](https://snyk.io/test/github/carlocorradini/graphmarket/badge.svg)](https://snyk.io/test/github/carlocorradini/graphmarket)

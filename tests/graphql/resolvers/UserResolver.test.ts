@@ -7,6 +7,8 @@ import User, { UserGenders, UserRoles } from '../../../src/entities/User';
 import { UserCreateInput } from '../../../src/graphql/inputs/user';
 import { UserService } from '../../../src/services';
 
+const USER_FIELDS_COUNT: number = 11;
+
 const createMinimalUser = (): UserCreateInput => {
   return {
     username: faker.internet.userName(),
@@ -16,7 +18,7 @@ const createMinimalUser = (): UserCreateInput => {
   };
 };
 
-const MUTATION_CREATE_USER = `
+const MUTATION_CREATE_USER: string = `
   mutation CreateUser(
     $username: NonEmptyString!
     $password: NonEmptyString!
@@ -54,13 +56,7 @@ const MUTATION_CREATE_USER = `
   }
 `;
 
-/* const MUTATION_SIGN_IN = `
-  mutation SignIn($username: NonEmptyString!, $password: NonEmptyString!) {
-    signIn(username: $username, password: $password)
-  }
-`; */
-
-const QUERY_ME = `
+const QUERY_ME: string = `
   query {
     me {
       id
@@ -78,6 +74,30 @@ const QUERY_ME = `
   }
 `;
 
+const QUERY_USER: string = `
+  query User($id: UUID!) {
+    user(id: $id) {
+      id
+      username
+      roles
+      name
+      surname
+      gender
+      dateOfBirth
+      email
+      phone
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+/* const MUTATION_SIGN_IN = `
+  mutation SignIn($username: NonEmptyString!, $password: NonEmptyString!) {
+    signIn(username: $username, password: $password)
+  }
+`; */
+
 describe('UserResolver testing', () => {
   const userService: UserService = Container.get(UserService);
   let connection: Connection;
@@ -90,7 +110,7 @@ describe('UserResolver testing', () => {
     await connection.close();
   });
 
-  test('it should create a user with minimum parameters', async () => {
+  test('it should create a user with minimum parameters on mutation createUser', async () => {
     const user: UserCreateInput = createMinimalUser();
     const response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
 
@@ -100,6 +120,8 @@ describe('UserResolver testing', () => {
     expect(response.data!.createUser).toBeDefined();
 
     const data: User = response.data!.createUser;
+
+    expect(Object.keys(data)).toHaveLength(USER_FIELDS_COUNT);
 
     expect(data!.id).toBeDefined();
     expect(isUUID(data!.id)).toBeTruthy();
@@ -136,7 +158,7 @@ describe('UserResolver testing', () => {
     expect(isDate(data!.updatedAt)).toBeTruthy();
   });
 
-  test('it should create a user with maximum parameters', async () => {
+  test('it should create a user with maximum parameters on mutation createUser', async () => {
     const user: Required<UserCreateInput> = {
       ...createMinimalUser(),
       name: faker.name.firstName(),
@@ -152,6 +174,8 @@ describe('UserResolver testing', () => {
     expect(response.data!.createUser).toBeDefined();
 
     const data: User = response.data!.createUser;
+
+    expect(Object.keys(data)).toHaveLength(USER_FIELDS_COUNT);
 
     expect(data!.id).toBeDefined();
     expect(isUUID(data!.id)).toBeTruthy();
@@ -193,7 +217,7 @@ describe('UserResolver testing', () => {
     expect(isDate(data!.updatedAt)).toBeTruthy();
   });
 
-  test('it should not create a user due to invalid username', async () => {
+  test('it should fail due to invalid username on mutation createUser', async () => {
     const user: UserCreateInput = createMinimalUser();
 
     // Null
@@ -228,7 +252,7 @@ describe('UserResolver testing', () => {
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
   });
 
-  test('it should not create a user due to invalid password', async () => {
+  test('it should fail due to invalid password on mutation createUser', async () => {
     const user: UserCreateInput = createMinimalUser();
 
     // Null
@@ -261,7 +285,7 @@ describe('UserResolver testing', () => {
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
   });
 
-  test('it should not create a user due to invalid name', async () => {
+  test('it should fail due to invalid name on mutation createUser', async () => {
     const user: UserCreateInput = createMinimalUser();
 
     // Length < 1
@@ -285,7 +309,7 @@ describe('UserResolver testing', () => {
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
   });
 
-  test('it should not create a user due to invalid surname', async () => {
+  test('it should fail due to invalid surname on mutation createUser', async () => {
     const user: UserCreateInput = createMinimalUser();
 
     // Length < 1
@@ -309,7 +333,7 @@ describe('UserResolver testing', () => {
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
   });
 
-  test('it should not create a user due to invalid gender', async () => {
+  test('it should fail due to invalid gender on mutation createUser', async () => {
     const user: UserCreateInput = createMinimalUser();
 
     // Length < 1
@@ -324,7 +348,7 @@ describe('UserResolver testing', () => {
     );
   });
 
-  test('it should not create a user due to invalid dateOfBirth', async () => {
+  test('it should fail due to invalid dateOfBirth on mutation createUser', async () => {
     const user: UserCreateInput = createMinimalUser();
 
     // Date type
@@ -370,7 +394,7 @@ describe('UserResolver testing', () => {
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
   });
 
-  test('it should not create a user due to invalid email', async () => {
+  test('it should fail due to invalid email on mutation createUser', async () => {
     const user: UserCreateInput = createMinimalUser();
 
     // Null
@@ -396,7 +420,7 @@ describe('UserResolver testing', () => {
     );
   });
 
-  test('it should not create a user due to invalid phone', async () => {
+  test('it should fail due to invalid phone on mutation createUser', async () => {
     const user: UserCreateInput = createMinimalUser();
 
     // Null
@@ -431,7 +455,7 @@ describe('UserResolver testing', () => {
     );
   });
 
-  test('it should return authenticated user', async () => {
+  test('it should return authenticated user on query me', async () => {
     const user: UserCreateInput = createMinimalUser();
     const { id, roles } = await userService.create(user);
     const response = await makeGraphQlRequest({
@@ -445,6 +469,8 @@ describe('UserResolver testing', () => {
     expect(response.data!.me).toBeDefined();
 
     const data: User = response.data!.me;
+
+    expect(Object.keys(data)).toHaveLength(USER_FIELDS_COUNT);
 
     expect(data!.id).toBeDefined();
     expect(isUUID(data!.id)).toBeTruthy();
@@ -474,7 +500,21 @@ describe('UserResolver testing', () => {
     expect(isDate(data!.updatedAt)).toBeTruthy();
   });
 
-  test('it should not return authenticated user due to invalid id', async () => {
+  test('it should fail due to unauthorized on query me', async () => {
+    const response = await makeGraphQlRequest({
+      source: QUERY_ME,
+    });
+
+    expect(response).toBeDefined();
+    expect(response.data).toBeNull();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Access denied! You need to be authorized to perform this action!`,
+    );
+  });
+
+  test('it should fail due to unknown id on query me', async () => {
     const id: string = faker.random.uuid();
 
     try {
@@ -494,6 +534,122 @@ describe('UserResolver testing', () => {
     expect(response.errors).toHaveLength(1);
     expect(response.errors![0].message).toStrictEqual(
       `Could not find any entity of type "User" matching: "${id}"`,
+    );
+  });
+
+  test('it should fail due to invalid id on query me', async () => {
+    const id: string = 'Not a UUID';
+
+    const response = await makeGraphQlRequest({
+      source: QUERY_ME,
+      token: { id, roles: [UserRoles.USER] },
+    });
+
+    expect(response).toBeDefined();
+    expect(response.data).toBeNull();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `invalid input syntax for type uuid: "${id}"`,
+    );
+  });
+
+  test('it should return a user having the same id on query user', async () => {
+    const user: User = await userService.create(createMinimalUser());
+    const response = await makeGraphQlRequest({
+      source: QUERY_USER,
+      variables: { id: user.id },
+      token: { id: user.id, roles: user.roles },
+    });
+
+    expect(response).toBeDefined();
+    expect(response.errors).toBeUndefined();
+    expect(response.data).toBeDefined();
+    expect(response.data!.user).toBeDefined();
+
+    const data: User = response.data!.user;
+
+    expect(Object.keys(data)).toHaveLength(USER_FIELDS_COUNT);
+
+    expect(data!.id).toBeDefined();
+    expect(isUUID(data!.id)).toBeTruthy();
+    expect(data!.id).toStrictEqual(user.id);
+
+    expect(data!.username).toBeDefined();
+    expect(data!.username).toStrictEqual(user.username);
+
+    expect(data!.password).toBeUndefined();
+
+    expect(data!.roles).toBeDefined();
+    expect(data!.roles).toHaveLength(1);
+    expect(data!.roles).toContainEqual(UserRoles.USER);
+
+    expect(data!.email).toBeDefined();
+    expect(isEmail(data!.email)).toBeTruthy();
+    expect(data!.email).toStrictEqual(user.email);
+
+    expect(data!.phone).toBeDefined();
+    expect(isPhoneNumber(data!.phone, null)).toBeTruthy();
+    expect(data!.phone).toStrictEqual(user.phone);
+
+    expect(data!.createdAt).toBeDefined();
+    expect(isDate(data!.createdAt)).toBeTruthy();
+
+    expect(data!.updatedAt).toBeDefined();
+    expect(isDate(data!.updatedAt)).toBeTruthy();
+  });
+
+  test('it should return null if no user found on query user', async () => {
+    const id: string = faker.random.uuid();
+
+    try {
+      await userService.delete(id);
+    } catch (error) {
+      // User does not exists
+    }
+
+    const response = await makeGraphQlRequest({
+      source: QUERY_USER,
+      variables: { id },
+      token: { id: faker.random.uuid(), roles: [UserRoles.USER] },
+    });
+
+    expect(response).toBeDefined();
+    expect(response.errors).toBeUndefined();
+    expect(response.data).toBeDefined();
+    expect(response.data!.user).toBeNull();
+  });
+
+  test('it should fail due to unauthorized on query user', async () => {
+    const response = await makeGraphQlRequest({
+      source: QUERY_USER,
+      variables: { id: faker.random.uuid() },
+    });
+
+    expect(response).toBeDefined();
+    expect(response.data).toBeDefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Access denied! You need to be authorized to perform this action!`,
+    );
+  });
+
+  test('it should fail due to invalid id on query user', async () => {
+    const id: string = 'Not a UUID';
+
+    const response = await makeGraphQlRequest({
+      source: QUERY_USER,
+      variables: { id },
+      token: { id: faker.random.uuid(), roles: [UserRoles.USER] },
+    });
+
+    expect(response).toBeDefined();
+    expect(response.data).toBeUndefined();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Variable "$id" got invalid value "${id}"; Expected type "UUID". Value is not a valid UUID: ${id}`,
     );
   });
 });

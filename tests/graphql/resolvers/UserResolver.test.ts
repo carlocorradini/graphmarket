@@ -436,7 +436,6 @@ describe('UserResolver testing', () => {
     const { id, roles } = await userService.create(user);
     const response = await makeGraphQlRequest({
       source: QUERY_ME,
-      variables: user,
       token: { id, roles },
     });
 
@@ -473,5 +472,28 @@ describe('UserResolver testing', () => {
 
     expect(data!.updatedAt).toBeDefined();
     expect(isDate(data!.updatedAt)).toBeTruthy();
+  });
+
+  test('it should not return authenticated user due to invalid id', async () => {
+    const id: string = faker.random.uuid();
+
+    try {
+      await userService.delete(id);
+    } catch (error) {
+      // User does not exists
+    }
+
+    const response = await makeGraphQlRequest({
+      source: QUERY_ME,
+      token: { id, roles: [UserRoles.USER] },
+    });
+
+    expect(response).toBeDefined();
+    expect(response.data).toBeNull();
+    expect(response.errors).toBeDefined();
+    expect(response.errors).toHaveLength(1);
+    expect(response.errors![0].message).toStrictEqual(
+      `Could not find any entity of type "User" matching: "${id}"`,
+    );
   });
 });

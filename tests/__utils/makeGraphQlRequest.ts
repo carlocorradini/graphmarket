@@ -19,8 +19,8 @@ const schema = buildSchemaSync({
   container: Container,
 });
 
-export default async ({ source, variables, token }: IGraphQlRequest) => {
-  return graphql(
+export default async ({ source, variables, token }: IGraphQlRequest) =>
+  graphql(
     schema,
     source,
     undefined,
@@ -29,4 +29,3 @@ export default async ({ source, variables, token }: IGraphQlRequest) => {
     },
     variables,
   );
-};

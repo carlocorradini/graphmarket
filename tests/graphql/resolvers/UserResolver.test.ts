@@ -9,14 +9,12 @@ import { UserService } from '../../../src/services';
 
 const USER_FIELDS_COUNT: number = 11;
 
-const createMinimalUser = (): UserCreateInput => {
-  return {
-    username: faker.internet.userName(),
-    password: faker.internet.password(8),
-    email: faker.internet.email(),
-    phone: faker.phone.phoneNumber('+3932########'),
-  };
-};
+const createMinimalUser = (): UserCreateInput => ({
+  username: faker.internet.userName(),
+  password: faker.internet.password(8),
+  email: faker.internet.email(),
+  phone: faker.phone.phoneNumber('+3932########'),
+});
 
 const MUTATION_CREATE_USER: string = `
   mutation CreateUser(

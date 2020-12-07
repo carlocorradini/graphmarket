@@ -2,8 +2,8 @@ import path from 'path';
 import { ConnectionOptions, createConnection } from 'typeorm';
 import env from './env';
 
-export default () => {
-  return createConnection(<ConnectionOptions>{
+export default () =>
+  createConnection(<ConnectionOptions>{
     type: 'postgres',
     url: env.DATABASE_URL,
     synchronize: true,
@@ -16,4 +16,3 @@ export default () => {
       port: env.REDIS_URL,
     },
   });
-};

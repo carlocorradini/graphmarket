@@ -1,5 +1,5 @@
 import env from '../../src/config/env';
-import { env as envTest } from '../__utils';
+import { env as envTest } from '../__utils__';
 
 describe('Env config testing', () => {
   test('env object should be equal to the provided', () => {

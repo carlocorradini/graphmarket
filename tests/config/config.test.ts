@@ -1,5 +1,5 @@
 import config from '../../src/config/config';
-import { env } from '../__utils';
+import { env } from '../__utils__';
 
 describe('Config config testing', () => {
   test('config object should be equal to the provided', () => {

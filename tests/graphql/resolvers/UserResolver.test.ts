@@ -3,7 +3,7 @@ import faker from 'faker';
 import Container from 'typedi';
 import { Connection } from 'typeorm';
 import { ExecutionResult } from 'graphql';
-import { createDatabaseConnection, makeGraphQlRequest } from '../../__utils';
+import { createDatabaseConnection, makeGraphQlRequest } from '../../__utils__';
 import User, { UserGenders, UserRoles } from '../../../src/entities/User';
 import { UserCreateInput } from '../../../src/graphql/inputs/user';
 import { UserService } from '../../../src/services';

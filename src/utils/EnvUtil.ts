@@ -1,5 +1,3 @@
-import env from '@app/config/env';
-
 /**
  * Environment utilities.
  */
@@ -25,7 +23,7 @@ export default class EnvUtil {
    * @returns Current environment
    */
   public static getCurrentEnv(): string | undefined {
-    return process.env.NODE_ENV || env.NODE_ENV;
+    return process.env.NODE_ENV;
   }
 
   /**

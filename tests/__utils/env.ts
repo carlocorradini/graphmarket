@@ -1,5 +1,5 @@
 import path from 'path';
-import envalid, { url } from 'envalid';
+import envalid, { bool, url } from 'envalid';
 import _ from 'lodash';
 
 const env = envalid.cleanEnv(
@@ -7,6 +7,8 @@ const env = envalid.cleanEnv(
   {
     DATABASE_URL: url(),
     REDIS_URL: url(),
+    DATABASE_SYNCHRONIZE: bool({ default: true }),
+    DATABASE_DROP_SCHEMA: bool({ default: true }),
   },
   {
     dotEnvPath: path.resolve(process.cwd(), '.env.test'),
@@ -14,6 +16,7 @@ const env = envalid.cleanEnv(
   },
 );
 
+// @ts-ignore
 process.env = {
   ...process.env,
   ..._.omit({ ...env }, 'isDev', 'isDevelopment', 'isProd', 'isProduction', 'isTest'),

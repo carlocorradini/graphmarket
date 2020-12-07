@@ -162,6 +162,24 @@ const QUERY_USER: string = `
   }
 `;
 
+/* const QUERY_USERS: string = `
+  query Users($skip: NonNegativeInt, $take: PositiveInt) {
+    users(skip: $skip, take: $take) {
+      id
+      username
+      roles
+      name
+      surname
+      gender
+      dateOfBirth
+      email
+      phone
+      createdAt
+      updatedAt
+    }
+  }
+`; */
+
 /* const MUTATION_SIGN_IN = `
   mutation SignIn($username: NonEmptyString!, $password: NonEmptyString!) {
     signIn(username: $username, password: $password)

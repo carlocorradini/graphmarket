@@ -17,6 +17,7 @@ const config: Config.InitialOptions = {
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
+  modulePathIgnorePatterns: ['<rootDir>/__utils'],
 };
 
 export default config;

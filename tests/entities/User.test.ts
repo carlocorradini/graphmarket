@@ -11,7 +11,7 @@ describe('User entity testing', () => {
   });
 
   test('it should assign all available properties with the correct type', () => {
-    const userFake: Required<User> = {
+    const userTemplate: Required<User> = {
       id: faker.random.uuid(),
       username: faker.internet.userName(),
       password: faker.internet.password(),
@@ -27,43 +27,43 @@ describe('User entity testing', () => {
     };
     const user: User = new User();
 
-    expect(Object.keys(userFake)).toHaveLength(USER_PROPERTIES_COUNT);
+    expect(Object.keys(userTemplate)).toHaveLength(USER_PROPERTIES_COUNT);
 
-    user.id = userFake.id;
-    expect(user.id).toStrictEqual(userFake.id);
+    user.id = userTemplate.id;
+    expect(user.id).toStrictEqual(userTemplate.id);
 
-    user.username = userFake.username;
-    expect(user.username).toStrictEqual(userFake.username);
+    user.username = userTemplate.username;
+    expect(user.username).toStrictEqual(userTemplate.username);
 
-    user.password = userFake.password;
-    expect(user.password).toStrictEqual(userFake.password);
+    user.password = userTemplate.password;
+    expect(user.password).toStrictEqual(userTemplate.password);
 
-    user.roles = userFake.roles;
-    expect(user.roles).toStrictEqual(userFake.roles);
+    user.roles = userTemplate.roles;
+    expect(user.roles).toStrictEqual(userTemplate.roles);
 
-    user.name = userFake.name;
-    expect(user.name).toStrictEqual(userFake.name);
+    user.name = userTemplate.name;
+    expect(user.name).toStrictEqual(userTemplate.name);
 
-    user.surname = userFake.surname;
-    expect(user.surname).toStrictEqual(userFake.surname);
+    user.surname = userTemplate.surname;
+    expect(user.surname).toStrictEqual(userTemplate.surname);
 
-    user.gender = userFake.gender;
+    user.gender = userTemplate.gender;
     expect(user.gender).toStrictEqual(user.gender);
 
-    user.dateOfBirth = userFake.dateOfBirth;
+    user.dateOfBirth = userTemplate.dateOfBirth;
     expect(user.dateOfBirth).toStrictEqual(user.dateOfBirth);
 
-    user.email = userFake.email;
-    expect(user.email).toStrictEqual(userFake.email);
+    user.email = userTemplate.email;
+    expect(user.email).toStrictEqual(userTemplate.email);
 
-    user.phone = userFake.phone;
-    expect(user.phone).toStrictEqual(userFake.phone);
+    user.phone = userTemplate.phone;
+    expect(user.phone).toStrictEqual(userTemplate.phone);
 
-    user.createdAt = userFake.createdAt;
-    expect(user.createdAt).toStrictEqual(userFake.createdAt);
+    user.createdAt = userTemplate.createdAt;
+    expect(user.createdAt).toStrictEqual(userTemplate.createdAt);
 
-    user.updatedAt = userFake.updatedAt;
-    expect(user.updatedAt).toStrictEqual(userFake.updatedAt);
+    user.updatedAt = userTemplate.updatedAt;
+    expect(user.updatedAt).toStrictEqual(userTemplate.updatedAt);
   });
 
   test(`user genders count should be ${USER_GENDERS_COUNT}`, () => {

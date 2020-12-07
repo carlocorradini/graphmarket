@@ -2,7 +2,7 @@ import config from '../../src/config/config';
 import { env } from '../__utils';
 
 describe('Config config testing', () => {
-  test('env object should be equal to the provided', () => {
+  test('config object should be equal to the provided', () => {
     expect(config).toStrictEqual({
       NODE: {
         ENV: 'test',

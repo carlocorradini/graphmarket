@@ -2,6 +2,7 @@ import { isEmail, isISO8601, isPhoneNumber, isUUID, isDate } from 'class-validat
 import faker from 'faker';
 import Container from 'typedi';
 import { Connection } from 'typeorm';
+import { ExecutionResult } from 'graphql';
 import { createDatabaseConnection, makeGraphQlRequest } from '../../__utils';
 import User, { UserGenders, UserRoles } from '../../../src/entities/User';
 import { UserCreateInput } from '../../../src/graphql/inputs/user';
@@ -9,12 +10,83 @@ import { UserService } from '../../../src/services';
 
 const USER_FIELDS_COUNT: number = 11;
 
+const checkResponseIsData = (
+  response: ExecutionResult<
+    {
+      [key: string]: any;
+    },
+    {
+      [key: string]: any;
+    }
+  >,
+): void => {
+  expect(response).toBeDefined();
+  expect(response.errors).toBeUndefined();
+  expect(response.data).toBeDefined();
+};
+
+const checkResponseIsError = (
+  response: ExecutionResult<
+    {
+      [key: string]: any;
+    },
+    {
+      [key: string]: any;
+    }
+  >,
+  isResponseDataNull: boolean = false,
+): void => {
+  expect(response).toBeDefined();
+  if (!isResponseDataNull) expect(response.data).toBeUndefined();
+  else expect(response.data).toBeNull();
+  expect(response.errors).toBeDefined();
+  expect(response.errors).toHaveLength(1);
+};
+
 const createMinimalUser = (): UserCreateInput => ({
   username: faker.internet.userName(),
   password: faker.internet.password(8),
   email: faker.internet.email(),
   phone: faker.phone.phoneNumber('+3932########'),
 });
+
+const checkMinimalUser = (data: User, user: UserCreateInput): void => {
+  expect(Object.keys(data)).toHaveLength(USER_FIELDS_COUNT);
+
+  expect(data!.id).toBeDefined();
+  expect(isUUID(data!.id)).toBeTruthy();
+
+  expect(data!.username).toBeDefined();
+  expect(data!.username).toStrictEqual(user.username);
+
+  expect(data!.password).toBeUndefined();
+
+  expect(data!.roles).toBeDefined();
+  expect(data!.roles).toHaveLength(1);
+  expect(data!.roles).toContainEqual(UserRoles.USER);
+
+  expect(data!.name).toBeNull();
+
+  expect(data!.surname).toBeNull();
+
+  expect(data!.gender).toBeNull();
+
+  expect(data!.dateOfBirth).toBeNull();
+
+  expect(data!.email).toBeDefined();
+  expect(isEmail(data!.email)).toBeTruthy();
+  expect(data!.email).toStrictEqual(user.email);
+
+  expect(data!.phone).toBeDefined();
+  expect(isPhoneNumber(data!.phone, null)).toBeTruthy();
+  expect(data!.phone).toStrictEqual(user.phone);
+
+  expect(data!.createdAt).toBeDefined();
+  expect(isDate(data!.createdAt)).toBeTruthy();
+
+  expect(data!.updatedAt).toBeDefined();
+  expect(isDate(data!.updatedAt)).toBeTruthy();
+};
 
 const MUTATION_CREATE_USER: string = `
   mutation CreateUser(
@@ -112,48 +184,9 @@ describe('UserResolver testing', () => {
     const user: UserCreateInput = createMinimalUser();
     const response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
 
-    expect(response).toBeDefined();
-    expect(response.errors).toBeUndefined();
-    expect(response.data).toBeDefined();
+    checkResponseIsData(response);
     expect(response.data!.createUser).toBeDefined();
-
-    const data: User = response.data!.createUser;
-
-    expect(Object.keys(data)).toHaveLength(USER_FIELDS_COUNT);
-
-    expect(data!.id).toBeDefined();
-    expect(isUUID(data!.id)).toBeTruthy();
-
-    expect(data!.username).toBeDefined();
-    expect(data!.username).toStrictEqual(user.username);
-
-    expect(data!.password).toBeUndefined();
-
-    expect(data!.roles).toBeDefined();
-    expect(data!.roles).toHaveLength(1);
-    expect(data!.roles).toContainEqual(UserRoles.USER);
-
-    expect(data!.name).toBeNull();
-
-    expect(data!.surname).toBeNull();
-
-    expect(data!.gender).toBeNull();
-
-    expect(data!.dateOfBirth).toBeNull();
-
-    expect(data!.email).toBeDefined();
-    expect(isEmail(data!.email)).toBeTruthy();
-    expect(data!.email).toStrictEqual(user.email);
-
-    expect(data!.phone).toBeDefined();
-    expect(isPhoneNumber(data!.phone, null)).toBeTruthy();
-    expect(data!.phone).toStrictEqual(user.phone);
-
-    expect(data!.createdAt).toBeDefined();
-    expect(isDate(data!.createdAt)).toBeTruthy();
-
-    expect(data!.updatedAt).toBeDefined();
-    expect(isDate(data!.updatedAt)).toBeTruthy();
+    checkMinimalUser(response.data!.createUser, user);
   });
 
   test('it should create a user with maximum parameters on mutation createUser', async () => {
@@ -166,9 +199,7 @@ describe('UserResolver testing', () => {
     };
     const response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
 
-    expect(response).toBeDefined();
-    expect(response.errors).toBeUndefined();
-    expect(response.data).toBeDefined();
+    checkResponseIsData(response);
     expect(response.data!.createUser).toBeDefined();
 
     const data: User = response.data!.createUser;
@@ -221,10 +252,7 @@ describe('UserResolver testing', () => {
     // Null
     user.username = (null as unknown) as string;
     let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$username" of non-null type "NonEmptyString!" must not be null.`,
     );
@@ -232,10 +260,7 @@ describe('UserResolver testing', () => {
     // Length < 1
     user.username = '';
     response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$username" got invalid value ""; Expected type "NonEmptyString". Value cannot be an empty string: `,
     );
@@ -243,10 +268,7 @@ describe('UserResolver testing', () => {
     // Length > 64
     user.username = faker.random.alphaNumeric(65);
     response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeNull();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response, true);
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
   });
 
@@ -256,10 +278,7 @@ describe('UserResolver testing', () => {
     // Null
     user.password = (null as unknown) as string;
     let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$password" of non-null type "NonEmptyString!" must not be null.`,
     );
@@ -267,19 +286,13 @@ describe('UserResolver testing', () => {
     // Length < 8
     user.password = faker.internet.password(7);
     response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeNull();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response, true);
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
 
     // Length > 64 characters
     user.password = faker.internet.password(65);
     response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeNull();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response, true);
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
   });
 
@@ -289,10 +302,7 @@ describe('UserResolver testing', () => {
     // Length < 1
     user.name = '';
     let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$name" got invalid value ""; Expected type "NonEmptyString". Value cannot be an empty string: `,
     );
@@ -300,10 +310,7 @@ describe('UserResolver testing', () => {
     // Length > 64
     user.name = faker.random.alpha({ count: 65 });
     response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeNull();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response, true);
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
   });
 
@@ -313,10 +320,7 @@ describe('UserResolver testing', () => {
     // Length < 1
     user.surname = '';
     let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$surname" got invalid value ""; Expected type "NonEmptyString". Value cannot be an empty string: `,
     );
@@ -324,10 +328,7 @@ describe('UserResolver testing', () => {
     // Length > 64
     user.surname = faker.random.alpha({ count: 65 });
     response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeNull();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response, true);
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
   });
 
@@ -337,10 +338,7 @@ describe('UserResolver testing', () => {
     // Length < 1
     user.gender = 'GENDER_WITH_UNKNOWN_VALUE' as UserGenders;
     const response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$gender" got invalid value "GENDER_WITH_UNKNOWN_VALUE"; Value "GENDER_WITH_UNKNOWN_VALUE" does not exist in "UserGenders" enum.`,
     );
@@ -352,10 +350,7 @@ describe('UserResolver testing', () => {
     // Date type
     user.dateOfBirth = faker.date.past();
     let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$dateOfBirth" got invalid value {}; Expected type "Date". Date cannot represent non string type "${user.dateOfBirth.toISOString()}"`,
     );
@@ -363,10 +358,7 @@ describe('UserResolver testing', () => {
     // DateTime
     user.dateOfBirth = (faker.date.past().toISOString() as unknown) as Date;
     response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$dateOfBirth" got invalid value "${user.dateOfBirth}"; Expected type "Date". Date cannot represent an invalid date-string ${user.dateOfBirth}.`,
     );
@@ -374,10 +366,7 @@ describe('UserResolver testing', () => {
     // Invalid
     user.dateOfBirth = ('2020-12-32' as unknown) as Date;
     response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$dateOfBirth" got invalid value "${user.dateOfBirth}"; Expected type "Date". Date cannot represent an invalid date-string ${user.dateOfBirth}.`,
     );
@@ -385,10 +374,7 @@ describe('UserResolver testing', () => {
     // Future
     user.dateOfBirth = (faker.date.future().toISOString().split('T')[0] as unknown) as Date;
     response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeNull();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response, true);
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
   });
 
@@ -398,10 +384,7 @@ describe('UserResolver testing', () => {
     // Null
     user.email = (null as unknown) as string;
     let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$email" of non-null type "EmailAddress!" must not be null.`,
     );
@@ -409,10 +392,7 @@ describe('UserResolver testing', () => {
     // Invalid
     user.email = faker.internet.email().replace(/@/g, '');
     response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$email" got invalid value "${user.email}"; Expected type "EmailAddress". Value is not a valid email address: ${user.email}`,
     );
@@ -424,10 +404,7 @@ describe('UserResolver testing', () => {
     // Null
     user.phone = (null as unknown) as string;
     let response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$phone" of non-null type "PhoneNumber!" must not be null.`,
     );
@@ -435,19 +412,13 @@ describe('UserResolver testing', () => {
     // Length < 10
     user.phone = faker.phone.phoneNumber('+39#######');
     response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeNull();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response, true);
     expect(response.errors![0].message).toStrictEqual(`Argument Validation Error`);
 
     // Length > 15
     user.phone = faker.phone.phoneNumber('+################');
     response = await makeGraphQlRequest({ source: MUTATION_CREATE_USER, variables: user });
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$phone" got invalid value "${user.phone}"; Expected type "PhoneNumber". Value is not a valid phone number of the form +17895551234 (10-15 digits): ${user.phone}`,
     );
@@ -461,41 +432,9 @@ describe('UserResolver testing', () => {
       token: { id, roles },
     });
 
-    expect(response).toBeDefined();
-    expect(response.errors).toBeUndefined();
-    expect(response.data).toBeDefined();
+    checkResponseIsData(response);
     expect(response.data!.me).toBeDefined();
-
-    const data: User = response.data!.me;
-
-    expect(Object.keys(data)).toHaveLength(USER_FIELDS_COUNT);
-
-    expect(data!.id).toBeDefined();
-    expect(isUUID(data!.id)).toBeTruthy();
-    expect(data!.id).toStrictEqual(id);
-
-    expect(data!.username).toBeDefined();
-    expect(data!.username).toStrictEqual(user.username);
-
-    expect(data!.password).toBeUndefined();
-
-    expect(data!.roles).toBeDefined();
-    expect(data!.roles).toHaveLength(1);
-    expect(data!.roles).toContainEqual(UserRoles.USER);
-
-    expect(data!.email).toBeDefined();
-    expect(isEmail(data!.email)).toBeTruthy();
-    expect(data!.email).toStrictEqual(user.email);
-
-    expect(data!.phone).toBeDefined();
-    expect(isPhoneNumber(data!.phone, null)).toBeTruthy();
-    expect(data!.phone).toStrictEqual(user.phone);
-
-    expect(data!.createdAt).toBeDefined();
-    expect(isDate(data!.createdAt)).toBeTruthy();
-
-    expect(data!.updatedAt).toBeDefined();
-    expect(isDate(data!.updatedAt)).toBeTruthy();
+    checkMinimalUser(response.data!.me, user);
   });
 
   test('it should fail due to unauthorized on query me', async () => {
@@ -503,10 +442,7 @@ describe('UserResolver testing', () => {
       source: QUERY_ME,
     });
 
-    expect(response).toBeDefined();
-    expect(response.data).toBeNull();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response, true);
     expect(response.errors![0].message).toStrictEqual(
       `Access denied! You need to be authorized to perform this action!`,
     );
@@ -526,10 +462,7 @@ describe('UserResolver testing', () => {
       token: { id, roles: [UserRoles.USER] },
     });
 
-    expect(response).toBeDefined();
-    expect(response.data).toBeNull();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response, true);
     expect(response.errors![0].message).toStrictEqual(
       `Could not find any entity of type "User" matching: "${id}"`,
     );
@@ -543,10 +476,7 @@ describe('UserResolver testing', () => {
       token: { id, roles: [UserRoles.USER] },
     });
 
-    expect(response).toBeDefined();
-    expect(response.data).toBeNull();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response, true);
     expect(response.errors![0].message).toStrictEqual(
       `invalid input syntax for type uuid: "${id}"`,
     );
@@ -560,41 +490,9 @@ describe('UserResolver testing', () => {
       token: { id: user.id, roles: user.roles },
     });
 
-    expect(response).toBeDefined();
-    expect(response.errors).toBeUndefined();
-    expect(response.data).toBeDefined();
+    checkResponseIsData(response);
     expect(response.data!.user).toBeDefined();
-
-    const data: User = response.data!.user;
-
-    expect(Object.keys(data)).toHaveLength(USER_FIELDS_COUNT);
-
-    expect(data!.id).toBeDefined();
-    expect(isUUID(data!.id)).toBeTruthy();
-    expect(data!.id).toStrictEqual(user.id);
-
-    expect(data!.username).toBeDefined();
-    expect(data!.username).toStrictEqual(user.username);
-
-    expect(data!.password).toBeUndefined();
-
-    expect(data!.roles).toBeDefined();
-    expect(data!.roles).toHaveLength(1);
-    expect(data!.roles).toContainEqual(UserRoles.USER);
-
-    expect(data!.email).toBeDefined();
-    expect(isEmail(data!.email)).toBeTruthy();
-    expect(data!.email).toStrictEqual(user.email);
-
-    expect(data!.phone).toBeDefined();
-    expect(isPhoneNumber(data!.phone, null)).toBeTruthy();
-    expect(data!.phone).toStrictEqual(user.phone);
-
-    expect(data!.createdAt).toBeDefined();
-    expect(isDate(data!.createdAt)).toBeTruthy();
-
-    expect(data!.updatedAt).toBeDefined();
-    expect(isDate(data!.updatedAt)).toBeTruthy();
+    checkMinimalUser(response.data!.user, user as UserCreateInput);
   });
 
   test('it should return null if no user found on query user', async () => {
@@ -612,9 +510,7 @@ describe('UserResolver testing', () => {
       token: { id: faker.random.uuid(), roles: [UserRoles.USER] },
     });
 
-    expect(response).toBeDefined();
-    expect(response.errors).toBeUndefined();
-    expect(response.data).toBeDefined();
+    checkResponseIsData(response);
     expect(response.data!.user).toBeNull();
   });
 
@@ -642,10 +538,7 @@ describe('UserResolver testing', () => {
       token: { id: faker.random.uuid(), roles: [UserRoles.USER] },
     });
 
-    expect(response).toBeDefined();
-    expect(response.data).toBeUndefined();
-    expect(response.errors).toBeDefined();
-    expect(response.errors).toHaveLength(1);
+    checkResponseIsError(response);
     expect(response.errors![0].message).toStrictEqual(
       `Variable "$id" got invalid value "${id}"; Expected type "UUID". Value is not a valid UUID: ${id}`,
     );

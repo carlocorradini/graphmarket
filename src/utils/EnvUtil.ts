@@ -5,17 +5,17 @@ import env from '@app/config/env';
  */
 export default class EnvUtil {
   /**
-   * Production environment identifier
+   * Production environment identifier.
    */
   public static readonly ENV_PRODUCTION: string = 'production';
 
   /**
-   * Development environment identifier
+   * Development environment identifier.
    */
   public static readonly ENV_DEVELOPMENT: string = 'development';
 
   /**
-   * Test environment identifier
+   * Test environment identifier.
    */
   public static readonly ENV_TEST: string = 'test';
 
@@ -24,34 +24,34 @@ export default class EnvUtil {
    *
    * @returns Current environment
    */
-  public static getCurrent(): string | undefined {
+  public static getCurrentEnv(): string | undefined {
     return process.env.NODE_ENV || env.NODE_ENV;
   }
 
   /**
-   * Check if the current environment is production
+   * Check if the current environment is production.
    *
    * @returns True if production, false otherwise
    */
   public static isProduction(): boolean {
-    return this.getCurrent() === this.ENV_PRODUCTION;
+    return this.getCurrentEnv() === this.ENV_PRODUCTION;
   }
 
   /**
-   * Check if the current environment is development
+   * Check if the current environment is development.
    *
    * @returns True if development, false otherwise
    */
   public static isDevelopment(): boolean {
-    return this.getCurrent() === this.ENV_DEVELOPMENT;
+    return this.getCurrentEnv() === this.ENV_DEVELOPMENT;
   }
 
   /**
-   * Check if the current environment is test
+   * Check if the current environment is test.
    *
    * @returns True if test, false otherwise
    */
   public static isTest(): boolean {
-    return this.getCurrent() === this.ENV_TEST;
+    return this.getCurrentEnv() === this.ENV_TEST;
   }
 }

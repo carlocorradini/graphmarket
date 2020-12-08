@@ -218,4 +218,10 @@ export default class User {
   @UpdateDateColumn({ name: 'updated_at' })
   @Field(() => GraphQLDateTime)
   updatedAt!: Date;
+
+  /**
+   * User is verified check.
+   */
+  @Column({ default: false, select: false })
+  verified?: boolean;
 }

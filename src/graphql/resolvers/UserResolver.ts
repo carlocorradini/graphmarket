@@ -29,7 +29,7 @@ export default class UserResolver {
    * @returns Created user
    */
   @Mutation(() => User)
-  createUser(@Arg('data') data: UserCreateInput): Promise<User> {
+  createUser(@Arg('data', () => UserCreateInput) data: UserCreateInput): Promise<User> {
     return this.userService.create(data);
   }
 
@@ -78,7 +78,10 @@ export default class UserResolver {
    */
   @Mutation(() => User)
   @Authorized()
-  updateMe(@Arg('data') data: UserUpdateInput, @Ctx() ctx: IContext): Promise<User> {
+  updateMe(
+    @Arg('data', () => UserUpdateInput) data: UserUpdateInput,
+    @Ctx() ctx: IContext,
+  ): Promise<User> {
     return this.userService.update(ctx.user!.id, data);
   }
 

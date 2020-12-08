@@ -5,7 +5,7 @@ const throwUnauthorizedError = () => {
 };
 
 describe('Unauthorized error testing', () => {
-  test('it should create an authentication error', () => {
+  test('it should create an unauthorized error', () => {
     expect(new UnauthorizedError()).toBeDefined();
   });
 

@@ -76,7 +76,7 @@
     "@types/express-jwt": "0.0.42",
     "@types/faker": "^5.1.5",
     "@types/ioredis": "^4.17.8",
-    "@types/jest": "^26.0.16",
+    "@types/jest": "^26.0.17",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash": "^4.14.165",
     "@types/node": "^14.14.10",

@@ -1,7 +1,7 @@
 import faker from 'faker';
 import User, { UserGenders, UserRoles } from '../../src/entities/User';
 
-const USER_PROPERTIES_COUNT: number = 12;
+const USER_PROPERTIES_COUNT: number = 13;
 const USER_GENDERS_COUNT: number = 72;
 const USER_ROLES_COUNT: number = 3;
 
@@ -24,6 +24,7 @@ describe('User entity testing', () => {
       phone: faker.phone.phoneNumber('+3932########'),
       createdAt: new Date(),
       updatedAt: new Date(),
+      verified: false,
     };
     const user: User = new User();
 

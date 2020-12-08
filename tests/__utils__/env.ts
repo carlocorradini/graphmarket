@@ -1,5 +1,5 @@
 import path from 'path';
-import envalid, { bool, url } from 'envalid';
+import envalid, { bool, str, url } from 'envalid';
 import _ from 'lodash';
 
 const env = envalid.cleanEnv(
@@ -9,6 +9,9 @@ const env = envalid.cleanEnv(
     REDIS_URL: url(),
     DATABASE_SYNCHRONIZE: bool({ default: true }),
     DATABASE_DROP_SCHEMA: bool({ default: true }),
+    SERVICE_PHONE_TWILIO_ACCOUNT_SID: str(),
+    SERVICE_PHONE_TWILIO_AUTH_TOKEN: str(),
+    SERVICE_PHONE_TWILIO_VERIFICATION_SID: str(),
   },
   {
     dotEnvPath: path.resolve(process.cwd(), '.env.test'),

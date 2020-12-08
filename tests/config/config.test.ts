@@ -33,6 +33,14 @@ describe('Config config testing', () => {
         PLAYGROUND: true,
         RESOLVERS: 'graphql/resolvers/**/*.{ts,js}',
       },
+      SERVICES: {
+        PHONE: {
+          TWILIO_ACCOUNT_SID: env.SERVICE_PHONE_TWILIO_ACCOUNT_SID,
+          TWILIO_AUTH_TOKEN: env.SERVICE_PHONE_TWILIO_AUTH_TOKEN,
+          TWILIO_VERIFICATION_SID: env.SERVICE_PHONE_TWILIO_VERIFICATION_SID,
+          DEBUG: false,
+        },
+      },
     });
   });
 });

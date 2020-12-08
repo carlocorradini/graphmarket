@@ -28,6 +28,7 @@ const env = _.omit(
   'isTest',
 );
 
+// @ts-ignore
 process.env = {
   ...process.env,
   ...env,

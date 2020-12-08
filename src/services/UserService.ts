@@ -5,7 +5,7 @@ import { UserCreateInput, UserUpdateInput } from '@app/graphql';
 import { User } from '@app/entities';
 import logger from '@app/logger';
 import { CryptUtil } from '@app/utils';
-import { AuthenticationError } from '@app/errors';
+import { AuthenticationError, VerificationError } from '@app/errors';
 import TokenService from './TokenService';
 
 /**
@@ -157,7 +157,7 @@ export default class UserService {
     const user: User | undefined = await manager!.findOne(
       User,
       { username },
-      { select: ['id', 'password', 'roles'] },
+      { select: ['id', 'password', 'roles', 'verified'] },
     );
 
     // Check if user exists and password is valid
@@ -165,6 +165,13 @@ export default class UserService {
       logger.warn(`Sign in procedure failed for user ${user ? user.id : '?'}`);
 
       throw new AuthenticationError();
+    }
+
+    // Check if user is verified
+    if (!user.verified) {
+      logger.warn(`Sign in procedure failed for user ${user.id} due to not verified`);
+
+      throw new VerificationError();
     }
 
     logger.info(`Sign in procedure succeeded for user ${user.id}`);

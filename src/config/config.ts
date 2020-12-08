@@ -37,6 +37,14 @@ const config: IConfig = {
     PLAYGROUND: env.GRAPHQL_PLAYGROUND,
     RESOLVERS: 'graphql/resolvers/**/*.{ts,js}',
   },
+  SERVICES: {
+    PHONE: {
+      TWILIO_ACCOUNT_SID: env.SERVICE_PHONE_TWILIO_ACCOUNT_SID,
+      TWILIO_AUTH_TOKEN: env.SERVICE_PHONE_TWILIO_AUTH_TOKEN,
+      TWILIO_VERIFICATION_SID: env.SERVICE_PHONE_TWILIO_VERIFICATION_SID,
+      DEBUG: env.SERVICE_PHONE_DEBUG,
+    },
+  },
 };
 
 logger.debug('Configuration object constructed');

@@ -34,6 +34,14 @@ export interface IConfig {
     readonly PLAYGROUND: boolean;
     readonly RESOLVERS: string;
   };
+  readonly SERVICES: {
+    readonly PHONE: {
+      readonly TWILIO_ACCOUNT_SID: string;
+      readonly TWILIO_AUTH_TOKEN: string;
+      readonly TWILIO_VERIFICATION_SID: string;
+      readonly DEBUG: boolean;
+    };
+  };
 }
 
 /**

@@ -32,6 +32,10 @@ const env = _.omit(
         TOKEN_EXPIRATION_TIME: num({ default: ONE_WEEK_IN_SECONDS }),
         GRAPHQL_PATH: str({ default: '/graphql' }),
         GRAPHQL_PLAYGROUND: bool({ default: false, devDefault: true }),
+        SERVICE_PHONE_TWILIO_ACCOUNT_SID: str(),
+        SERVICE_PHONE_TWILIO_AUTH_TOKEN: str(),
+        SERVICE_PHONE_TWILIO_VERIFICATION_SID: str(),
+        SERVICE_PHONE_DEBUG: bool({ default: false }),
       },
       {
         strict: true,

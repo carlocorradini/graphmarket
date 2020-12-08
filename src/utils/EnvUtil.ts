@@ -32,7 +32,7 @@ export default class EnvUtil {
    * @returns True if production, false otherwise
    */
   public static isProduction(): boolean {
-    return this.getCurrentEnv() === this.ENV_PRODUCTION;
+    return this.getCurrentEnv() === EnvUtil.ENV_PRODUCTION;
   }
 
   /**
@@ -41,7 +41,7 @@ export default class EnvUtil {
    * @returns True if development, false otherwise
    */
   public static isDevelopment(): boolean {
-    return this.getCurrentEnv() === this.ENV_DEVELOPMENT;
+    return this.getCurrentEnv() === EnvUtil.ENV_DEVELOPMENT;
   }
 
   /**
@@ -50,6 +50,6 @@ export default class EnvUtil {
    * @returns True if test, false otherwise
    */
   public static isTest(): boolean {
-    return this.getCurrentEnv() === this.ENV_TEST;
+    return this.getCurrentEnv() === EnvUtil.ENV_TEST;
   }
 }

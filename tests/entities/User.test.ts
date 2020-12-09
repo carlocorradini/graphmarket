@@ -1,5 +1,5 @@
 import faker from 'faker';
-import User, { UserGenders, UserRoles } from '../../src/entities/User';
+import User, { UserGenders, UserRoles } from '@app/entities/User';
 
 const USER_PROPERTIES_COUNT: number = 13;
 const USER_GENDERS_COUNT: number = 72;

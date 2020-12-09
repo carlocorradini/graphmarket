@@ -1,4 +1,4 @@
-import UnauthorizedError from '../../src/errors/UnauthorizedError';
+import UnauthorizedError from '@app/errors/UnauthorizedError';
 
 const throwUnauthorizedError = () => {
   throw new UnauthorizedError();

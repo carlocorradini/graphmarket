@@ -1,4 +1,4 @@
-import EnvUtil from '../../src/utils/EnvUtil';
+import EnvUtil from '@app/utils/EnvUtil';
 
 describe('EnvUtil testing', () => {
   test('env identifiers name should match with the value', () => {

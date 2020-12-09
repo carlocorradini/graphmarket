@@ -1,5 +1,5 @@
 // --- ALWAYS FIRST
-import './__utils__/env';
+import '../src/config/env';
 // --- END
 
 export default async () => {};

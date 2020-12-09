@@ -1,5 +1,4 @@
 import config from '../../src/config/config';
-import { env } from '../__utils__';
 
 describe('Config config testing', () => {
   test('config object should be equal to the provided', () => {
@@ -10,7 +9,7 @@ describe('Config config testing', () => {
       },
       DATABASE: {
         TYPE: 'postgres',
-        URL: env.DATABASE_URL,
+        URL: config.DATABASE.URL,
         SSL: false,
         SYNCHRONIZE: true,
         DROP_SCHEMA: true,
@@ -20,7 +19,7 @@ describe('Config config testing', () => {
         SUBSCRIBERS: 'subscriber/**/*.{ts,js}',
       },
       REDIS: {
-        URL: env.REDIS_URL,
+        URL: config.REDIS.URL,
         TOKEN_BLOCKLIST: 'TOKEN_BLOCKLIST',
       },
       TOKEN: {
@@ -35,9 +34,9 @@ describe('Config config testing', () => {
       },
       SERVICES: {
         PHONE: {
-          TWILIO_ACCOUNT_SID: env.SERVICE_PHONE_TWILIO_ACCOUNT_SID,
-          TWILIO_AUTH_TOKEN: env.SERVICE_PHONE_TWILIO_AUTH_TOKEN,
-          TWILIO_VERIFICATION_SID: env.SERVICE_PHONE_TWILIO_VERIFICATION_SID,
+          TWILIO_ACCOUNT_SID: config.SERVICES.PHONE.TWILIO_ACCOUNT_SID,
+          TWILIO_AUTH_TOKEN: config.SERVICES.PHONE.TWILIO_AUTH_TOKEN,
+          TWILIO_VERIFICATION_SID: config.SERVICES.PHONE.TWILIO_VERIFICATION_SID,
           DEBUG: false,
         },
       },

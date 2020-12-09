@@ -1,5 +1,17 @@
 import envalid, { str, port, bool, url, num } from 'envalid';
 import _ from 'lodash';
+import { EnvUtil } from '@app/utils';
+
+/**
+ * Path to the file that is parsed by dotenv.
+ * Null skip dotenv processing entirely and only load from process.env.
+ * '.env' load .env file used in development environment.
+ * '.env.test' load .env.test file used in test environment.
+ */
+let dotEnvPath: string | undefined | null = null;
+if (EnvUtil.isProduction()) dotEnvPath = null;
+else if (EnvUtil.isDevelopment()) dotEnvPath = '.env';
+else if (EnvUtil.isTest()) dotEnvPath = '.env.test';
 
 /**
  * One week in seconds
@@ -39,6 +51,7 @@ const env = _.omit(
       },
       {
         strict: true,
+        dotEnvPath,
       },
     ),
   },

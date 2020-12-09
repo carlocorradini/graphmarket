@@ -62,7 +62,7 @@
     "lodash": "^4.17.20",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
-    "twilio": "^3.53.0",
+    "twilio": "^3.54.0",
     "type-graphql": "^1.1.1",
     "typedi": "^0.8.0",
     "typeorm": "^0.2.29",

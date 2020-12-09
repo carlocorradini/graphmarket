@@ -1,4 +1,4 @@
-import config from '../../src/config/config';
+import config from '@app/config';
 
 describe('Config config testing', () => {
   test('config object should be equal to the provided', () => {

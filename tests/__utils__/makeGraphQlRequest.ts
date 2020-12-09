@@ -2,8 +2,8 @@ import path from 'path';
 import { graphql, Source } from 'graphql';
 import { buildSchemaSync } from 'type-graphql';
 import { Container } from 'typedi';
-import { AuthorizationMiddleware } from '../../src/middlewares';
-import { IToken } from '../../src/types';
+import { IToken } from '@app/types';
+import { AuthorizationMiddleware } from '@app/middlewares';
 
 export type Maybe<T> = null | undefined | T;
 

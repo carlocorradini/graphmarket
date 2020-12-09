@@ -1,5 +1,5 @@
 // --- ALWAYS FIRST
-import '../src/config/env';
+import '@app/config/env';
 // --- END
 
 export default async () => {};

@@ -3,10 +3,10 @@ import faker from 'faker';
 import Container from 'typedi';
 import { Connection } from 'typeorm';
 import { ExecutionResult } from 'graphql';
-import { createDatabaseConnection, makeGraphQlRequest } from '../../__utils__';
-import User, { UserGenders, UserRoles } from '../../../src/entities/User';
-import { UserCreateInput } from '../../../src/graphql/inputs/user';
-import { UserService } from '../../../src/services';
+import { createDatabaseConnection, makeGraphQlRequest } from '@test/__utils__';
+import User, { UserGenders, UserRoles } from '@app/entities/User';
+import { UserCreateInput } from '@app/graphql/inputs/user';
+import { UserService } from '@app/services';
 
 const USER_FIELDS_COUNT: number = 11;
 

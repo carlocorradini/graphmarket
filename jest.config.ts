@@ -13,6 +13,11 @@ const config: Config.InitialOptions = {
       compiler: 'ttypescript',
     },
   },
+  moduleDirectories: ['node_modules', 'src'],
+  moduleNameMapper: {
+    '@app/(.*)': '<rootDir>/$1',
+    '@test/(.*)': '<rootDir>/$1',
+  },
   testMatch: ['**/?(*.)+(spec|test).+(ts|js)'],
   transform: {
     '^.+\\.ts$': 'ts-jest',

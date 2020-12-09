@@ -1,7 +1,6 @@
 import path from 'path';
 import { ConnectionOptions, createConnection } from 'typeorm';
-// eslint-disable-next-line import/no-named-as-default
-import config from '../../src/config';
+import config from '@app/config';
 
 export default () =>
   createConnection(<ConnectionOptions>{

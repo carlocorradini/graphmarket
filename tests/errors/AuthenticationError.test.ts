@@ -1,4 +1,4 @@
-import AuthenticationError from '../../src/errors/AuthenticationError';
+import AuthenticationError from '@app/errors/AuthenticationError';
 
 const throwAuthenticationError = () => {
   throw new AuthenticationError();

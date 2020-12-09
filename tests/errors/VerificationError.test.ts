@@ -1,4 +1,4 @@
-import VerificationError from '../../src/errors/VerificationError';
+import VerificationError from '@app/errors/VerificationError';
 
 const throwVerificationError = () => {
   throw new VerificationError();

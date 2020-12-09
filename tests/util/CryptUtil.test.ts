@@ -1,5 +1,5 @@
 import faker from 'faker';
-import CryptUtil from '../../src/utils/CryptUtil';
+import CryptUtil from '@app/utils/CryptUtil';
 
 describe('CryptUtil testing', () => {
   test('it should hash synchronously', () => {

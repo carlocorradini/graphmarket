@@ -1,4 +1,4 @@
-import env from '../../src/config/env';
+import env from '@app/config/env';
 
 describe('Env config testing', () => {
   test('env object should be equal to the provided', () => {

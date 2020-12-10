@@ -3,6 +3,7 @@ import { Service } from 'typedi';
 import { Twilio } from 'twilio';
 import config from '@app/config';
 import logger from '@app/logger';
+import { EnvUtil } from '@app/utils';
 
 /**
  * Phone service.
@@ -23,6 +24,9 @@ export default class PhoneService {
    * @param phone - Phone number
    */
   public async sendVerification(phone: string): Promise<void> {
+    // TODO Phone verification can be used only in production environment
+    if (!EnvUtil.isProduction()) return;
+
     try {
       await PhoneService.twilio.verify
         .services(config.SERVICES.PHONE.TWILIO_VERIFICATION_SID)

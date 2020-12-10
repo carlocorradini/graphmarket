@@ -41,6 +41,9 @@ export interface IConfig {
       readonly TWILIO_VERIFICATION_SID: string;
       readonly DEBUG: boolean;
     };
+    readonly EMAIL: {
+      readonly SENDGRID_API_KEY: string;
+    };
   };
 }
 

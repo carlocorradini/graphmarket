@@ -48,6 +48,7 @@ const env = _.omit(
         SERVICE_PHONE_TWILIO_AUTH_TOKEN: str(),
         SERVICE_PHONE_TWILIO_VERIFICATION_SID: str(),
         SERVICE_PHONE_DEBUG: bool({ default: false }),
+        SERVICE_EMAIL_SENDGRID_API_KEY: str(),
       },
       {
         strict: true,

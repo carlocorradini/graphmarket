@@ -4,7 +4,7 @@ import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 
 import { UserCreateInput, UserUpdateInput } from '@app/graphql';
 import { User } from '@app/entities';
 import logger from '@app/logger';
-import { CryptUtil, EnvUtil } from '@app/utils';
+import { CryptUtil } from '@app/utils';
 import { AuthenticationError, VerificationError } from '@app/errors';
 import TokenService from './TokenService';
 import PhoneService from './PhoneService';
@@ -42,11 +42,11 @@ export default class UserService {
   ): Promise<User> {
     const newUser: User = await manager!.save(User, manager!.create(User, user));
 
-    // TODO Phone verification can be used only production environment
     // Send verification message
-    if (EnvUtil.isProduction()) await this.phoneService.sendVerification(user.phone);
+    await this.phoneService.sendVerification(user.phone);
 
     // Send verification email
+    // TODO
 
     logger.info(`Created user ${newUser.id}`);
 

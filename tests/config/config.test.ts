@@ -39,6 +39,9 @@ describe('Config config testing', () => {
           TWILIO_VERIFICATION_SID: config.SERVICES.PHONE.TWILIO_VERIFICATION_SID,
           DEBUG: false,
         },
+        EMAIL: {
+          SENDGRID_API_KEY: config.SERVICES.EMAIL.SENDGRID_API_KEY,
+        },
       },
     });
   });

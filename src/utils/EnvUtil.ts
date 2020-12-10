@@ -19,11 +19,12 @@ export default class EnvUtil {
 
   /**
    * Return the current environment.
+   * If 'NODE_ENV' is not defined return 'production'.
    *
    * @returns Current environment
    */
-  public static getCurrentEnv(): string | undefined {
-    return process.env.NODE_ENV;
+  public static getCurrentEnv(): string {
+    return process.env.NODE_ENV || EnvUtil.ENV_PRODUCTION;
   }
 
   /**

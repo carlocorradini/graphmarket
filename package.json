@@ -46,6 +46,7 @@
     "start:dev": "npx ts-node-dev --prefer-ts true --no-notify --rs --clear --exit-child -r tsconfig-paths/register --watch src --respawn --transpile-only src/app.ts"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.4.0",
     "apollo-server-express": "^2.19.0",
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.12.2",
@@ -80,7 +81,7 @@
     "@types/jest": "^26.0.18",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash": "^4.14.165",
-    "@types/node": "^14.14.11",
+    "@types/node": "^14.14.12",
     "@types/shelljs": "^0.8.8",
     "@typescript-eslint/eslint-plugin": "^4.9.1",
     "eslint": "^7.15.0",
@@ -100,7 +101,7 @@
     "shelljs": "^0.8.4",
     "ts-jest": "^26.4.4",
     "ts-node": "^9.1.1",
-    "ts-node-dev": "^1.0.0",
+    "ts-node-dev": "^1.1.1",
     "tsconfig-paths": "^3.9.0",
     "ttypescript": "^1.5.12",
     "typedoc": "^0.19.2",

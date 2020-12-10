@@ -44,6 +44,9 @@ const config: IConfig = {
       TWILIO_VERIFICATION_SID: env.SERVICE_PHONE_TWILIO_VERIFICATION_SID,
       DEBUG: env.SERVICE_PHONE_DEBUG,
     },
+    EMAIL: {
+      SENDGRID_API_KEY: env.SERVICE_EMAIL_SENDGRID_API_KEY,
+    },
   },
 };
 

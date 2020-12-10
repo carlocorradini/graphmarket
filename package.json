@@ -43,7 +43,7 @@
     "build": "npx ttsc --p ./tsconfig.json",
     "postbuild": "npx ts-node scripts/build.ts",
     "start": "node build/app.js",
-    "start:dev": "npx ts-node-dev --prefer-ts true --no-notify --rs --clear --exit-child -r tsconfig-paths/register --watch src --respawn --transpile-only src/app.ts"
+    "start:dev": "npx cross-env NODE_ENV=development ts-node-dev --prefer-ts true --no-notify --rs --clear --exit-child -r tsconfig-paths/register --watch src --respawn --transpile-only src/app.ts"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.4.0",
@@ -84,6 +84,7 @@
     "@types/node": "^14.14.12",
     "@types/shelljs": "^0.8.8",
     "@typescript-eslint/eslint-plugin": "^4.9.1",
+    "cross-env": "^7.0.3",
     "eslint": "^7.15.0",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-prettier": "^7.0.0",

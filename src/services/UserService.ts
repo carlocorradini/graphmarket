@@ -46,6 +46,7 @@ export default class UserService {
     await this.phoneService.sendVerification(user.phone);
 
     // Send verification email
+    // TODO
 
     logger.info(`Created user ${newUser.id}`);
 

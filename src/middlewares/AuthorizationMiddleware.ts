@@ -8,7 +8,7 @@ import { IContext } from '@app/types';
  * @param roles - Allowed roles to execute the operation
  * @returns True if authorized, false otherwise
  */
-const AuthorizationMiddleware: AuthChecker<IContext> = ({ context: { user } }, roles) => {
+const authorizationMiddleware: AuthChecker<IContext> = ({ context: { user } }, roles) => {
   // If `@Authorized()`, check only is user exist
   if (roles.length === 0) return user !== undefined;
 
@@ -19,4 +19,4 @@ const AuthorizationMiddleware: AuthChecker<IContext> = ({ context: { user } }, r
   return user.roles.some((role) => roles.includes(role));
 };
 
-export default AuthorizationMiddleware;
+export default authorizationMiddleware;

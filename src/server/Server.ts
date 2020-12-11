@@ -15,7 +15,7 @@ import { Container } from 'typedi';
 import config from '@app/config';
 import logger from '@app/logger';
 import { IContext } from '@app/types';
-import { AuthorizationMiddleware } from '@app/middlewares';
+import { authorizationMiddleware } from '@app/middlewares';
 import { EnvUtil } from '@app/utils';
 
 /**
@@ -123,7 +123,7 @@ export default class Server {
     const server = new ApolloServer({
       schema: buildSchemaSync({
         resolvers: [path.join(__dirname, '..', config.GRAPHQL.RESOLVERS)],
-        authChecker: AuthorizationMiddleware,
+        authChecker: authorizationMiddleware,
         container: Container,
       }),
       playground: config.GRAPHQL.PLAYGROUND,

@@ -20,9 +20,10 @@ const logger = createLogger({
     format.printf(({ timestamp, level, message }) => `${timestamp} ${level} ${message}`),
   ),
   transports: [
-    fileTransport,
-    // Remove console transport if not in development
-    ...(EnvUtil.isProduction() || EnvUtil.isTest() ? [] : [consoleTransport]),
+    // Enable file transport only in production
+    ...(EnvUtil.isProduction() ? [fileTransport] : []),
+    // Enable console transport only in development
+    ...(EnvUtil.isDevelopment() ? [consoleTransport] : []),
   ],
 });
 

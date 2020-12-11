@@ -128,10 +128,8 @@ export default class Server {
       }),
       playground: config.GRAPHQL.PLAYGROUND,
       tracing: !EnvUtil.isProduction(),
-      context: ({ req, res }) => {
+      context: ({ req }) => {
         const context: IContext = {
-          req,
-          res,
           user: req.user,
         };
 

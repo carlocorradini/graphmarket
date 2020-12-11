@@ -1,5 +1,4 @@
 import { UserRoles } from '@app/entities/User';
-import { Request, Response } from 'express';
 
 /**
  * Configuration interface
@@ -68,7 +67,5 @@ export interface IToken extends ITokenPayload {
  * GraphQL context
  */
 export interface IContext {
-  readonly req: Request;
-  readonly res: Response;
   readonly user?: IToken;
 }

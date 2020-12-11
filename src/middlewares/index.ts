@@ -1,2 +1,2 @@
 // eslint-disable-next-line import/prefer-default-export
-export { default as authorizationMiddleware } from './AuthorizationMiddleware';
+export { default as authorizationMiddleware } from './authorizationMiddleware';

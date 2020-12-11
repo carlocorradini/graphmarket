@@ -3,7 +3,7 @@ import { graphql, Source } from 'graphql';
 import { buildSchemaSync } from 'type-graphql';
 import { Container } from 'typedi';
 import { IToken } from '@app/types';
-import { AuthorizationMiddleware } from '@app/middlewares';
+import { authorizationMiddleware } from '@app/middlewares';
 
 export type Maybe<T> = null | undefined | T;
 
@@ -15,7 +15,7 @@ export interface IGraphQlRequest {
 
 const schema = buildSchemaSync({
   resolvers: [path.resolve(__dirname, '../../src/graphql/resolvers/**/*.ts')],
-  authChecker: AuthorizationMiddleware,
+  authChecker: authorizationMiddleware,
   container: Container,
 });
 

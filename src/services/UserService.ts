@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { Inject, Service } from 'typedi';
 import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
+import { FileUpload } from 'graphql-upload';
 import { UserCreateInput, UserUpdateInput } from '@app/graphql';
 import { User } from '@app/entities';
 import logger from '@app/logger';
@@ -8,6 +9,7 @@ import { CryptUtil } from '@app/utils';
 import { AuthenticationError, VerificationError } from '@app/errors';
 import TokenService from './TokenService';
 import PhoneService from './PhoneService';
+import UploadService from './UploadService';
 
 /**
  * User service.
@@ -27,6 +29,12 @@ export default class UserService {
    */
   @Inject()
   private readonly phoneService!: PhoneService;
+
+  /**
+   * Upload service instance.
+   */
+  @Inject()
+  private readonly uploadService!: UploadService;
 
   /**
    * Create a new user.
@@ -124,6 +132,36 @@ export default class UserService {
     if (user.password) this.tokenService.purge(id);
 
     logger.info(`Updated user ${id}`);
+
+    return this.readOneOrFail(id, manager);
+  }
+
+  /**
+   * Update avatar for the user identified by the id.
+   *
+   * @param id - User's id
+   * @param avatar - Avatar file
+   * @param manager - Transaction manager
+   * @returns Updated user
+   * @see UploadService
+   */
+  @Transaction()
+  public async updateAvatar(
+    id: string,
+    avatar: FileUpload,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<User> {
+    // Check if user exists
+    await this.readOneOrFail(id, manager);
+
+    // Upload avatar and extract generated url
+    const url: string = await (
+      await this.uploadService.upload({ resource: avatar, type: 'USER_AVATAR' })
+    ).secure_url;
+
+    await manager!.update(User, id, manager!.create(User, { avatar: url }));
+
+    logger.info(`Updated avatar for user user ${id}`);
 
     return this.readOneOrFail(id, manager);
   }

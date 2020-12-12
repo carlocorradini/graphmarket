@@ -8,7 +8,7 @@ import User, { UserGenders, UserRoles } from '@app/entities/User';
 import { UserCreateInput } from '@app/graphql/inputs/user';
 import { UserService } from '@app/services';
 
-const USER_FIELDS_COUNT: number = 11;
+const USER_FIELDS_COUNT: number = 12;
 
 const checkResponseIsData = (
   response: ExecutionResult<
@@ -120,6 +120,7 @@ const MUTATION_CREATE_USER: string = `
       dateOfBirth
       email
       phone
+      avatar
       createdAt
       updatedAt
     }
@@ -138,6 +139,7 @@ const QUERY_ME: string = `
       dateOfBirth
       email
       phone
+      avatar
       createdAt
       updatedAt
     }
@@ -156,6 +158,7 @@ const QUERY_USER: string = `
       dateOfBirth
       email
       phone
+      avatar
       createdAt
       updatedAt
     }
@@ -174,6 +177,7 @@ const QUERY_USER: string = `
       dateOfBirth
       email
       phone
+      avatar
       createdAt
       updatedAt
     }

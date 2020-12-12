@@ -43,6 +43,12 @@ export interface IConfig {
     readonly EMAIL: {
       readonly SENDGRID_API_KEY: string;
     };
+    readonly UPLOAD: {
+      readonly CLOUDINARY_CLOUD_NAME: string;
+      readonly CLOUDINARY_API_KEY: string;
+      readonly CLOUDINARY_API_SECRET: string;
+      readonly CLOUDINARY_FOLDER: string;
+    };
   };
 }
 

@@ -49,6 +49,10 @@ const env = _.omit(
         SERVICE_PHONE_TWILIO_VERIFICATION_SID: str(),
         SERVICE_PHONE_DEBUG: bool({ default: false }),
         SERVICE_EMAIL_SENDGRID_API_KEY: str(),
+        SERVICE_UPLOAD_CLOUDINARY_CLOUD_NAME: str(),
+        SERVICE_UPLOAD_CLOUDINARY_API_KEY: str(),
+        SERVICE_UPLOAD_CLOUDINARY_API_SECRET: str(),
+        SERVICE_UPLOAD_CLOUDINARY_FOLDER: str({ default: 'graphmarket/' }),
       },
       {
         strict: true,

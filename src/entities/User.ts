@@ -14,6 +14,7 @@ import {
   GraphQLDateTime,
   GraphQLEmailAddress,
   GraphQLPhoneNumber,
+  GraphQLURL,
 } from '@app/graphql/scalars';
 import { CryptUtil } from '@app/utils';
 
@@ -204,6 +205,16 @@ export default class User {
   @Column({ length: 16, unique: true, update: false })
   @Field(() => GraphQLPhoneNumber)
   phone!: string;
+
+  /**
+   * User's avatar.
+   */
+  @Column({
+    length: 512,
+    default: `https://res.cloudinary.com/dxiqa0xwa/image/upload/v1607739761/graphmarket/user/avatar/user.png`,
+  })
+  @Field(() => GraphQLURL)
+  avatar!: string;
 
   /**
    * User creation date and time.

@@ -1,8 +1,9 @@
 import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { Inject, Service } from 'typedi';
 import User from '@app/entities/User';
 import { IContext } from '@app/types';
-import UserService from '@app/services/UserService';
+import { UserService } from '@app/services';
 import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '../scalars';
 import { PaginationArgs } from '../args';
 import { UserCreateInput, UserUpdateInput } from '../inputs';
@@ -60,7 +61,7 @@ export default class UserResolver {
   /**
    * Resolves all available users.
    *
-   * @param paginationArgs - Pagination arguments
+   * @param param0 - Pagination arguments
    * @returns All available users
    */
   @Query(() => [User])
@@ -83,6 +84,22 @@ export default class UserResolver {
     @Ctx() ctx: IContext,
   ): Promise<User> {
     return this.userService.update(ctx.user!.id, data);
+  }
+
+  /**
+   * Update avatar of the current authenticated user.
+   *
+   * @param file - Avatar image
+   * @param ctx - Request context
+   * @returns Updated user
+   */
+  @Mutation(() => User)
+  @Authorized()
+  async avatar(
+    @Arg('file', () => GraphQLUpload) file: FileUpload,
+    @Ctx() ctx: IContext,
+  ): Promise<User> {
+    return this.userService.updateAvatar(ctx.user!.id, file);
   }
 
   /**

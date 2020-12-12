@@ -1,4 +1,4 @@
-import { isEmail, isISO8601, isPhoneNumber, isUUID, isDate } from 'class-validator';
+import { isEmail, isISO8601, isPhoneNumber, isUUID, isDate, isURL } from 'class-validator';
 import faker from 'faker';
 import Container from 'typedi';
 import { Connection } from 'typeorm';
@@ -80,6 +80,9 @@ const checkMinimalUser = (data: User, user: UserCreateInput): void => {
   expect(data!.phone).toBeDefined();
   expect(isPhoneNumber(data!.phone, null)).toBeTruthy();
   expect(data!.phone).toStrictEqual(user.phone);
+
+  expect(data!.avatar).toBeDefined();
+  expect(isURL(data!.avatar)).toBeTruthy();
 
   expect(data!.createdAt).toBeDefined();
   expect(isDate(data!.createdAt)).toBeTruthy();
@@ -260,6 +263,9 @@ describe('UserResolver testing', () => {
     expect(data!.phone).toBeDefined();
     expect(isPhoneNumber(data!.phone, null)).toBeTruthy();
     expect(data!.phone).toStrictEqual(user.phone);
+
+    expect(data!.avatar).toBeDefined();
+    expect(isURL(data!.avatar)).toBeTruthy();
 
     expect(data!.createdAt).toBeDefined();
     expect(isDate(data!.createdAt)).toBeTruthy();

@@ -2,18 +2,19 @@
 import config from '@app/config';
 import IORedis from 'ioredis';
 import { Connection, ConnectionOptions, createConnection } from 'typeorm';
+import logger from '@app/logger';
 
 // --- END
 
 /**
  * Attempts to connect to Redis, and then disconnects.
  */
-async function testRedis() {
+async function testRedis(): Promise<void> {
   return new Promise((resolve, reject) => {
     const redis = new IORedis(config.REDIS.URL);
     redis.on('connect', () => {
       redis.disconnect();
-      resolve(undefined);
+      resolve();
     });
     redis.on('error', (err) => {
       reject(err);
@@ -24,7 +25,7 @@ async function testRedis() {
 /**
  * Attempts to connect to the database, and then disconnects.
  */
-async function testDatabase() {
+async function testDatabase(): Promise<void> {
   return new Promise((resolve, reject) => {
     (async () => {
       try {
@@ -34,10 +35,10 @@ async function testDatabase() {
           synchronize: false,
           dropSchema: false,
           logging: false,
-          ssl: false,
+          ssl: config.DATABASE.SSL,
         });
         await conn.close();
-        resolve(undefined);
+        resolve();
       } catch (e) {
         reject(e);
       }
@@ -48,17 +49,17 @@ async function testDatabase() {
 export default async () => {
   try {
     await testRedis();
-    console.log('Redis can be connected.');
+    logger.debug('Redis can be connected.');
   } catch (err) {
-    console.error('Error while connecting to Redis');
+    logger.error('Error while connecting to Redis');
     throw err;
   }
 
   try {
     await testDatabase();
-    console.log('Database can be connected');
+    logger.debug('Database can be connected');
   } catch (err) {
-    console.error('Error while connecting to the database');
+    logger.error('Error while connecting to the database');
     throw err;
   }
 };

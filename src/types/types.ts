@@ -48,6 +48,8 @@ export interface IConfig {
       readonly CLOUDINARY_API_KEY: string;
       readonly CLOUDINARY_API_SECRET: string;
       readonly CLOUDINARY_FOLDER: string;
+      readonly MAX_FILE_SIZE: number;
+      readonly MAX_FILES: number;
     };
   };
 }

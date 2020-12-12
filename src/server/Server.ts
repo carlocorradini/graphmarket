@@ -111,7 +111,8 @@ export default class Server {
       .use(
         config.GRAPHQL.PATH,
         graphqlUploadExpress({
-          maxFileSize: 33554432, // 32 MByte
+          maxFileSize: config.SERVICES.UPLOAD.MAX_FILE_SIZE,
+          maxFiles: config.SERVICES.UPLOAD.MAX_FILES,
         }),
       )
       .use(

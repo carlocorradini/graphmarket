@@ -31,8 +31,7 @@ export default class TokenService {
         },
         (error, token) => {
           if (error) reject(error);
-
-          resolve(token as string);
+          else resolve(token as string);
         },
       );
     });
@@ -48,8 +47,7 @@ export default class TokenService {
     return new Promise((resolve, reject) => {
       jwt.verify(token, config.TOKEN.SECRET, (error, decoded) => {
         if (error) reject(error);
-
-        resolve(decoded as IToken);
+        else resolve(decoded as IToken);
       });
     });
   }
@@ -84,6 +82,7 @@ export default class TokenService {
     return new Promise((resolve, reject) => {
       blacklist.revoke(token, config.JWT.EXPIRATION_TIME, (error, revoked) => {
         if (error && !revoked) reject(error);
+        else
 
         logger.info(`Token ${token.sub} issued at ${token.iat ? token.iat : '?'} has been revoked`);
 
@@ -124,6 +123,7 @@ export default class TokenService {
     return new Promise((resolve, reject) => {
       blacklist.purge(token, config.JWT.EXPIRATION_TIME, (error, purged) => {
         if (error && !purged) reject(error);
+        else
 
         logger.info(`Token ${token.sub} issued at ${token.iat ? token.iat : '?'} has been purged`);
 

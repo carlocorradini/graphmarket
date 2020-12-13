@@ -42,6 +42,14 @@ describe('Config config testing', () => {
         EMAIL: {
           SENDGRID_API_KEY: config.SERVICES.EMAIL.SENDGRID_API_KEY,
         },
+        UPLOAD: {
+          CLOUDINARY_CLOUD_NAME: config.SERVICES.UPLOAD.CLOUDINARY_CLOUD_NAME,
+          CLOUDINARY_API_KEY: config.SERVICES.UPLOAD.CLOUDINARY_API_KEY,
+          CLOUDINARY_API_SECRET: config.SERVICES.UPLOAD.CLOUDINARY_API_SECRET,
+          CLOUDINARY_FOLDER: 'graphmarket/',
+          MAX_FILE_SIZE: 4194304,
+          MAX_FILES: 8,
+        },
       },
     });
   });

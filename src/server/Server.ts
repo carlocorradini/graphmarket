@@ -7,6 +7,7 @@ import compression from 'compression';
 import cors from 'cors';
 import helmet from 'helmet';
 import { ApolloServer } from 'apollo-server-express';
+import { graphqlUploadExpress } from 'graphql-upload';
 import { buildSchemaSync } from 'type-graphql';
 import { ConnectionOptions, createConnection, getConnection, useContainer } from 'typeorm';
 import { Container } from 'typedi';
@@ -109,6 +110,13 @@ export default class Server {
       .use(helmet({ contentSecurityPolicy: EnvUtil.isProduction() ? undefined : false }))
       .use(
         config.GRAPHQL.PATH,
+        graphqlUploadExpress({
+          maxFileSize: config.SERVICES.UPLOAD.MAX_FILE_SIZE,
+          maxFiles: config.SERVICES.UPLOAD.MAX_FILES,
+        }),
+      )
+      .use(
+        config.GRAPHQL.PATH,
         jwt({
           secret: config.TOKEN.SECRET,
           algorithms: [config.TOKEN.ALGORITHM],
@@ -127,6 +135,7 @@ export default class Server {
         container: Container,
       }),
       playground: config.GRAPHQL.PLAYGROUND,
+      uploads: false,
       tracing: !EnvUtil.isProduction(),
       context: ({ req }) => {
         const context: IContext = {

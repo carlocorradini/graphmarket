@@ -1,4 +1,5 @@
 import envalid, { str, port, bool, url, num } from 'envalid';
+import convert from 'convert-units';
 import _ from 'lodash';
 import { EnvUtil } from '@app/utils';
 
@@ -36,7 +37,7 @@ const env = _.omit(
         REDIS_TOKEN_BLOCKLIST: str({ default: 'TOKEN_BLOCKLIST' }),
         TOKEN_SECRET: str({ devDefault: 'password' }),
         TOKEN_ALGORITHM: str({ default: 'HS256' }),
-        TOKEN_EXPIRATION_TIME: num({ default: 60 * 60 * 24 * 7 }),
+        TOKEN_EXPIRATION_TIME: num({ default: convert(1).from('week').to('s') }),
         GRAPHQL_PATH: str({ default: '/graphql' }),
         GRAPHQL_PLAYGROUND: bool({ default: false, devDefault: true }),
         SERVICE_PHONE_TWILIO_ACCOUNT_SID: str(),
@@ -48,7 +49,7 @@ const env = _.omit(
         SERVICE_UPLOAD_CLOUDINARY_API_KEY: str(),
         SERVICE_UPLOAD_CLOUDINARY_API_SECRET: str(),
         SERVICE_UPLOAD_CLOUDINARY_FOLDER: str({ default: 'graphmarket/' }),
-        SERVICE_UPLOAD_MAX_FILE_SIZE: num({ default: 4194304 }),
+        SERVICE_UPLOAD_MAX_FILE_SIZE: num({ default: convert(4).from('MB').to('B') }),
         SERVICE_UPLOAD_MAX_FILES: num({ default: 8 }),
       },
       {

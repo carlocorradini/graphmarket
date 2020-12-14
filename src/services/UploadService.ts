@@ -41,12 +41,9 @@ export interface IResourceTypeDescriptor {
 /**
  * Resource types descriptor.
  */
-export const resourceTypesDescriptor: Record<
-  keyof typeof ResourceTypes,
-  IResourceTypeDescriptor
-> = {
+export const resourceTypesDescriptor: Record<ResourceTypes, IResourceTypeDescriptor> = {
   // Images
-  USER_AVATAR: {
+  [ResourceTypes.USER_AVATAR]: {
     resource: Resources.IMAGE,
     folder: 'user/avatar',
     options: { width: 512, height: 512, crop: 'fill', quality: 'auto:best' },
@@ -86,7 +83,7 @@ export default class UploadService {
     return new Promise((resolve, reject) => {
       resource.createReadStream().pipe(
         cloudinary.v2.uploader.upload_stream(
-          this.constructUploadOptions(options, type),
+          this.constructUploadOptions(options, ResourceTypes[type]),
           (error, result) => {
             if (error) {
               logger.error(`Error uploading image due to ${error.message}`);
@@ -114,7 +111,7 @@ export default class UploadService {
    */
   private constructUploadOptions(
     options: cloudinary.UploadApiOptions,
-    type: keyof typeof ResourceTypes,
+    type: ResourceTypes,
   ): cloudinary.UploadApiOptions {
     return {
       ...options,

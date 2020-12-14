@@ -70,7 +70,6 @@
     "type-graphql": "^1.1.1",
     "typedi": "^0.8.0",
     "typeorm": "^0.2.29",
-    "typeorm-typedi-extensions": "^0.2.3",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.0"
   },

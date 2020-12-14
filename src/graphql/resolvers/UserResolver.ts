@@ -95,11 +95,11 @@ export default class UserResolver {
    */
   @Mutation(() => User)
   @Authorized()
-  async avatar(
+  updateAvatar(
     @Arg('file', () => GraphQLUpload) file: FileUpload,
     @Ctx() ctx: IContext,
   ): Promise<User> {
-    return this.userService.updateAvatar(ctx.user!.id, file);
+    return this.userService.updateAvatar(ctx.user!.id, file.createReadStream());
   }
 
   /**

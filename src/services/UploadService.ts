@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
+import { ReadStream } from 'fs';
 import cloudinary from 'cloudinary';
-import { FileUpload } from 'graphql-upload';
 import config from '@app/config';
 import logger from '@app/logger';
 
@@ -52,7 +52,7 @@ export const resourceTypesDescriptor: Record<ResourceTypes, IResourceTypeDescrip
 };
 
 export interface IUpload {
-  resource: FileUpload;
+  resource: ReadStream;
   type: keyof typeof ResourceTypes;
   options?: cloudinary.UploadApiOptions;
 }
@@ -81,7 +81,7 @@ export default class UploadService {
     options = {},
   }: IUpload): Promise<cloudinary.UploadApiResponse> {
     return new Promise((resolve, reject) => {
-      resource.createReadStream().pipe(
+      resource.pipe(
         cloudinary.v2.uploader.upload_stream(
           this.constructUploadOptions(options, ResourceTypes[type]),
           (error, result) => {

@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
+import { ReadStream } from 'fs';
 import { Inject, Service } from 'typedi';
 import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
-import { FileUpload } from 'graphql-upload';
 import { UserCreateInput, UserUpdateInput } from '@app/graphql';
 import { User } from '@app/entities';
 import logger from '@app/logger';
@@ -148,16 +148,15 @@ export default class UserService {
   @Transaction()
   public async updateAvatar(
     id: string,
-    avatar: FileUpload,
+    avatar: ReadStream,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User> {
     // Check if user exists
     await this.readOneOrFail(id, manager);
 
     // Upload avatar and extract generated url
-    const url: string = await (
-      await this.uploadService.upload({ resource: avatar, type: 'USER_AVATAR' })
-    ).secure_url;
+    const url: string = (await this.uploadService.upload({ resource: avatar, type: 'USER_AVATAR' }))
+      .secure_url;
 
     await manager!.update(User, id, manager!.create(User, { avatar: url }));
 

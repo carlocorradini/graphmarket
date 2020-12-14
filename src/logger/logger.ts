@@ -23,8 +23,7 @@ const logger = createLogger({
     // Enable file transport only in production
     ...(EnvUtil.isProduction() ? [fileTransport] : []),
     // Enable console transport only in development or test mode
-    ...(EnvUtil.isDevelopment() ? [consoleTransport] : []),
-    ...(EnvUtil.isTest() ? [consoleTransport] : []),
+    ...(EnvUtil.isDevelopment() || EnvUtil.isTest() ? [consoleTransport] : []),
   ],
 });
 

@@ -218,7 +218,7 @@ export default class UserService {
     } catch (error) {
       logger.error(`Verification failed for user ${id}`);
 
-      throw new VerificationError('Verification failed');
+      throw new VerificationError({ message: 'Verification failed' });
     }
 
     return this.update(id, manager!.create(User, { verified: true }), manager);
@@ -256,7 +256,7 @@ export default class UserService {
     if (!user.verified) {
       logger.warn(`Sign in procedure failed for user ${user.id} due to not verified`);
 
-      throw new VerificationError();
+      throw new VerificationError({ userId: user.id });
     }
 
     logger.info(`Sign in procedure succeeded for user ${user.id}`);

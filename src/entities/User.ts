@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
+import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -15,6 +15,7 @@ import {
   GraphQLEmailAddress,
   GraphQLPhoneNumber,
   GraphQLURL,
+  GraphQLID,
 } from '@app/graphql/scalars';
 import { CryptUtil } from '@app/utils';
 
@@ -118,7 +119,7 @@ export default class User {
    */
   @PrimaryGeneratedColumn('uuid')
   @Index()
-  @Field(() => ID)
+  @Field(() => GraphQLID)
   id!: string;
 
   /**

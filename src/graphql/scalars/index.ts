@@ -1,3 +1,5 @@
+export { GraphQLID, GraphQLInt, GraphQLFloat, GraphQLString, GraphQLBoolean } from 'graphql';
+
 export {
   GraphQLDate,
   GraphQLTime,

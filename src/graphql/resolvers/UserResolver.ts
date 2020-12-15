@@ -115,6 +115,23 @@ export default class UserResolver {
   }
 
   /**
+   * Verify a user.
+   *
+   * @param id - User's id
+   * @param emailCode - Email code
+   * @param phoneCode - Phone code
+   * @returns Verified user
+   */
+  @Mutation(() => User)
+  verify(
+    @Arg('id', () => GraphQLUUID) id: string,
+    @Arg('emailCode', () => GraphQLNonEmptyString) emailCode: string,
+    @Arg('phoneCode', () => GraphQLNonEmptyString) phoneCode: string,
+  ): Promise<User> {
+    return this.userService.verify(id, emailCode, phoneCode);
+  }
+
+  /**
    * Resolves a sign in procedure.
    *
    * @param username - User's username

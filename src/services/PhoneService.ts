@@ -48,6 +48,9 @@ export default class PhoneService {
    * @returns Verification check instance data
    */
   public async checkVerification(phone: string, code: string): Promise<VerificationCheckInstance> {
+    // TODO Phone verification can be used only in production environment
+    if (!EnvUtil.isProduction()) return (undefined as unknown) as VerificationCheckInstance;
+
     try {
       return await PhoneService.twilio.verify
         .services(config.SERVICES.PHONE.TWILIO_VERIFICATION_SID)

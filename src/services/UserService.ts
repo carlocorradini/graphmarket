@@ -8,6 +8,7 @@ import { CryptUtil } from '@app/utils';
 import { AuthenticationError, VerificationError } from '@app/errors';
 import TokenService from './TokenService';
 import PhoneService from './PhoneService';
+import EmailService from './EmailService';
 import UploadService from './UploadService';
 
 /**
@@ -30,6 +31,12 @@ export default class UserService {
   private readonly phoneService!: PhoneService;
 
   /**
+   * Email service instance.
+   */
+  @Inject()
+  private readonly emailService!: EmailService;
+
+  /**
    * Upload service instance.
    */
   @Inject()
@@ -50,7 +57,7 @@ export default class UserService {
     await this.phoneService.sendVerification(user.phone);
 
     // Send verification email
-    // TODO
+    await this.emailService.sendVerification(user.email, { user: { username: user.username } });
 
     logger.info(`Created user ${newUser.id}`);
 
@@ -179,6 +186,36 @@ export default class UserService {
     logger.info(`Deleted user ${id}`);
 
     return user;
+  }
+
+  /**
+   * Verify a user identified by id with email and phone codes.
+   *
+   * @param id - User's id
+   * @param emailCode - Email code
+   * @param phoneCode - Phone code
+   * @param manager - Transaction manager
+   * @returns Verified User
+   * @see EmailService
+   * @see PhoneService
+   */
+  @Transaction()
+  public async verify(
+    id: string,
+    emailCode: string,
+    phoneCode: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<User> {
+    // Obtain user
+    const user: User = await this.readOneOrFail(id, manager);
+
+    // Check email verification
+    await this.emailService.checkVerification(user.email, emailCode);
+
+    // Check phone verification
+    await this.phoneService.checkVerification(user.phone, phoneCode);
+
+    return this.update(id, manager!.create(User, { verified: true }), manager);
   }
 
   /**

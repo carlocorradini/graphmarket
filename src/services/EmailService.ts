@@ -3,6 +3,7 @@ import { Service } from 'typedi';
 import sendgrid, { MailDataRequired } from '@sendgrid/mail';
 import config from '@app/config';
 import logger from '@app/logger';
+import { EnvUtil } from '@app/utils';
 
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
@@ -32,6 +33,9 @@ export default class EmailService {
    * @param message - The message data to send
    */
   public async send(message: PartialBy<MailDataRequired, 'from'>): Promise<void> {
+    // TODO Email service can be used only in production environment
+    if (!EnvUtil.isProduction()) return;
+
     const mailData: MailDataRequired = {
       ...message,
       ...{ from: message.from ? message.from : EmailService.DEFAULT_EMAIL },

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
+import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -14,6 +14,8 @@ import {
   GraphQLDateTime,
   GraphQLEmailAddress,
   GraphQLPhoneNumber,
+  GraphQLURL,
+  GraphQLID,
 } from '@app/graphql/scalars';
 import { CryptUtil } from '@app/utils';
 
@@ -117,7 +119,7 @@ export default class User {
    */
   @PrimaryGeneratedColumn('uuid')
   @Index()
-  @Field(() => ID)
+  @Field(() => GraphQLID)
   id!: string;
 
   /**
@@ -204,6 +206,16 @@ export default class User {
   @Column({ length: 16, unique: true, update: false })
   @Field(() => GraphQLPhoneNumber)
   phone!: string;
+
+  /**
+   * User's avatar.
+   */
+  @Column({
+    length: 512,
+    default: `https://res.cloudinary.com/dxiqa0xwa/image/upload/v1607739761/graphmarket/user/avatar/user.png`,
+  })
+  @Field(() => GraphQLURL)
+  avatar!: string;
 
   /**
    * User creation date and time.

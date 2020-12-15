@@ -1,7 +1,7 @@
 import faker from 'faker';
 import User, { UserGenders, UserRoles } from '@app/entities/User';
 
-const USER_PROPERTIES_COUNT: number = 13;
+const USER_PROPERTIES_COUNT: number = 14;
 const USER_GENDERS_COUNT: number = 72;
 const USER_ROLES_COUNT: number = 3;
 
@@ -22,6 +22,7 @@ describe('User entity testing', () => {
       dateOfBirth: faker.date.past(),
       email: faker.internet.email(),
       phone: faker.phone.phoneNumber('+3932########'),
+      avatar: faker.image.imageUrl(512, 512),
       createdAt: new Date(),
       updatedAt: new Date(),
       verified: false,
@@ -59,6 +60,9 @@ describe('User entity testing', () => {
 
     user.phone = userTemplate.phone;
     expect(user.phone).toStrictEqual(userTemplate.phone);
+
+    user.avatar = userTemplate.avatar;
+    expect(user.avatar).toStrictEqual(userTemplate.avatar);
 
     user.createdAt = userTemplate.createdAt;
     expect(user.createdAt).toStrictEqual(userTemplate.createdAt);

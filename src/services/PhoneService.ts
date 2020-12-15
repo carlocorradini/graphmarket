@@ -1,6 +1,8 @@
 /* eslint-disable class-methods-use-this */
 import { Service } from 'typedi';
 import { Twilio } from 'twilio';
+import { VerificationInstance } from 'twilio/lib/rest/verify/v2/service/verification';
+import { VerificationCheckInstance } from 'twilio/lib/rest/verify/v2/service/verificationCheck';
 import config from '@app/config';
 import logger from '@app/logger';
 import { EnvUtil } from '@app/utils';
@@ -19,16 +21,17 @@ export default class PhoneService {
   );
 
   /**
-   * Send a verification code to the pgone number.
+   * Send a verification code to the phone number.
    *
    * @param phone - Phone number
+   * @returns Verification instance data
    */
-  public async sendVerification(phone: string): Promise<void> {
+  public async sendVerification(phone: string): Promise<VerificationInstance> {
     // TODO Phone verification can be used only in production environment
-    if (!EnvUtil.isProduction()) return;
+    if (!EnvUtil.isProduction()) return (undefined as unknown) as VerificationInstance;
 
     try {
-      await PhoneService.twilio.verify
+      return await PhoneService.twilio.verify
         .services(config.SERVICES.PHONE.TWILIO_VERIFICATION_SID)
         .verifications.create({ to: phone, channel: 'sms' });
     } catch (error) {
@@ -42,10 +45,11 @@ export default class PhoneService {
    *
    * @param phone - Phone number to check
    * @param code - Verification code
+   * @returns Verification check instance data
    */
-  public async checkVerification(phone: string, code: string): Promise<void> {
+  public async checkVerification(phone: string, code: string): Promise<VerificationCheckInstance> {
     try {
-      await PhoneService.twilio.verify
+      return await PhoneService.twilio.verify
         .services(config.SERVICES.PHONE.TWILIO_VERIFICATION_SID)
         .verificationChecks.create({ to: phone, code });
     } catch (error) {

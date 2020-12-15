@@ -2,7 +2,6 @@
 import { ReadStream } from 'fs';
 import { Inject, Service } from 'typedi';
 import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
-import { UserCreateInput, UserUpdateInput } from '@app/graphql';
 import { User } from '@app/entities';
 import logger from '@app/logger';
 import { CryptUtil } from '@app/utils';
@@ -44,10 +43,7 @@ export default class UserService {
    * @returns Created user
    */
   @Transaction()
-  public async create(
-    user: UserCreateInput,
-    @TransactionManager() manager?: EntityManager,
-  ): Promise<User> {
+  public async create(user: User, @TransactionManager() manager?: EntityManager): Promise<User> {
     const newUser: User = await manager!.save(User, manager!.create(User, user));
 
     // Send verification message
@@ -120,7 +116,7 @@ export default class UserService {
   @Transaction()
   public async update(
     id: string,
-    user: UserUpdateInput,
+    user: User,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User> {
     // Check if user exists
@@ -129,7 +125,7 @@ export default class UserService {
     await manager!.update(User, id, manager!.create(User, user));
 
     // Purge jwt tokens if password is updated
-    if (user.password) this.tokenService.purge(id);
+    if (user.password) await this.tokenService.purge(id);
 
     logger.info(`Updated user ${id}`);
 
@@ -158,11 +154,7 @@ export default class UserService {
     const url: string = (await this.uploadService.upload({ resource: avatar, type: 'USER_AVATAR' }))
       .secure_url;
 
-    await manager!.update(User, id, manager!.create(User, { avatar: url }));
-
-    logger.info(`Updated avatar for user user ${id}`);
-
-    return this.readOneOrFail(id, manager);
+    return this.update(id, manager!.create(User, { avatar: url }), manager);
   }
 
   /**
@@ -182,7 +174,7 @@ export default class UserService {
     await manager!.delete(User, id);
 
     // Purge jwt tokens
-    this.tokenService.purge(id);
+    await this.tokenService.purge(id);
 
     logger.info(`Deleted user ${id}`);
 
@@ -237,7 +229,7 @@ export default class UserService {
    */
   public async signOut(id: string): Promise<void> {
     // Revoke token
-    this.tokenService.revoke(id);
+    await this.tokenService.revoke(id);
 
     logger.info(`Sign out procedure succeeded for user ${id}`);
   }

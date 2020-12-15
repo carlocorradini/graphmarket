@@ -206,14 +206,20 @@ export default class UserService {
     phoneCode: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User> {
-    // Obtain user
-    const user: User = await this.readOneOrFail(id, manager);
+    try {
+      // Obtain user
+      const user: User = await this.readOneOrFail(id, manager);
 
-    // Check email verification
-    await this.emailService.checkVerification(user.email, emailCode);
+      // Check email verification
+      await this.emailService.checkVerification(user.email, emailCode);
 
-    // Check phone verification
-    await this.phoneService.checkVerification(user.phone, phoneCode);
+      // Check phone verification
+      await this.phoneService.checkVerification(user.phone, phoneCode);
+    } catch (error) {
+      logger.error(`Verification failed for user ${id}`);
+
+      throw new VerificationError('Verification failed');
+    }
 
     return this.update(id, manager!.create(User, { verified: true }), manager);
   }

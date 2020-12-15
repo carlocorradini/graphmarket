@@ -9,10 +9,12 @@ export default class VerificationError extends Error {
 
   /**
    * Constructs a new verification error.
+   *
+   * @param message - Error message
    */
-  constructor() {
+  constructor(message?: string) {
     super();
     Object.setPrototypeOf(this, VerificationError.prototype);
-    this.message = 'Verification missing to execute the procedure';
+    this.message = message || 'Verification missing to execute the procedure';
   }
 }

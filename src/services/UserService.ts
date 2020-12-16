@@ -2,13 +2,13 @@
 import { ReadStream } from 'fs';
 import { Inject, Service } from 'typedi';
 import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
-import { UserCreateInput, UserUpdateInput } from '@app/graphql';
 import { User } from '@app/entities';
 import logger from '@app/logger';
 import { CryptUtil } from '@app/utils';
 import { AuthenticationError, VerificationError } from '@app/errors';
 import TokenService from './TokenService';
 import PhoneService from './PhoneService';
+import EmailService from './EmailService';
 import UploadService from './UploadService';
 
 /**
@@ -31,6 +31,12 @@ export default class UserService {
   private readonly phoneService!: PhoneService;
 
   /**
+   * Email service instance.
+   */
+  @Inject()
+  private readonly emailService!: EmailService;
+
+  /**
    * Upload service instance.
    */
   @Inject()
@@ -44,17 +50,14 @@ export default class UserService {
    * @returns Created user
    */
   @Transaction()
-  public async create(
-    user: UserCreateInput,
-    @TransactionManager() manager?: EntityManager,
-  ): Promise<User> {
+  public async create(user: User, @TransactionManager() manager?: EntityManager): Promise<User> {
     const newUser: User = await manager!.save(User, manager!.create(User, user));
 
     // Send verification message
     await this.phoneService.sendVerification(user.phone);
 
     // Send verification email
-    // TODO
+    await this.emailService.sendVerification(user.email, { user: { username: user.username } });
 
     logger.info(`Created user ${newUser.id}`);
 
@@ -120,7 +123,7 @@ export default class UserService {
   @Transaction()
   public async update(
     id: string,
-    user: UserUpdateInput,
+    user: User,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User> {
     // Check if user exists
@@ -129,7 +132,7 @@ export default class UserService {
     await manager!.update(User, id, manager!.create(User, user));
 
     // Purge jwt tokens if password is updated
-    if (user.password) this.tokenService.purge(id);
+    if (user.password) await this.tokenService.purge(id);
 
     logger.info(`Updated user ${id}`);
 
@@ -158,11 +161,7 @@ export default class UserService {
     const url: string = (await this.uploadService.upload({ resource: avatar, type: 'USER_AVATAR' }))
       .secure_url;
 
-    await manager!.update(User, id, manager!.create(User, { avatar: url }));
-
-    logger.info(`Updated avatar for user user ${id}`);
-
-    return this.readOneOrFail(id, manager);
+    return this.update(id, manager!.create(User, { avatar: url }), manager);
   }
 
   /**
@@ -182,11 +181,47 @@ export default class UserService {
     await manager!.delete(User, id);
 
     // Purge jwt tokens
-    this.tokenService.purge(id);
+    await this.tokenService.purge(id);
 
     logger.info(`Deleted user ${id}`);
 
     return user;
+  }
+
+  /**
+   * Verify a user identified by id with email and phone codes.
+   *
+   * @param id - User's id
+   * @param emailCode - Email code
+   * @param phoneCode - Phone code
+   * @param manager - Transaction manager
+   * @returns Verified User
+   * @see EmailService
+   * @see PhoneService
+   */
+  @Transaction()
+  public async verify(
+    id: string,
+    emailCode: string,
+    phoneCode: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<User> {
+    try {
+      // Obtain user
+      const user: User = await this.readOneOrFail(id, manager);
+
+      // Check email verification
+      await this.emailService.checkVerification(user.email, emailCode);
+
+      // Check phone verification
+      await this.phoneService.checkVerification(user.phone, phoneCode);
+    } catch (error) {
+      logger.error(`Verification failed for user ${id}`);
+
+      throw new VerificationError({ message: 'Verification failed' });
+    }
+
+    return this.update(id, manager!.create(User, { verified: true }), manager);
   }
 
   /**
@@ -221,7 +256,7 @@ export default class UserService {
     if (!user.verified) {
       logger.warn(`Sign in procedure failed for user ${user.id} due to not verified`);
 
-      throw new VerificationError();
+      throw new VerificationError({ userId: user.id });
     }
 
     logger.info(`Sign in procedure succeeded for user ${user.id}`);
@@ -237,7 +272,7 @@ export default class UserService {
    */
   public async signOut(id: string): Promise<void> {
     // Revoke token
-    this.tokenService.revoke(id);
+    await this.tokenService.revoke(id);
 
     logger.info(`Sign out procedure succeeded for user ${id}`);
   }

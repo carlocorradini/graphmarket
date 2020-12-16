@@ -31,7 +31,7 @@ export default class UserResolver {
    */
   @Mutation(() => User)
   createUser(@Arg('data', () => UserCreateInput) data: UserCreateInput): Promise<User> {
-    return this.userService.create(data);
+    return this.userService.create(data as User);
   }
 
   /**
@@ -83,7 +83,7 @@ export default class UserResolver {
     @Arg('data', () => UserUpdateInput) data: UserUpdateInput,
     @Ctx() ctx: IContext,
   ): Promise<User> {
-    return this.userService.update(ctx.user!.id, data);
+    return this.userService.update(ctx.user!.id, data as User);
   }
 
   /**
@@ -112,6 +112,23 @@ export default class UserResolver {
   @Authorized()
   deleteMe(@Ctx() ctx: IContext): Promise<User> {
     return this.userService.delete(ctx.user!.id);
+  }
+
+  /**
+   * Verify a user.
+   *
+   * @param id - User's id
+   * @param emailCode - Email code
+   * @param phoneCode - Phone code
+   * @returns Verified user
+   */
+  @Mutation(() => User)
+  verify(
+    @Arg('id', () => GraphQLUUID) id: string,
+    @Arg('emailCode', () => GraphQLNonEmptyString) emailCode: string,
+    @Arg('phoneCode', () => GraphQLNonEmptyString) phoneCode: string,
+  ): Promise<User> {
+    return this.userService.verify(id, emailCode, phoneCode);
   }
 
   /**

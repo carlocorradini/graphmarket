@@ -31,7 +31,15 @@ if (process.platform === 'win32') {
     });
 }
 
+let sigintCalled = false;
+
 process.on('SIGINT', async () => {
+  if (sigintCalled) {
+    logger.warn('SIGINT caught twice, skipping');
+    return;
+  }
+  sigintCalled = true;
+
   await Server.getInstance().stop();
   process.exit(0);
 });

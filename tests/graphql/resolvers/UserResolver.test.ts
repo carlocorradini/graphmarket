@@ -454,7 +454,7 @@ describe('UserResolver testing', () => {
 
   test('it should return authenticated user on query me', async () => {
     const user: UserCreateInput = createMinimalUser();
-    const { id, roles } = await userService.create(user);
+    const { id, roles } = await userService.create(user as User);
     const response = await makeGraphQlRequest({
       source: QUERY_ME,
       token: { id, roles },
@@ -511,7 +511,7 @@ describe('UserResolver testing', () => {
   });
 
   test('it should return a user having the same id on query user', async () => {
-    const user: User = await userService.create(createMinimalUser());
+    const user: User = await userService.create(createMinimalUser() as User);
     const response = await makeGraphQlRequest({
       source: QUERY_USER,
       variables: { id: user.id },

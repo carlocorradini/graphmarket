@@ -54,6 +54,11 @@ export interface IConfig {
   };
 }
 
+export interface IServerModule {
+  start(): Promise<void>;
+  stop(): Promise<void>;
+}
+
 /**
  * Token custom payload
  */

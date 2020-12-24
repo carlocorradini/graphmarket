@@ -1,6 +1,6 @@
 import { Max, Min } from 'class-validator';
 import { ArgsType, Field } from 'type-graphql';
-import { GraphQLNonNegativeInt, GraphQLPositiveInt } from '../scalars';
+import { GraphQLNonNegativeInt, GraphQLPositiveInt } from '@app/graphql/scalars';
 
 /**
  * Pagination arguments.

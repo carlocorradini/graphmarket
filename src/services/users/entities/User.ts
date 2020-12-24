@@ -16,7 +16,7 @@ import {
   GraphQLPhoneNumber,
   GraphQLURL,
   GraphQLID,
-} from '@app/scalars';
+} from '@app/graphql/scalars';
 import { CryptUtil } from '@app/utils';
 
 /**

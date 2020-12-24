@@ -5,7 +5,7 @@ import {
   GraphQLEmailAddress,
   GraphQLNonEmptyString,
   GraphQLPhoneNumber,
-} from '@app/scalars';
+} from '@app/graphql/scalars';
 import User, { UserGenders } from '../entities/User';
 
 /**

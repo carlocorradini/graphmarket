@@ -1,6 +1,6 @@
 import { Field, InputType } from 'type-graphql';
 import { Length } from 'class-validator';
-import { GraphQLDate, GraphQLNonEmptyString } from '@app/scalars';
+import { GraphQLDate, GraphQLNonEmptyString } from '@app/graphql/scalars';
 import User, { UserGenders } from '../entities/User';
 
 /**

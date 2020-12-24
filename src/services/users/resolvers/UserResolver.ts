@@ -2,8 +2,8 @@ import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-grap
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { Inject, Service } from 'typedi';
 import { IContext } from '@app/types';
-import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '@app/scalars';
-import { PaginationArgs } from '@app/args';
+import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '@app/graphql/scalars';
+import { PaginationArgs } from '@app/graphql/args';
 import UserService from '../services/UserService';
 import { UserCreateInput, UserUpdateInput } from '../inputs';
 import User from '../entities/User';

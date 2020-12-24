@@ -1,6 +1,6 @@
 import { createConnection, ConnectionOptions } from 'typeorm';
 import config from '@app/config';
-import { User } from '@app/services';
+import { Product, User } from '@app/services';
 
 export default function buildDatabaseConnection() {
   return createConnection(<ConnectionOptions>{
@@ -12,7 +12,7 @@ export default function buildDatabaseConnection() {
     synchronize: config.DATABASE.SYNCHRONIZE,
     dropSchema: config.DATABASE.DROP_SCHEMA,
     logging: config.DATABASE.LOGGING,
-    entities: [User],
+    entities: [Product, User],
     migrations: [],
     subscribers: [],
     cache: {

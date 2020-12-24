@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import logger from '@app/logger';
 import userServer from './server/userServer';
 

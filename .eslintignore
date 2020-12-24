@@ -1,0 +1,8 @@
+dist/
+build/
+coverage/
+node_modules/
+libs/
+*.hbs
+*.ico
+*.css

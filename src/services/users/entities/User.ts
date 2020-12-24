@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Field, ObjectType, registerEnumType } from 'type-graphql';
+import { Directive, Field, ObjectType, registerEnumType } from 'type-graphql';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -113,6 +113,7 @@ registerEnumType(UserRoles, { name: 'UserRoles' });
  */
 @Entity('user')
 @ObjectType()
+@Directive(`@key(fields: "id")`)
 export default class User {
   /**
    * User's id.

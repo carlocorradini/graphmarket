@@ -44,7 +44,12 @@ app
   );
 
 const bootstrap = async () => {
-  const serviceList = [{ name: 'users', url: (await userServer.listen(8081)).url }];
+  const serviceList = [
+    {
+      name: 'users',
+      url: (await userServer.listen(config.SERVICES.USER.PORT)).url,
+    },
+  ];
 
   // TODO gateway
   const { schema, executor } = await new ApolloGateway({

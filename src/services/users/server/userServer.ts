@@ -5,7 +5,6 @@ import resolveUserReference from '../references/userReference';
 import UserResolver from '../resolvers/UserResolver';
 import User from '../entities/User';
 
-// eslint-disable-next-line import/prefer-default-export
 const listen = async (port: number): Promise<ServerInfo> => {
   await buildDatabaseConnection();
 

@@ -15,9 +15,6 @@ export interface IConfig {
     readonly SYNCHRONIZE: boolean;
     readonly DROP_SCHEMA: boolean;
     readonly LOGGING: boolean;
-    readonly ENTITIES: string;
-    readonly MIGRATIONS: string;
-    readonly SUBSCRIBERS: string;
   };
   readonly REDIS: {
     readonly URL: string;
@@ -31,9 +28,11 @@ export interface IConfig {
   readonly GRAPHQL: {
     readonly PATH: string;
     readonly PLAYGROUND: boolean;
-    readonly RESOLVERS: string;
   };
   readonly SERVICES: {
+    readonly USER: {
+      PORT: number;
+    };
     readonly PHONE: {
       readonly TWILIO_ACCOUNT_SID: string;
       readonly TWILIO_AUTH_TOKEN: string;

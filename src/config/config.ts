@@ -19,9 +19,6 @@ const config: IConfig = {
     SYNCHRONIZE: env.DATABASE_SYNCHRONIZE,
     DROP_SCHEMA: env.DATABASE_DROP_SCHEMA,
     LOGGING: env.DATABASE_LOGGING,
-    ENTITIES: 'entities/**/*.{ts,js}',
-    MIGRATIONS: 'migration/**/*.{ts,js}',
-    SUBSCRIBERS: 'subscriber/**/*.{ts,js}',
   },
   REDIS: {
     URL: env.REDIS_URL,
@@ -35,9 +32,11 @@ const config: IConfig = {
   GRAPHQL: {
     PATH: env.GRAPHQL_PATH,
     PLAYGROUND: env.GRAPHQL_PLAYGROUND,
-    RESOLVERS: 'graphql/resolvers/**/*.{ts,js}',
   },
   SERVICES: {
+    USER: {
+      PORT: env.SERVICE_USER_PORT,
+    },
     PHONE: {
       TWILIO_ACCOUNT_SID: env.SERVICE_PHONE_TWILIO_ACCOUNT_SID,
       TWILIO_AUTH_TOKEN: env.SERVICE_PHONE_TWILIO_AUTH_TOKEN,

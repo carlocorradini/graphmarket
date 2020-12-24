@@ -40,6 +40,7 @@ const env = _.omit(
         TOKEN_EXPIRATION_TIME: num({ default: convert(1).from('week').to('s') }),
         GRAPHQL_PATH: str({ default: '/graphql' }),
         GRAPHQL_PLAYGROUND: bool({ default: false, devDefault: true }),
+        SERVICE_USER_PORT: port({ devDefault: 8081 }),
         SERVICE_PHONE_TWILIO_ACCOUNT_SID: str(),
         SERVICE_PHONE_TWILIO_AUTH_TOKEN: str(),
         SERVICE_PHONE_TWILIO_VERIFICATION_SID: str(),

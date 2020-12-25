@@ -33,7 +33,10 @@ app
   );
 
 const bootstrap = async (): Promise<void> => {
-  const serviceList = [{ name: 'users', url: config.SERVICES.USERS.URL }];
+  const serviceList = [
+    { name: config.SERVICES.USERS.NAME, url: config.SERVICES.USERS.URL },
+    { name: config.SERVICES.PRODUCTS.NAME, url: config.SERVICES.PRODUCTS.URL },
+  ];
 
   // TODO gateway
   const { schema, executor } = await new ApolloGateway({

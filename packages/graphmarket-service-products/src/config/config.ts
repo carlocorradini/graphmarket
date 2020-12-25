@@ -12,24 +12,20 @@ const config: IConfig = {
     ENV: env.NODE_ENV,
     PORT: env.PORT,
   },
-  TOKEN: {
-    SECRET: env.TOKEN_SECRET,
-    ALGORITHM: env.TOKEN_ALGORITHM,
+  DATABASE: {
+    TYPE: 'postgres',
+    URL: env.DATABASE_URL,
+    SSL: env.DATABASE_SSL,
+    SYNCHRONIZE: env.DATABASE_SYNCHRONIZE,
+    DROP_SCHEMA: env.DATABASE_DROP_SCHEMA,
+    LOGGING: env.DATABASE_LOGGING,
+  },
+  REDIS: {
+    URL: env.REDIS_URL,
   },
   GRAPHQL: {
     PATH: env.GRAPHQL_PATH,
     PLAYGROUND: env.GRAPHQL_PLAYGROUND,
-    TRACING: env.GRAPHQL_TRACING,
-  },
-  SERVICES: {
-    USERS: {
-      NAME: 'users',
-      URL: env.SERVICES_USERS_URL,
-    },
-    PRODUCTS: {
-      NAME: 'products',
-      URL: env.SERVICES_PRODUCTS_URL,
-    },
   },
 };
 

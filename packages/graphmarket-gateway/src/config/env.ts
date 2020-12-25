@@ -33,6 +33,7 @@ const env = _.omit(
         GRAPHQL_PLAYGROUND: bool({ default: true }),
         GRAPHQL_TRACING: bool({ default: false }),
         SERVICES_USERS_URL: url({ devDefault: 'http://localhost:8081/graphql' }),
+        SERVICES_PRODUCTS_URL: url({ devDefault: 'http://localhost:8082/graphql' }),
       },
       {
         strict: true,

@@ -1,7 +1,7 @@
 {
-  "name": "@graphmarket/service-users",
+  "name": "@graphmarket/service-products",
   "version": "1.0.0",
-  "description": "Graph Market service users",
+  "description": "Graph Market service products",
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -12,7 +12,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/carlocorradini/graphmarket.git",
-    "directory": "packages/graphmarket-service-users"
+    "directory": "packages/graphmarket-service-products"
   },
   "scripts": {
     "clean": "npx rimraf build log",
@@ -26,7 +26,6 @@
     "apollo-server": "^2.19.1",
     "class-validator": "^0.12.2",
     "envalid": "^6.0.2",
-    "graphql-upload": "^11.0.0",
     "ioredis": "^4.19.4",
     "lodash": "^4.17.20",
     "pg": "^8.5.1",

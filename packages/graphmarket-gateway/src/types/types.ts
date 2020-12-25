@@ -14,6 +14,11 @@ export interface IConfig {
   };
   readonly SERVICES: {
     readonly USERS: {
+      NAME: string;
+      URL: string;
+    };
+    readonly PRODUCTS: {
+      NAME: string;
       URL: string;
     };
   };

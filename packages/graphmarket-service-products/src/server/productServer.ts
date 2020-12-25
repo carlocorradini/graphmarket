@@ -2,18 +2,18 @@ import { ApolloServer, ServerInfo } from 'apollo-server';
 import { createConnection, ConnectionOptions, Connection } from 'typeorm';
 import { IContext, buildFederatedSchema } from '@graphmarket/commons';
 import config from '@app/config';
-import resolveUserReference from '../references/userReference';
-import UserResolver from '../resolvers/UserResolver';
-import User from '../entities/User';
+import resolveProductReference from '../references/productReference';
+import ProductResolver from '../resolvers/ProductResolver';
+import Product from '../entities/Product';
 
 const listen = async (port: number): Promise<ServerInfo> => {
   const schema = await buildFederatedSchema(
     {
-      resolvers: [UserResolver],
-      orphanedTypes: [User],
+      resolvers: [ProductResolver],
+      orphanedTypes: [Product],
     },
     {
-      User: { __resolveReference: resolveUserReference },
+      Product: { __resolveReference: resolveProductReference },
     },
   );
 
@@ -39,7 +39,7 @@ const connectDatabase = (): Promise<Connection> =>
     synchronize: config.DATABASE.SYNCHRONIZE,
     dropSchema: config.DATABASE.DROP_SCHEMA,
     logging: config.DATABASE.LOGGING,
-    entities: [User],
+    entities: [Product],
     migrations: [],
     subscribers: [],
     cache: {

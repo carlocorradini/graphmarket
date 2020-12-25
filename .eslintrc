@@ -22,8 +22,7 @@
   "parserOptions": {
     "project": [
       "tsconfig.json",
-      "scripts/tsconfig.json",
-      "tests/tsconfig.json"
+      "packages/*/tsconfig.json"
     ],
     "ecmaVersion": 2020,
     "sourceType": "module"

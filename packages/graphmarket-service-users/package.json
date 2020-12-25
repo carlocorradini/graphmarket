@@ -1,0 +1,37 @@
+{
+  "name": "@graphmarket/service-user",
+  "version": "1.0.0",
+  "description": "Graph Market service users",
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "private": true,
+  "files": [
+    "build"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carlocorradini/graphmarket.git",
+    "directory": "packages/graphmarket-service-users"
+  },
+  "scripts": {
+    "clean": "npx rimraf build log",
+    "prebuild": "npm run clean",
+    "build": "npx ttsc --project tsconfig.json",
+    "start": "node build/bootstrap.js",
+    "start:dev": "npx cross-env NODE_ENV=development ts-node-dev --prefer-ts true --no-notify --quiet --exit-child -r tsconfig-paths/register --transpile-only src/bootstrap.ts"
+  },
+  "dependencies": {
+    "@graphmarket/commons": "^1.0.0",
+    "apollo-server": "^2.19.1",
+    "class-validator": "^0.12.2",
+    "envalid": "^6.0.2",
+    "graphql-upload": "^11.0.0",
+    "ioredis": "^4.19.4",
+    "lodash": "^4.17.20",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^1.1.1",
+    "typedi": "^0.8.0",
+    "typeorm": "^0.2.29"
+  }
+}

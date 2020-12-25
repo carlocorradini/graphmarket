@@ -1,0 +1,42 @@
+{
+  "name": "@graphmarket/gateway",
+  "version": "1.0.0",
+  "description": "Graph Market gateway",
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "private": true,
+  "files": [
+    "build"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carlocorradini/graphmarket.git",
+    "directory": "packages/graphmarket-gateway"
+  },
+  "scripts": {
+    "clean": "npx rimraf build log",
+    "prebuild": "npm run clean",
+    "build": "npx ttsc --project tsconfig.json",
+    "start": "node build/bootstrap.js",
+    "start:dev": "npx cross-env NODE_ENV=development ts-node-dev --prefer-ts true --no-notify --quiet --exit-child -r tsconfig-paths/register --transpile-only src/bootstrap.ts"
+  },
+  "dependencies": {
+    "@apollo/gateway": "^0.21.4",
+    "@graphmarket/commons": "^1.0.0",
+    "apollo-server-express": "^2.19.1",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "envalid": "^6.0.2",
+    "express": "^4.17.1",
+    "express-jwt": "^6.0.0",
+    "helmet": "^4.2.0",
+    "lodash": "^4.17.20",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.7.0",
+    "@types/express-jwt": "^6.0.0",
+    "@types/lodash": "^4.14.166"
+  }
+}

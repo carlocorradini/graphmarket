@@ -1,7 +1,0 @@
-{
-  "target": "build",
-  "copy": {
-    "files": ["LICENSE", "package.json", "package-lock.json"],
-    "folders": []
-  }
-}

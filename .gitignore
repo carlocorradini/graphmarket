@@ -23,9 +23,6 @@ build/Release
 node_modules/
 jspm_packages/
 
-# TypeScript v1 declaration files
-typings/
-
 # TypeScript cache
 *.tsbuildinfo
 
@@ -40,6 +37,9 @@ typings/
 
 # Output of 'npm pack'
 *.tgz
+
+# Lerna
+*.lerna_backup
 
 # dotenv environment variables file
 .env
@@ -58,4 +58,3 @@ docs/
 
 # Exceptions
 !.gitignore
-!src/typings/

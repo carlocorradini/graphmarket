@@ -27,6 +27,8 @@ const env = _.omit(
           choices: ['production', 'development', 'test'],
         }),
         PORT: port({ devDefault: 8081 }),
+        GRAPHQL_PATH: str({ default: '/graphql' }),
+        GRAPHQL_PLAYGROUND: bool({ default: false, devDefault: true }),
         DATABASE_URL: url(),
         DATABASE_SSL: bool({ default: true, devDefault: false }),
         DATABASE_SYNCHRONIZE: bool({ default: false, devDefault: true }),
@@ -34,8 +36,6 @@ const env = _.omit(
         DATABASE_LOGGING: bool({ default: false }),
         REDIS_URL: url(),
         REDIS_TOKEN_BLOCKLIST: str({ default: 'TOKEN_BLOCKLIST' }),
-        GRAPHQL_PATH: str({ default: '/graphql' }),
-        GRAPHQL_PLAYGROUND: bool({ default: false, devDefault: true }),
       },
       {
         strict: true,

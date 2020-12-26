@@ -4,8 +4,7 @@ import { User } from '@graphmarket/entities';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import { buildFederatedSchema } from '@graphmarket/helpers';
 import config from '@app/config';
-import resolveUserReference from '../references/userReference';
-import UserResolver from '../resolvers/UserResolver';
+import { UserResolver, resolveUserReference } from '@app/resolvers';
 
 const listen = async (port: number): Promise<ServerInfo> => {
   const schema = await buildFederatedSchema(

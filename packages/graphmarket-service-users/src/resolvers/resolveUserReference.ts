@@ -1,6 +1,6 @@
 import { Container } from 'typedi';
 import { User } from '@graphmarket/entities';
-import UserService from '../services/UserService';
+import { UserService } from '@app/services';
 
 const userService: UserService = Container.get(UserService);
 

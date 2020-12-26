@@ -1,87 +1,19 @@
 import 'reflect-metadata';
-import { AddressInfo } from 'net';
-import express from 'express';
-import compression from 'compression';
-import cors from 'cors';
-import helmet from 'helmet';
-import jwt from 'express-jwt';
-import { ApolloServer } from 'apollo-server-express';
-import { ApolloGateway, RemoteGraphQLDataSource } from '@apollo/gateway';
-import { IGraphQLContext } from '@graphmarket/interfaces';
 import logger from '@graphmarket/logger';
-import { EnvUtil } from '@graphmarket/utils';
 import config from '@app/config';
-
-const app = express();
-
-app
-  .enable('trust proxy')
-  .use(compression())
-  .use(cors())
-  .use(
-    helmet({
-      contentSecurityPolicy: EnvUtil.isProduction() ? undefined : false,
-    }),
-  )
-  .use(
-    config.GRAPHQL.PATH,
-    jwt({
-      secret: config.TOKEN.SECRET,
-      algorithms: [config.TOKEN.ALGORITHM],
-      credentialsRequired: false,
-      // TODO Problem in response when the token is revoked
-      // isRevoked: blacklist.isRevoked,
-    }),
-  );
+import { gatewayServer, serviceList } from '@app/server';
 
 const bootstrap = async (): Promise<void> => {
-  const serviceList = [
-    { name: config.SERVICES.USERS.NAME, url: config.SERVICES.USERS.URL },
-    { name: config.SERVICES.PRODUCTS.NAME, url: config.SERVICES.PRODUCTS.URL },
-  ];
+  logger.info(`Available ${serviceList.length} services`);
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [i, service] of serviceList.entries()) {
+    logger.info(`Service ${i + 1}: ${service.name} at ${service.url}`);
+  }
 
-  // TODO gateway
-  const { schema, executor } = await new ApolloGateway({
-    serviceList,
-    __exposeQueryPlanExperimental: false,
-    buildService({ url }) {
-      return new RemoteGraphQLDataSource({
-        url,
-        willSendRequest({ request, context }: { request: any; context: IGraphQLContext }) {
-          request.http?.headers.set('user', context.user ? JSON.stringify(context.user) : null);
-        },
-      });
-    },
-  }).load();
+  const serverInfo = await gatewayServer.listen(config.NODE.PORT);
+  logger.info(`Gateway listening at ${serverInfo.address} on port ${serverInfo.port}`);
 
-  const server = new ApolloServer({
-    schema,
-    executor,
-    playground: config.GRAPHQL.PLAYGROUND,
-    uploads: false,
-    subscriptions: false,
-    tracing: config.GRAPHQL.TRACING,
-    context: ({ req }): IGraphQLContext => ({
-      user: req.user || undefined,
-    }),
-  });
-
-  server.applyMiddleware({
-    app,
-    path: config.GRAPHQL.PATH,
-  });
-
-  return new Promise((resolve, reject) => {
-    const httpServer = app
-      .listen(config.NODE.PORT, () => {
-        const info: AddressInfo = httpServer.address() as AddressInfo;
-
-        logger.info(`Gateway listening at ${info.address} on port ${info.port}`);
-        logger.info(`Gateway bootstrap successfully`);
-        resolve();
-      })
-      .on('error', (error) => reject(error));
-  });
+  logger.info(`Gateway bootstrap successfully`);
 };
 
 bootstrap().catch((error) => {

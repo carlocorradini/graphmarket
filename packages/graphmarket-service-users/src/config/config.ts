@@ -1,5 +1,5 @@
 import logger from '@graphmarket/logger';
-import { IConfig } from '@app/types';
+import { IConfigUserService } from '@app/interfaces';
 import env from './env';
 
 /**
@@ -7,10 +7,14 @@ import env from './env';
  *
  * @see env
  */
-const config: IConfig = {
+const config: IConfigUserService = {
   NODE: {
     ENV: env.NODE_ENV,
     PORT: env.PORT,
+  },
+  GRAPHQL: {
+    PATH: env.GRAPHQL_PATH,
+    PLAYGROUND: env.GRAPHQL_PLAYGROUND,
   },
   DATABASE: {
     TYPE: 'postgres',
@@ -23,10 +27,6 @@ const config: IConfig = {
   REDIS: {
     URL: env.REDIS_URL,
     TOKEN_BLOCKLIST: env.REDIS_TOKEN_BLOCKLIST,
-  },
-  GRAPHQL: {
-    PATH: env.GRAPHQL_PATH,
-    PLAYGROUND: env.GRAPHQL_PLAYGROUND,
   },
 };
 

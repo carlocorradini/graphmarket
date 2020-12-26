@@ -5,8 +5,8 @@ import { User } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
 import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
-import UserService from '../services/UserService';
-import { UserCreateInput, UserUpdateInput } from '../inputs';
+import { UserService } from '@app/services';
+import { UserCreateInput, UserUpdateInput } from '@app/inputs';
 
 /**
  * User resolver.

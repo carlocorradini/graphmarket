@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
 export { default as UserResolver } from './UserResolver';
+export { default as resolveUserReference } from './resolveUserReference';

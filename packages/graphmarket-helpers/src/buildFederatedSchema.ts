@@ -10,10 +10,10 @@ import { buildSchema, BuildSchemaOptions, createResolversMap } from 'type-graphq
 import Container from 'typedi';
 import { authorizationMiddleware } from '@graphmarket/middlewares';
 
-export default async function buildFederatedSchema(
+const buildFederatedSchema = async (
   options: Omit<BuildSchemaOptions, 'skipCheck'>,
   referenceResolvers?: GraphQLResolverMap<any>,
-) {
+) => {
   const schema = await buildSchema({
     ...options,
     directives: [...specifiedDirectives, ...federationDirectives, ...(options.directives || [])],
@@ -32,4 +32,6 @@ export default async function buildFederatedSchema(
   }
 
   return federatedSchema;
-}
+};
+
+export default buildFederatedSchema;

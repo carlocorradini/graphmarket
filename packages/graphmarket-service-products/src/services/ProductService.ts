@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
 import { Service } from 'typedi';
 import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
-import { logger } from '@graphmarket/commons';
-import Product from '../entities/Product';
+import { Product } from '@graphmarket/entities';
+import logger from '@graphmarket/logger';
 
 /**
  * Product service.

@@ -1,0 +1,31 @@
+{
+  "name": "@graphmarket/helpers",
+  "version": "1.0.0",
+  "description": "Graph Market helpers",
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "private": true,
+  "files": [
+    "build"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carlocorradini/graphmarket.git",
+    "directory": "packages/graphmarket-helpers"
+  },
+  "scripts": {
+    "clean": "npx rimraf build log",
+    "prebuild": "npm run clean",
+    "build": "npx ttsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "@apollo/federation": "^0.20.7",
+    "@graphmarket/middlewares": "^1.0.0",
+    "apollo-graphql": "^0.6.0",
+    "graphql": "^15.4.0",
+    "graphql-tag": "^2.11.0",
+    "type-graphql": "^1.1.1",
+    "typedi": "^0.8.0"
+  }
+}

@@ -1,6 +1,6 @@
 import envalid, { str, port, bool, url } from 'envalid';
 import _ from 'lodash';
-import { EnvUtil } from '@graphmarket/commons';
+import { EnvUtil } from '@graphmarket/utils';
 
 /**
  * Path to the file that is parsed by dotenv.

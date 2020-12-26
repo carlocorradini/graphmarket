@@ -1,7 +1,7 @@
 import { Field, InputType } from 'type-graphql';
 import { Length } from 'class-validator';
-import { GraphQLNonEmptyString } from '@graphmarket/commons';
-import Product from '../entities/Product';
+import { Product } from '@graphmarket/entities';
+import { GraphQLNonEmptyString } from '@graphmarket/graphql-scalars';
 
 /**
  * Product creation input.

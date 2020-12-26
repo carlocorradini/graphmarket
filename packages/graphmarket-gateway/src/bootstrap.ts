@@ -7,7 +7,9 @@ import helmet from 'helmet';
 import jwt from 'express-jwt';
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloGateway, RemoteGraphQLDataSource } from '@apollo/gateway';
-import { logger, EnvUtil, IContext } from '@graphmarket/commons';
+import { IGraphQLContext } from '@graphmarket/interfaces';
+import logger from '@graphmarket/logger';
+import { EnvUtil } from '@graphmarket/utils';
 import config from '@app/config';
 
 const app = express();
@@ -45,7 +47,7 @@ const bootstrap = async (): Promise<void> => {
     buildService({ url }) {
       return new RemoteGraphQLDataSource({
         url,
-        willSendRequest({ request, context }: { request: any; context: IContext }) {
+        willSendRequest({ request, context }: { request: any; context: IGraphQLContext }) {
           request.http?.headers.set('user', context.user ? JSON.stringify(context.user) : null);
         },
       });
@@ -59,7 +61,7 @@ const bootstrap = async (): Promise<void> => {
     uploads: false,
     subscriptions: false,
     tracing: config.GRAPHQL.TRACING,
-    context: ({ req }): IContext => ({
+    context: ({ req }): IGraphQLContext => ({
       user: req.user || undefined,
     }),
   });

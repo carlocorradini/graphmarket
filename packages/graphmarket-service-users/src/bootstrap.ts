@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { logger } from '@graphmarket/commons';
+import logger from '@graphmarket/logger';
 import config from '@app/config';
 import userServer from './server/userServer';
 

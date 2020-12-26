@@ -1,4 +1,4 @@
-import { IToken } from '@graphmarket/commons';
+import { IToken } from '@graphmarket/interfaces';
 
 declare global {
   namespace Express {

@@ -1,0 +1,27 @@
+{
+  "name": "@graphmarket/graphql-args",
+  "version": "1.0.0",
+  "description": "Graph Market GraphQL arguments",
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "private": true,
+  "files": [
+    "build"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carlocorradini/graphmarket.git",
+    "directory": "packages/graphmarket-graphql-args"
+  },
+  "scripts": {
+    "clean": "npx rimraf build log",
+    "prebuild": "npm run clean",
+    "build": "npx ttsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "@graphmarket/graphql-scalars": "^1.0.0",
+    "class-validator": "^0.12.2",
+    "type-graphql": "^1.1.1"
+  }
+}

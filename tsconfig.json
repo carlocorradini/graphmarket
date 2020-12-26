@@ -27,7 +27,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "emitDeclarationOnly": false,
-    "forceConsistentCasingInFileNames": false,
+    "forceConsistentCasingInFileNames": true,
     "plugins": [
       {
         "transform": "typescript-transform-paths"

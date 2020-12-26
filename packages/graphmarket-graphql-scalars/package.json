@@ -1,0 +1,26 @@
+{
+  "name": "@graphmarket/graphql-scalars",
+  "version": "1.0.0",
+  "description": "Graph Market GraphQL scalars",
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "private": true,
+  "files": [
+    "build"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carlocorradini/graphmarket.git",
+    "directory": "packages/graphmarket-graphql-scalars"
+  },
+  "scripts": {
+    "clean": "npx rimraf build log",
+    "prebuild": "npm run clean",
+    "build": "npx ttsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "graphql": "^15.4.0",
+    "graphql-scalars": "^1.7.0"
+  }
+}

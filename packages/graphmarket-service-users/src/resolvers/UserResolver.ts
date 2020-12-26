@@ -1,16 +1,12 @@
 import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { Inject, Service } from 'typedi';
-import {
-  PaginationArgs,
-  GraphQLNonEmptyString,
-  GraphQLUUID,
-  GraphQLVoid,
-  IContext,
-} from '@graphmarket/commons';
+import { User } from '@graphmarket/entities';
+import { PaginationArgs } from '@graphmarket/graphql-args';
+import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '@graphmarket/graphql-scalars';
+import { IGraphQLContext } from '@graphmarket/interfaces';
 import UserService from '../services/UserService';
 import { UserCreateInput, UserUpdateInput } from '../inputs';
-import User from '../entities/User';
 
 /**
  * User resolver.
@@ -46,7 +42,7 @@ export default class UserResolver {
    */
   @Query(() => User)
   @Authorized()
-  me(@Ctx() ctx: IContext): Promise<User> {
+  me(@Ctx() ctx: IGraphQLContext): Promise<User> {
     return this.userService.readOneOrFail(ctx.user!.id);
   }
 
@@ -85,7 +81,7 @@ export default class UserResolver {
   @Authorized()
   updateMe(
     @Arg('data', () => UserUpdateInput) data: UserUpdateInput,
-    @Ctx() ctx: IContext,
+    @Ctx() ctx: IGraphQLContext,
   ): Promise<User> {
     return this.userService.update(ctx.user!.id, data as User);
   }
@@ -101,7 +97,7 @@ export default class UserResolver {
   @Authorized()
   updateAvatar(
     @Arg('file', () => GraphQLUpload) file: FileUpload,
-    @Ctx() ctx: IContext,
+    @Ctx() ctx: IGraphQLContext,
   ): Promise<User> {
     return this.userService.updateAvatar(ctx.user!.id, file.createReadStream());
   }
@@ -114,7 +110,7 @@ export default class UserResolver {
    */
   @Mutation(() => User)
   @Authorized()
-  deleteMe(@Ctx() ctx: IContext): Promise<User> {
+  deleteMe(@Ctx() ctx: IGraphQLContext): Promise<User> {
     return this.userService.delete(ctx.user!.id);
   }
 
@@ -157,7 +153,7 @@ export default class UserResolver {
    */
   @Mutation(() => GraphQLVoid, { nullable: true })
   @Authorized()
-  signOut(@Ctx() ctx: IContext): Promise<void> {
+  signOut(@Ctx() ctx: IGraphQLContext): Promise<void> {
     return this.userService.signOut(ctx.user!.id);
   }
 }

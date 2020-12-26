@@ -1,5 +1,5 @@
 import { Container } from 'typedi';
-import Product from '../entities/Product';
+import { Product } from '@graphmarket/entities';
 import ProductService from '../services/ProductService';
 
 const productService: ProductService = Container.get(ProductService);

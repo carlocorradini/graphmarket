@@ -1,7 +1,7 @@
 import { Field, InputType } from 'type-graphql';
 import { Length } from 'class-validator';
-import { GraphQLDate, GraphQLNonEmptyString } from '@graphmarket/commons';
-import User, { UserGenders } from '../entities/User';
+import { GraphQLDate, GraphQLNonEmptyString } from '@graphmarket/graphql-scalars';
+import { User, UserGenders } from '@graphmarket/entities';
 
 /**
  * User update input.

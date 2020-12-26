@@ -1,9 +1,10 @@
 import { Arg, Args, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { Inject, Service } from 'typedi';
-import { PaginationArgs, GraphQLUUID } from '@graphmarket/commons';
+import { Product } from '@graphmarket/entities';
+import { PaginationArgs } from '@graphmarket/graphql-args';
+import { GraphQLUUID } from '@graphmarket/graphql-scalars';
 import ProductService from '../services/ProductService';
 import { ProductCreateInput } from '../inputs';
-import Product from '../entities/Product';
 
 /**
  * Product resolver.

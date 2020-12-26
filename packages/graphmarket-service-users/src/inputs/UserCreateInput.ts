@@ -5,8 +5,8 @@ import {
   GraphQLEmailAddress,
   GraphQLNonEmptyString,
   GraphQLPhoneNumber,
-} from '@graphmarket/commons';
-import User, { UserGenders } from '../entities/User';
+} from '@graphmarket/graphql-scalars';
+import { User, UserGenders } from '@graphmarket/entities';
 
 /**
  * User creation input.

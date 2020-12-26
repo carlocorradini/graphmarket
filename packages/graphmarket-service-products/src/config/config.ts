@@ -1,4 +1,4 @@
-import { logger } from '@graphmarket/commons';
+import logger from '@graphmarket/logger';
 import { IConfig } from '@app/types';
 import env from './env';
 

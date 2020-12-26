@@ -1,10 +1,11 @@
 import { ApolloServer, ServerInfo } from 'apollo-server';
 import { createConnection, ConnectionOptions, Connection } from 'typeorm';
-import { IContext, buildFederatedSchema } from '@graphmarket/commons';
+import { User } from '@graphmarket/entities';
+import { IGraphQLContext } from '@graphmarket/interfaces';
+import { buildFederatedSchema } from '@graphmarket/helpers';
 import config from '@app/config';
 import resolveUserReference from '../references/userReference';
 import UserResolver from '../resolvers/UserResolver';
-import User from '../entities/User';
 
 const listen = async (port: number): Promise<ServerInfo> => {
   const schema = await buildFederatedSchema(
@@ -21,7 +22,7 @@ const listen = async (port: number): Promise<ServerInfo> => {
     schema,
     tracing: false,
     playground: config.GRAPHQL.PLAYGROUND,
-    context: ({ req }): IContext => ({
+    context: ({ req }): IGraphQLContext => ({
       user: req.headers.user ? JSON.parse(req.headers.user as string) : undefined,
     }),
   });

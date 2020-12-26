@@ -2,8 +2,10 @@
 import { ReadStream } from 'fs';
 import { Service } from 'typedi';
 import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
-import { AuthenticationError, VerificationError, CryptUtil, logger } from '@graphmarket/commons';
-import User from '../entities/User';
+import { User } from '@graphmarket/entities';
+import { AuthenticationError, VerificationError } from '@graphmarket/errors';
+import { CryptUtil } from '@graphmarket/utils';
+import logger from '@graphmarket/logger';
 
 /**
  * User service.

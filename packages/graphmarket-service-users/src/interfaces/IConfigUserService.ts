@@ -4,6 +4,9 @@ import {
   IConfigToken,
   IConfigDatabase,
   IConfigRedis,
+  IConfigPhoneAdapter,
+  IConfigEmailAdapter,
+  IConfigUploadAdapter,
 } from '@graphmarket/interfaces';
 
 /**
@@ -18,9 +21,8 @@ export default interface IConfigUserService {
   readonly DATABASE: IConfigDatabase;
   readonly REDIS: IConfigRedis;
   readonly ADAPTERS: {
-    readonly UPLOAD: {
-      readonly MAX_FILE_SIZE: number;
-      readonly MAX_FILES: number;
-    };
+    readonly PHONE: IConfigPhoneAdapter;
+    readonly EMAIL: IConfigEmailAdapter;
+    readonly UPLOAD: IConfigUploadAdapter;
   };
 }

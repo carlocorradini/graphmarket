@@ -1,2 +1,5 @@
-// eslint-disable-next-line import/prefer-default-export
-export { default as userServer } from './userServer';
+import connectDatabase from './connectDatabase';
+import initAdapters from './initAdapters';
+import listen from './listen';
+
+export default { connectDatabase, initAdapters, listen };

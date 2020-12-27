@@ -52,4 +52,4 @@ const listen = async (port: number): Promise<AddressInfo> => {
   });
 };
 
-export default { listen };
+export default listen;

@@ -1,6 +1,9 @@
 export { default as IConfigDatabase } from './IConfigDatabase';
+export { default as IConfigEmailAdapter } from './IConfigEmailAdapter';
 export { default as IConfigGraphQL } from './IConfigGraphQL';
 export { default as IConfigNode } from './IConfigNode';
+export { default as IConfigPhoneAdapter } from './IConfigPhoneAdapter';
 export { default as IConfigRedis } from './IConfigRedis';
 export { default as IConfigService } from './IConfigService';
 export { default as IConfigToken } from './IConfigToken';
+export { default as IConfigUploadAdapter } from './IConfigUploadAdapter';

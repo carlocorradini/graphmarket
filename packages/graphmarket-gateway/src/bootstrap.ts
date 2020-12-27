@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import logger from '@graphmarket/logger';
 import config from '@app/config';
-import { gatewayServer, serviceList } from '@app/server';
+import server, { serviceList } from '@app/server';
 
 const bootstrap = async (): Promise<void> => {
   logger.info(`Available ${serviceList.length} services`);
@@ -10,7 +10,7 @@ const bootstrap = async (): Promise<void> => {
     logger.info(`Service ${service.name} at ${service.url}`);
   }
 
-  const serverInfo = await gatewayServer.listen(config.NODE.PORT);
+  const serverInfo = await server.listen(config.NODE.PORT);
   logger.info(`Gateway listening at ${serverInfo.address} on port ${serverInfo.port}`);
 
   logger.info(`Gateway bootstrap successfully`);

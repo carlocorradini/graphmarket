@@ -1,0 +1,29 @@
+{
+  "name": "@graphmarket/adapters",
+  "version": "1.0.0",
+  "description": "Graph Market adapters",
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "private": true,
+  "files": [
+    "build"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carlocorradini/graphmarket.git",
+    "directory": "packages/graphmarket-adapters"
+  },
+  "scripts": {
+    "clean": "npx rimraf build log",
+    "prebuild": "npm run clean",
+    "build": "npx ttsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "@graphmarket/utils": "^1.0.0",
+    "@sendgrid/mail": "^7.4.0",
+    "cloudinary": "^1.23.0",
+    "twilio": "^3.54.1",
+    "typedi": "^0.8.0"
+  }
+}

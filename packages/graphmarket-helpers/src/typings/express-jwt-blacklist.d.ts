@@ -11,7 +11,7 @@ declare module 'express-jwt-blacklist' {
   export function configure(opts: IOptions): void;
 
   export function isRevoked(
-    req: express.Request,
+    req: any,
     payload: any,
     done: (error: Error, revoked: boolean) => void,
   ): void;

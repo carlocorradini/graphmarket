@@ -26,14 +26,14 @@ const listen = async (port: number): Promise<AddressInfo> => {
     uploads: false,
     subscriptions: false,
     context: ({ req }): IGraphQLContext => ({
-      user: req.user,
+      user: req.user || undefined,
     }),
   });
 
   const app = buildExpressApp({
     graphql: { path: config.GRAPHQL.PATH },
     token: { secret: config.TOKEN.SECRET, algorithm: config.TOKEN.ALGORITHM },
-    redis: { url: config.REDIS.URL, tokenBlacklist: config.REDIS.TOKEN_BLACKLIST! },
+    redis: { url: config.REDIS.URL },
   });
 
   server.applyMiddleware({

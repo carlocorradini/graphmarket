@@ -66,16 +66,16 @@ export default class UploadAdapter {
   /**
    * Upload root folder.
    */
-  private readonly folder: string;
+  private folder?: string;
 
   /**
-   * Construct a new upload adapter.
+   * Initialize a new upload adapter.
    *
    * @param cloudName - Cloud name
    * @param apiKey - Api key
    * @param apiSecret - Api secret
    */
-  public constructor(cloudName: string, apiKey: string, apiSecret: string, folder: string) {
+  public init(cloudName: string, apiKey: string, apiSecret: string, folder: string) {
     cloudinary.v2.config({
       cloud_name: cloudName,
       api_key: apiKey,

@@ -1,5 +1,5 @@
 import { Field, InputType } from 'type-graphql';
-import { Length } from 'class-validator';
+import { Length, MaxDate } from 'class-validator';
 import { GraphQLDate, GraphQLNonEmptyString } from '@graphmarket/graphql-scalars';
 import { User, UserGenders } from '@graphmarket/entities';
 
@@ -39,5 +39,6 @@ export default class UserUpdateInput implements Partial<User> {
    * User's date of birth.
    */
   @Field(() => GraphQLDate, { nullable: true })
+  @MaxDate(new Date())
   dateOfBirth?: Date;
 }

@@ -21,13 +21,22 @@ const buildExpressApp = (options: IBuildExpressAppOptions) => {
       }),
     );
 
+  if (options.upload) {
+    app.use(
+      options.graphql.path,
+      graphqlUploadExpress({
+        maxFileSize: options.upload.maxFileSize,
+        maxFiles: options.upload.maxFiles,
+      }),
+    );
+  }
+
   if (options.token && options.redis) {
     jwtBlacklist.configure({
       strict: false,
       store: {
         type: 'redis',
         url: options.redis.url,
-        keyPrefix: options.redis.tokenBlacklist,
       },
     });
 
@@ -38,16 +47,6 @@ const buildExpressApp = (options: IBuildExpressAppOptions) => {
         algorithms: [options.token.algorithm],
         credentialsRequired: false,
         isRevoked: jwtBlacklist.isRevoked,
-      }),
-    );
-  }
-
-  if (options.upload) {
-    app.use(
-      options.graphql.path,
-      graphqlUploadExpress({
-        maxFileSize: options.upload.maxFileSize,
-        maxFiles: options.upload.maxFiles,
       }),
     );
   }

@@ -18,7 +18,6 @@ const config: IConfigGateway = {
   },
   REDIS: {
     URL: env.REDIS_URL,
-    TOKEN_BLACKLIST: env.REDIS_TOKEN_BLACKLIST,
   },
   TOKEN: {
     SECRET: env.TOKEN_SECRET,

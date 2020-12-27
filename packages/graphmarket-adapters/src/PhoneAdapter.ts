@@ -22,28 +22,26 @@ export default class PhoneAdapter {
   /**
    * Phone client.
    */
-  private readonly twilio: Twilio;
+  private twilio?: Twilio;
 
   /**
    * Services API keys.
    */
-  private readonly services: Record<keyof typeof PhoneServices, string>;
+  private services?: Record<keyof typeof PhoneServices, string>;
 
   /**
-   *Construct a new phone adapter.
+   * Initialize a new phone adapter.
 
    * @param username - The username used for authentication. This is normally account sid, but if using key/secret auth will be the api key sid.
    * @param password - The password used for authentication. This is normally auth token, but if using key/secret auth will be the secret.
    * @param services - Services API keys
    */
-  public constructor(
+  public init(
     username: string,
     password: string,
     services: Record<keyof typeof PhoneServices, string>,
   ) {
-    this.twilio = new Twilio(username, password, {
-      lazyLoading: true,
-    });
+    this.twilio = new Twilio(username, password);
     this.services = services;
   }
 
@@ -58,9 +56,10 @@ export default class PhoneAdapter {
     if (!EnvUtil.isProduction())
       return Promise.resolve((undefined as unknown) as VerificationInstance);
 
-    return this.twilio.verify
-      .services(this.services.VERIFICATION)
-      .verifications.create({ to: phone, channel: 'sms' });
+    return this.twilio!.verify.services(this.services!.VERIFICATION).verifications.create({
+      to: phone,
+      channel: 'sms',
+    });
   }
 
   /**
@@ -75,8 +74,9 @@ export default class PhoneAdapter {
     if (!EnvUtil.isProduction())
       return Promise.resolve((undefined as unknown) as VerificationCheckInstance);
 
-    return this.twilio.verify
-      .services(this.services.VERIFICATION)
-      .verificationChecks.create({ to: phone, code });
+    return this.twilio!.verify.services(this.services!.VERIFICATION).verificationChecks.create({
+      to: phone,
+      code,
+    });
   }
 }

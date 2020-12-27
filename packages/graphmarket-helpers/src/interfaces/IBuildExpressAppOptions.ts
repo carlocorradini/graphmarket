@@ -15,6 +15,5 @@ export default interface IBuildExpressAppOptions {
   };
   redis?: {
     url: string;
-    tokenBlacklist: string;
   };
 }

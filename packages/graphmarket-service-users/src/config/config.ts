@@ -17,7 +17,7 @@ const config: IConfigUserService = {
     PLAYGROUND: false,
   },
   TOKEN: {
-    SECRET: env.TOKEN_ALGORITHM,
+    SECRET: env.TOKEN_SECRET,
     ALGORITHM: env.TOKEN_ALGORITHM,
     EXPIRATION_TIME: env.TOKEN_EXPIRATION_TIME,
   },

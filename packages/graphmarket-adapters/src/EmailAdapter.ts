@@ -24,11 +24,11 @@ export default class EmailAdapter {
   public static readonly DEFAULT_EMAIL: string = 'carlo.corradini@studenti.unitn.it';
 
   /**
-   * Construct a new email adapter.
+   * Initialize a new email adapter.
    *
    * @param apiKey - Email API key
    */
-  public constructor(apiKey: string) {
+  public init(apiKey: string) {
     sendgrid.setApiKey(apiKey);
   }
 

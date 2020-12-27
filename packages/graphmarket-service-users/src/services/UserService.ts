@@ -1,11 +1,15 @@
 /* eslint-disable class-methods-use-this */
 import { ReadStream } from 'fs';
-import { Service } from 'typedi';
+import { Inject, Service } from 'typedi';
 import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
+import { IToken } from '@graphmarket/interfaces';
 import { User } from '@graphmarket/entities';
 import { AuthenticationError, VerificationError } from '@graphmarket/errors';
 import { CryptUtil } from '@graphmarket/utils';
 import logger from '@graphmarket/logger';
+import { PhoneAdapter, EmailAdapter, UploadAdapter } from '@graphmarket/adapters';
+import config from '@app/config';
+import TokenService from './TokenService';
 
 /**
  * User service.
@@ -14,6 +18,30 @@ import logger from '@graphmarket/logger';
  */
 @Service()
 export default class UserService {
+  /**
+   * Token service instance.
+   */
+  @Inject()
+  private readonly tokenService!: TokenService;
+
+  /**
+   * Phone adapter instance.
+   */
+  @Inject()
+  private readonly phoneAdapter!: PhoneAdapter;
+
+  /**
+   * Email adapter instance.
+   */
+  @Inject()
+  private readonly emailAdapter!: EmailAdapter;
+
+  /**
+   * Upload adapter instance.
+   */
+  @Inject()
+  private readonly uploadAdapter!: UploadAdapter;
+
   /**
    * Create a new user.
    *
@@ -24,6 +52,12 @@ export default class UserService {
   @Transaction()
   public async create(user: User, @TransactionManager() manager?: EntityManager): Promise<User> {
     const newUser: User = await manager!.save(User, manager!.create(User, user));
+
+    // Send verification message
+    await this.phoneAdapter.sendVerification(user.phone);
+
+    // Send verification email
+    await this.emailAdapter.sendVerification(user.email, { user: { username: user.username } });
 
     logger.info(`Created user ${newUser.id}`);
 
@@ -89,13 +123,16 @@ export default class UserService {
   @Transaction()
   public async update(
     id: string,
-    user: User,
+    user: Partial<Omit<User, 'id'>>,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User> {
     // Check if user exists
     await this.readOneOrFail(id, manager);
 
     await manager!.update(User, id, manager!.create(User, user));
+
+    // Purge jwt tokens if password is updated
+    if (user.password) await this.tokenService.purge(id, config.TOKEN.EXPIRATION_TIME);
 
     logger.info(`Updated user ${id}`);
 
@@ -120,10 +157,11 @@ export default class UserService {
     // Check if user exists
     await this.readOneOrFail(id, manager);
 
-    logger.info(`${avatar.path}`);
-    const url = 'CHANGE ME!';
+    // Upload avatar and extract generated url
+    const url: string = (await this.uploadAdapter.upload({ resource: avatar, type: 'USER_AVATAR' }))
+      .secure_url;
 
-    return this.update(id, manager!.create(User, { avatar: url }), manager);
+    return this.update(id, { avatar: url }, manager);
   }
 
   /**
@@ -141,6 +179,9 @@ export default class UserService {
     const user: User = await this.readOneOrFail(id, manager);
 
     await manager!.delete(User, id);
+
+    // Purge jwt tokens
+    await this.tokenService.purge(id, config.TOKEN.EXPIRATION_TIME);
 
     logger.info(`Deleted user ${id}`);
 
@@ -169,14 +210,18 @@ export default class UserService {
       // Obtain user
       const user: User = await this.readOneOrFail(id, manager);
 
-      logger.info(user + emailCode + phoneCode);
+      // Check email verification
+      await this.emailAdapter.checkVerification(user.email, emailCode);
+
+      // Check phone verification
+      await this.phoneAdapter.checkVerification(user.phone, phoneCode);
     } catch (error) {
       logger.error(`Verification failed for user ${id}`);
 
       throw new VerificationError({ message: 'Verification failed' });
     }
 
-    return this.update(id, manager!.create(User, { verified: true }), manager);
+    return this.update(id, { verified: true }, manager);
   }
 
   /**
@@ -216,16 +261,21 @@ export default class UserService {
 
     logger.info(`Sign in procedure succeeded for user ${user.id}`);
 
-    return '';
+    return this.tokenService.sign({ id: user.id, roles: user.roles }, config.TOKEN.SECRET, {
+      expiresIn: config.TOKEN.EXPIRATION_TIME,
+    });
   }
 
   /**
    * Sign out procedure.
    *
-   * @param id - User's id
+   * @param user - Decoded token
    * @see TokenService
    */
-  public async signOut(id: string): Promise<void> {
-    logger.info(`Sign out procedure succeeded for user ${id}`);
+  public async signOut(user: Pick<IToken, 'sub' | 'iat'>): Promise<void> {
+    // Revoke token
+    await this.tokenService.revoke(user);
+
+    logger.info(`Sign out procedure succeeded for user ${user.sub}`);
   }
 }

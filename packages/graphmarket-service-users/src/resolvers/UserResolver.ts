@@ -83,7 +83,7 @@ export default class UserResolver {
     @Arg('data', () => UserUpdateInput) data: UserUpdateInput,
     @Ctx() ctx: IGraphQLContext,
   ): Promise<User> {
-    return this.userService.update(ctx.user!.id, data as User);
+    return this.userService.update(ctx.user!.id, data);
   }
 
   /**
@@ -154,6 +154,6 @@ export default class UserResolver {
   @Mutation(() => GraphQLVoid, { nullable: true })
   @Authorized()
   signOut(@Ctx() ctx: IGraphQLContext): Promise<void> {
-    return this.userService.signOut(ctx.user!.id);
+    return this.userService.signOut(ctx.user!);
   }
 }

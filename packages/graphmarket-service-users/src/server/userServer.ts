@@ -1,12 +1,11 @@
-import { ApolloServer, ServerInfo } from 'apollo-server';
+import { AddressInfo } from 'net';
 import { createConnection, ConnectionOptions, Connection } from 'typeorm';
 import { User } from '@graphmarket/entities';
-import { IGraphQLContext } from '@graphmarket/interfaces';
-import { buildFederatedSchema } from '@graphmarket/helpers';
+import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
 import config from '@app/config';
 import { UserResolver, resolveUserReference } from '@app/resolvers';
 
-const listen = async (port: number): Promise<ServerInfo> => {
+const listen = async (port: number): Promise<AddressInfo> => {
   const schema = await buildFederatedSchema(
     {
       resolvers: [UserResolver],
@@ -17,16 +16,27 @@ const listen = async (port: number): Promise<ServerInfo> => {
     },
   );
 
-  const server = new ApolloServer({
-    schema,
-    tracing: false,
-    playground: config.GRAPHQL.PLAYGROUND,
-    context: ({ req }): IGraphQLContext => ({
-      user: req.headers.user ? JSON.parse(req.headers.user as string) : undefined,
-    }),
+  const app = buildService({
+    graphql: {
+      schema,
+      path: config.GRAPHQL.PATH,
+      playground: config.GRAPHQL.PLAYGROUND,
+    },
+    upload: {
+      maxFileSize: config.ADAPTERS.UPLOAD.MAX_FILE_SIZE,
+      maxFiles: config.ADAPTERS.UPLOAD.MAX_FILES,
+    },
   });
 
-  return server.listen({ port });
+  return new Promise((resolve, reject) => {
+    const server = app
+      .listen(port, () => {
+        resolve(server.address() as AddressInfo);
+      })
+      .on('error', (error) => {
+        reject(error);
+      });
+  });
 };
 
 const connectDatabase = (): Promise<Connection> =>
@@ -40,8 +50,6 @@ const connectDatabase = (): Promise<Connection> =>
     dropSchema: config.DATABASE.DROP_SCHEMA,
     logging: config.DATABASE.LOGGING,
     entities: [User],
-    migrations: [],
-    subscribers: [],
     cache: {
       type: 'ioredis',
       port: config.REDIS.URL,

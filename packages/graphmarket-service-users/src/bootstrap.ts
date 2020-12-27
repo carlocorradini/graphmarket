@@ -8,11 +8,12 @@ const bootstrap = async () => {
   logger.info(`User service connected to database`);
 
   const serverInfo = await userServer.listen(config.NODE.PORT);
-  logger.info(`User service listening at ${serverInfo.url}`);
+  logger.info(`User service listening at ${serverInfo.address} on port ${serverInfo.port}`);
 
   logger.info('User service bootstrap successfully');
 };
 
 bootstrap().catch((error) => {
   logger.error(`User service bootstrap error: ${error.message}`);
+  process.exit(1);
 });

@@ -1,4 +1,4 @@
-import envalid, { str, port, bool, url } from 'envalid';
+import envalid, { str, port, url } from 'envalid';
 import _ from 'lodash';
 import { EnvUtil } from '@graphmarket/utils';
 
@@ -28,9 +28,8 @@ const env = _.omit(
         }),
         PORT: port({ devDefault: 8080 }),
         GRAPHQL_PATH: str({ default: '/graphql' }),
-        GRAPHQL_PLAYGROUND: bool({ default: true }),
         REDIS_URL: url(),
-        REDIS_TOKEN_BLOCKLIST: str({ default: 'TOKEN_BLOCKLIST' }),
+        REDIS_TOKEN_BLACKLIST: str({ default: 'TOKEN_BLACKLIST' }),
         TOKEN_SECRET: str({ devDefault: 'password' }),
         TOKEN_ALGORITHM: str({ default: 'HS256' }),
         SERVICES_USERS_URL: url({ devDefault: 'http://localhost:8081/graphql' }),

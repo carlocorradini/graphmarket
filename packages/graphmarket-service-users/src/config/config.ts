@@ -14,7 +14,12 @@ const config: IConfigUserService = {
   },
   GRAPHQL: {
     PATH: env.GRAPHQL_PATH,
-    PLAYGROUND: env.GRAPHQL_PLAYGROUND,
+    PLAYGROUND: false,
+  },
+  TOKEN: {
+    SECRET: env.TOKEN_ALGORITHM,
+    ALGORITHM: env.TOKEN_ALGORITHM,
+    EXPIRATION_TIME: env.TOKEN_EXPIRATION_TIME,
   },
   DATABASE: {
     TYPE: 'postgres',
@@ -26,7 +31,12 @@ const config: IConfigUserService = {
   },
   REDIS: {
     URL: env.REDIS_URL,
-    TOKEN_BLOCKLIST: env.REDIS_TOKEN_BLOCKLIST,
+  },
+  ADAPTERS: {
+    UPLOAD: {
+      MAX_FILE_SIZE: env.ADAPTER_UPLOAD_MAX_FILE_SIZE,
+      MAX_FILES: env.ADAPTER_UPLOAD_MAX_FILES,
+    },
   },
 };
 

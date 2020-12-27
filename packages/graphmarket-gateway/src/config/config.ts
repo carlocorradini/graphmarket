@@ -1,5 +1,5 @@
 import logger from '@graphmarket/logger';
-import IConfigGateway from '../interfaces/IConfigGateway';
+import IConfigGateway from '@app/interfaces/IConfigGateway';
 import env from './env';
 
 /**
@@ -14,11 +14,11 @@ const config: IConfigGateway = {
   },
   GRAPHQL: {
     PATH: env.GRAPHQL_PATH,
-    PLAYGROUND: env.GRAPHQL_PLAYGROUND,
+    PLAYGROUND: true,
   },
   REDIS: {
     URL: env.REDIS_URL,
-    TOKEN_BLOCKLIST: env.REDIS_TOKEN_BLOCKLIST,
+    TOKEN_BLACKLIST: env.REDIS_TOKEN_BLACKLIST,
   },
   TOKEN: {
     SECRET: env.TOKEN_SECRET,

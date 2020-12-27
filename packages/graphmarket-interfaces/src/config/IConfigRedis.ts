@@ -3,5 +3,5 @@
  */
 export default interface IConfigRedis {
   readonly URL: string;
-  readonly TOKEN_BLOCKLIST: string;
+  readonly TOKEN_BLACKLIST?: string;
 }

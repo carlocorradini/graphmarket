@@ -6,8 +6,8 @@ import { gatewayServer, serviceList } from '@app/server';
 const bootstrap = async (): Promise<void> => {
   logger.info(`Available ${serviceList.length} services`);
   // eslint-disable-next-line no-restricted-syntax
-  for (const [i, service] of serviceList.entries()) {
-    logger.info(`Service ${i + 1}: ${service.name} at ${service.url}`);
+  for (const service of serviceList) {
+    logger.info(`Service ${service.name} at ${service.url}`);
   }
 
   const serverInfo = await gatewayServer.listen(config.NODE.PORT);
@@ -18,4 +18,5 @@ const bootstrap = async (): Promise<void> => {
 
 bootstrap().catch((error) => {
   logger.error(`Gateway bootstrap error: ${error.message}`);
+  process.exit(1);
 });

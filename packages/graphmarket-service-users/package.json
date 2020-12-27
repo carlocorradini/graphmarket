@@ -30,8 +30,8 @@
     "@graphmarket/interfaces": "^1.0.0",
     "@graphmarket/logger": "^1.0.0",
     "@graphmarket/utils": "^1.0.0",
-    "apollo-server": "^2.19.1",
     "class-validator": "^0.12.2",
+    "convert-units": "^2.3.4",
     "envalid": "^6.0.2",
     "graphql-upload": "^11.0.0",
     "ioredis": "^4.19.4",
@@ -41,5 +41,8 @@
     "type-graphql": "^1.1.1",
     "typedi": "^0.8.0",
     "typeorm": "^0.2.29"
+  },
+  "devDependencies": {
+    "@types/convert-units": "^2.3.3"
   }
 }

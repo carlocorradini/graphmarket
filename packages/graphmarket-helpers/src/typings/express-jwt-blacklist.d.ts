@@ -1,6 +1,4 @@
 declare module 'express-jwt-blacklist' {
-  import express from 'express';
-
   interface IOptions {
     strict: boolean;
     store: {

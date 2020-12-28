@@ -27,10 +27,11 @@
     "@graphmarket/interfaces": "^1.0.0",
     "@graphmarket/logger": "^1.0.0",
     "@graphmarket/utils": "^1.0.0",
+    "@profusion/apollo-federation-upload": "^2.2.0",
     "apollo-server-express": "^2.19.1",
+    "apollo-server-types": "^0.6.2",
     "envalid": "^6.0.2",
-    "lodash": "^4.17.20",
-    "reflect-metadata": "^0.1.13"
+    "lodash": "^4.17.20"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.166",

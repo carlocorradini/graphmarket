@@ -1,32 +1,26 @@
 import { AddressInfo } from 'net';
-import { ApolloGateway, RemoteGraphQLDataSource } from '@apollo/gateway';
+import { ApolloGateway } from '@apollo/gateway';
 import { ApolloServer } from 'apollo-server-express';
 import { buildExpressApp } from '@graphmarket/helpers';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import config from '@app/config';
+import { AuthenticatedUploadDataSource } from '@app/datasources';
 import serviceList from './serviceList';
 
 const listen = async (port: number): Promise<AddressInfo> => {
   const gateway = new ApolloGateway({
     serviceList,
-    buildService({ url }) {
-      return new RemoteGraphQLDataSource({
-        url,
-        willSendRequest({ request, context }: { request: any; context: IGraphQLContext }) {
-          request.http.headers.set('user', context.user ? JSON.stringify(context.user) : null);
-        },
-      });
-    },
+    buildService: ({ url }) => new AuthenticatedUploadDataSource({ url, useChunkedTransfer: true }),
     __exposeQueryPlanExperimental: false,
   });
 
   const server = new ApolloServer({
     gateway,
     playground: config.GRAPHQL.PLAYGROUND,
-    uploads: false,
+    uploads: true,
     subscriptions: false,
     context: ({ req }): IGraphQLContext => ({
-      user: req.user || undefined,
+      user: req.user,
     }),
   });
 

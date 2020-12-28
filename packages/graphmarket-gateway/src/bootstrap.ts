@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import logger from '@graphmarket/logger';
 import config from '@app/config';
 import server, { serviceList } from '@app/server';

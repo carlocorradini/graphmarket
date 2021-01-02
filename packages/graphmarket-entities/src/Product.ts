@@ -111,7 +111,13 @@ export default class Product {
   /**
    * Product's photos.
    */
-  @Column({ type: 'varchar', length: 512, array: true })
+  @Column({
+    type: 'varchar',
+    length: 512,
+    array: true,
+    default:
+      '{https://res.cloudinary.com/dxiqa0xwa/image/upload/v1609604389/graphmarket/product/photo/product.png}',
+  })
   @Field(() => [GraphQLURL])
   photos!: string[];
 

@@ -28,6 +28,7 @@
     "apollo-server-express": "^2.19.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
+    "envalid": "^6.0.2",
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
     "express-jwt-blacklist": "git+https://github.com/carlocorradini/express-jwt-blacklist.git",
@@ -35,6 +36,7 @@
     "graphql-tag": "^2.11.0",
     "graphql-upload": "^11.0.0",
     "helmet": "^4.2.0",
+    "lodash": "^4.17.20",
     "type-graphql": "^1.1.1"
   },
   "devDependencies": {

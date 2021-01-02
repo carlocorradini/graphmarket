@@ -35,7 +35,6 @@
     "envalid": "^6.0.2",
     "graphql-upload": "^11.0.0",
     "ioredis": "^4.19.4",
-    "lodash": "^4.17.20",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",

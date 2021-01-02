@@ -1,10 +1,10 @@
 import { Arg, Args, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { Inject, Service } from 'typedi';
-import { Product } from '@graphmarket/entities';
+import { UserRoles, Product } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
 import { GraphQLUUID } from '@graphmarket/graphql-scalars';
-import ProductService from '../services/ProductService';
-import { ProductCreateInput } from '../inputs';
+import { ProductService } from '@app/services';
+import { ProductCreateInput } from '@app/inputs';
 
 /**
  * Product resolver.
@@ -28,6 +28,7 @@ export default class ProductResolver {
    * @returns Created product
    */
   @Mutation(() => Product)
+  @Authorized(UserRoles.SELLER)
   createProduct(@Arg('data', () => ProductCreateInput) data: ProductCreateInput): Promise<Product> {
     return this.productService.create(data as Product);
   }
@@ -39,7 +40,6 @@ export default class ProductResolver {
    * @returns Product that match the id
    */
   @Query(() => Product, { nullable: true })
-  @Authorized()
   product(@Arg('id', () => GraphQLUUID) id: string): Promise<Product | undefined> {
     return this.productService.readOne(id);
   }
@@ -51,7 +51,6 @@ export default class ProductResolver {
    * @returns All available products
    */
   @Query(() => [Product])
-  @Authorized()
   products(@Args() { skip, take }: PaginationArgs): Promise<Product[]> {
     return this.productService.read({ skip, take });
   }

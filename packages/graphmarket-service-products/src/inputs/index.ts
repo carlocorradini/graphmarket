@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
 export { default as ProductCreateInput } from './ProductCreateInput';
+export { default as ProductUpdateInput } from './ProductUpdateInput';

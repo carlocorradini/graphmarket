@@ -10,12 +10,12 @@ const bootstrap = async (): Promise<void> => {
   }
 
   const serverInfo = await server.listen(config.NODE.PORT);
-  logger.info(`Gateway listening at ${serverInfo.address} on port ${serverInfo.port}`);
+  logger.info(`Listening at ${serverInfo.address} on port ${serverInfo.port}`);
 
-  logger.info(`Gateway bootstrap successfully`);
+  logger.info(`Bootstrap successfully`);
 };
 
 bootstrap().catch((error) => {
-  logger.error(`Gateway bootstrap error: ${error.message}`);
+  logger.error(`Bootstrap error: ${error.message}`);
   process.exit(1);
 });

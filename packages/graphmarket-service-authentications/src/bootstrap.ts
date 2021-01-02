@@ -8,7 +8,7 @@ const bootstrap = async () => {
   logger.info(`Adapters initialized`);
 
   await server.connectDatabase();
-  logger.info(`Connected to database`);
+  logger.info(`Database connected`);
 
   const serverInfo = await server.listen(config.NODE.PORT);
   logger.info(`Listening at ${serverInfo.address} on port ${serverInfo.port}`);

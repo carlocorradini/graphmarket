@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
-export { default as productServer } from './productServer';
+export { default } from './server';
+export { default as server } from './server';

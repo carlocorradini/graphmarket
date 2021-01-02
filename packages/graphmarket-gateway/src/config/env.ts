@@ -3,17 +3,6 @@ import { buildEnv } from '@graphmarket/helpers';
 import { EnvUtil } from '@graphmarket/utils';
 
 /**
- * Path to the file that is parsed by dotenv.
- * Null skip dotenv processing entirely and only load from process.env.
- * '.env' load .env file used in development environment.
- * '.env.test' load .env.test file used in test environment.
- */
-let dotEnvPath: string | undefined | null = null;
-if (EnvUtil.isProduction()) dotEnvPath = null;
-else if (EnvUtil.isDevelopment()) dotEnvPath = '.env';
-else if (EnvUtil.isTest()) dotEnvPath = '.env.test';
-
-/**
  * Environment variables sanitized and immutable.
  */
 const env = buildEnv(
@@ -37,7 +26,7 @@ const env = buildEnv(
     },
     {
       strict: true,
-      dotEnvPath,
+      dotEnvPath: EnvUtil.getDotEnvPath(),
     },
   ),
 );

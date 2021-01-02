@@ -1,5 +1,5 @@
 /**
- * Environment utilities.
+ * Environment utility.
  */
 export default class EnvUtil {
   /**
@@ -25,6 +25,31 @@ export default class EnvUtil {
    */
   public static getCurrentEnv(): string {
     return process.env.NODE_ENV || EnvUtil.ENV_PRODUCTION;
+  }
+
+  /**
+   * Return the path to the file that is parsed by dotenv.
+   * Null skip dotenv processing entirely and only load from process.env.
+   * '.env' load .env file used in development environment.
+   * '.env.test' load .env.test file used in test environment.
+   *
+   * @returns Path to the file that is parsed by dotenv
+   */
+  public static getDotEnvPath(): string | null {
+    switch (EnvUtil.getCurrentEnv()) {
+      case EnvUtil.ENV_PRODUCTION: {
+        return null;
+      }
+      case EnvUtil.ENV_DEVELOPMENT: {
+        return '.env';
+      }
+      case EnvUtil.ENV_TEST: {
+        return '.env.test';
+      }
+      default: {
+        return null;
+      }
+    }
   }
 
   /**

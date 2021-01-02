@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 
 /**
- * Cryptography utilities.
+ * Cryptography utility.
  */
 export default class CryptUtil {
   /**

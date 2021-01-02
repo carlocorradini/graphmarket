@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import logger from '@graphmarket/logger';
 import config from '@app/config';
-import server from './server';
+import { server } from './server';
 
 const bootstrap = async () => {
   await server.initAdapters();

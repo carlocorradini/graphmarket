@@ -6,20 +6,19 @@ import {
 } from '@apollo/federation';
 import federationDirectives from '@apollo/federation/dist/directives';
 import { addResolversToSchema, GraphQLResolverMap } from 'apollo-graphql';
-import { buildSchema, BuildSchemaOptions, createResolversMap } from 'type-graphql';
-import Container from 'typedi';
+import { BuildSchemaOptions, buildSchemaSync, createResolversMap } from 'type-graphql';
 import { authorizationMiddleware } from '@graphmarket/middlewares';
 
-const buildFederatedSchema = async (
+const buildFederatedSchema = (
   options: Omit<BuildSchemaOptions, 'skipCheck'>,
   referenceResolvers?: GraphQLResolverMap<any>,
 ) => {
-  const schema = await buildSchema({
+  const schema = buildSchemaSync({
     ...options,
     directives: [...specifiedDirectives, ...federationDirectives, ...(options.directives || [])],
     skipCheck: true,
     authChecker: authorizationMiddleware,
-    container: Container,
+    container: options.container,
   });
 
   const federatedSchema = buildApolloFederationSchema({

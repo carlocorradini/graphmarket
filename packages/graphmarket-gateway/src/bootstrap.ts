@@ -1,6 +1,6 @@
 import logger from '@graphmarket/logger';
 import config from '@app/config';
-import server, { serviceList } from '@app/server';
+import { server, serviceList } from '@app/server';
 
 const bootstrap = async (): Promise<void> => {
   logger.info(`Available ${serviceList.length} services`);

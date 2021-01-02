@@ -115,8 +115,7 @@ export default class Product {
     type: 'varchar',
     length: 512,
     array: true,
-    default:
-      '{https://res.cloudinary.com/dxiqa0xwa/image/upload/v1609604389/graphmarket/product/photo/product.png}',
+    default: '{}',
   })
   @Field(() => [GraphQLURL])
   photos!: string[];

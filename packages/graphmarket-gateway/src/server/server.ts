@@ -4,12 +4,11 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildExpressApp } from '@graphmarket/helpers';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import config from '@app/config';
-import { AuthenticatedUploadDataSource } from '@app/datasources';
-import serviceList from './serviceList';
+import { services, buildServiceDatasource } from '@app/services';
 
 const gateway: ApolloGateway = new ApolloGateway({
-  serviceList,
-  buildService: ({ url }) => new AuthenticatedUploadDataSource({ url, useChunkedTransfer: true }),
+  serviceList: services,
+  buildService: ({ url }) => buildServiceDatasource(url),
   __exposeQueryPlanExperimental: false,
 });
 

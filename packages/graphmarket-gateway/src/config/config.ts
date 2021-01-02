@@ -25,15 +25,12 @@ const config: IConfigGateway = {
   },
   SERVICES: {
     AUTHENTICATIONS: {
-      NAME: 'authentications',
       URL: env.SERVICE_AUTHENTICATIONS_URL,
     },
     USERS: {
-      NAME: 'users',
       URL: env.SERVICES_USERS_URL,
     },
     PRODUCTS: {
-      NAME: 'products',
       URL: env.SERVICES_PRODUCTS_URL,
     },
   },

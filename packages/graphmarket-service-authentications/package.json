@@ -1,7 +1,7 @@
 {
-  "name": "@graphmarket/service-users",
+  "name": "@graphmarket/service-authentications",
   "version": "1.0.0",
-  "description": "Graph Market service users",
+  "description": "Graph Market service authentications",
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -12,7 +12,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/carlocorradini/graphmarket.git",
-    "directory": "packages/graphmarket-service-users"
+    "directory": "packages/graphmarket-service-authentications"
   },
   "scripts": {
     "clean": "npx rimraf build log",
@@ -24,26 +24,21 @@
   "dependencies": {
     "@graphmarket/adapters": "^1.0.0",
     "@graphmarket/entities": "^1.0.0",
-    "@graphmarket/graphql-args": "^1.0.0",
+    "@graphmarket/errors": "^1.0.0",
     "@graphmarket/graphql-scalars": "^1.0.0",
     "@graphmarket/helpers": "^1.0.0",
     "@graphmarket/interfaces": "^1.0.0",
     "@graphmarket/logger": "^1.0.0",
     "@graphmarket/utils": "^1.0.0",
-    "class-validator": "^0.12.2",
     "convert-units": "^2.3.4",
     "envalid": "^6.0.2",
-    "graphql-upload": "^11.0.0",
-    "ioredis": "^4.19.4",
     "lodash": "^4.17.20",
-    "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
     "typedi": "^0.8.0",
     "typeorm": "^0.2.29"
   },
   "devDependencies": {
-    "@types/convert-units": "^2.3.3",
     "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",

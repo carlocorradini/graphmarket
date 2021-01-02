@@ -15,6 +15,7 @@ export default interface IConfigGateway {
   readonly TOKEN: IConfigToken;
   readonly REDIS: IConfigRedis;
   readonly SERVICES: {
+    readonly AUTHENTICATIONS: IConfigService;
     readonly USERS: IConfigService;
     readonly PRODUCTS: IConfigService;
   };

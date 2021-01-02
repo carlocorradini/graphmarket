@@ -3,7 +3,7 @@ import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { Inject, Service } from 'typedi';
 import { User } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
-import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '@graphmarket/graphql-scalars';
+import { GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import { UserService } from '@app/services';
 import { UserCreateInput, UserUpdateInput } from '@app/inputs';
@@ -83,7 +83,7 @@ export default class UserResolver {
     @Arg('data', () => UserUpdateInput) data: UserUpdateInput,
     @Ctx() ctx: IGraphQLContext,
   ): Promise<User> {
-    return this.userService.update(ctx.user!.id, data);
+    return this.userService.update(ctx.user!.id, data, ctx.user!);
   }
 
   /**
@@ -99,7 +99,7 @@ export default class UserResolver {
     @Arg('file', () => GraphQLUpload) file: FileUpload,
     @Ctx() ctx: IGraphQLContext,
   ): Promise<User> {
-    return this.userService.updateAvatar(ctx.user!.id, file.createReadStream());
+    return this.userService.updateAvatar(ctx.user!.id, file.createReadStream(), ctx.user!);
   }
 
   /**
@@ -111,49 +111,6 @@ export default class UserResolver {
   @Mutation(() => User)
   @Authorized()
   deleteMe(@Ctx() ctx: IGraphQLContext): Promise<User> {
-    return this.userService.delete(ctx.user!.id);
-  }
-
-  /**
-   * Verify a user.
-   *
-   * @param id - User's id
-   * @param emailCode - Email code
-   * @param phoneCode - Phone code
-   * @returns Verified user
-   */
-  @Mutation(() => User)
-  verify(
-    @Arg('id', () => GraphQLUUID) id: string,
-    @Arg('emailCode', () => GraphQLNonEmptyString) emailCode: string,
-    @Arg('phoneCode', () => GraphQLNonEmptyString) phoneCode: string,
-  ): Promise<User> {
-    return this.userService.verify(id, emailCode, phoneCode);
-  }
-
-  /**
-   * Resolves a sign in procedure.
-   *
-   * @param username - User's username
-   * @param password - User's password
-   * @returns Encoded authentication token
-   */
-  @Mutation(() => GraphQLNonEmptyString)
-  signIn(
-    @Arg('username', () => GraphQLNonEmptyString) username: string,
-    @Arg('password', () => GraphQLNonEmptyString) password: string,
-  ): Promise<string> {
-    return this.userService.signIn(username, password);
-  }
-
-  /**
-   * Resolves a sign out procedure.
-   *
-   * @param ctx - Request context
-   */
-  @Mutation(() => GraphQLVoid, { nullable: true })
-  @Authorized()
-  signOut(@Ctx() ctx: IGraphQLContext): Promise<void> {
-    return this.userService.signOut(ctx.user!);
+    return this.userService.delete(ctx.user!.id, ctx.user!);
   }
 }

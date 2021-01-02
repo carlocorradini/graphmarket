@@ -20,13 +20,17 @@
     "build": "npx ttsc --project tsconfig.json"
   },
   "dependencies": {
+    "@graphmarket/interfaces": "^1.0.0",
     "@graphmarket/utils": "^1.0.0",
     "@sendgrid/mail": "^7.4.0",
     "cloudinary": "^1.23.0",
+    "express-jwt-blacklist": "git+https://github.com/carlocorradini/express-jwt-blacklist.git",
+    "jsonwebtoken": "^8.5.1",
     "twilio": "^3.54.1",
     "typedi": "^0.8.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.0",
     "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",

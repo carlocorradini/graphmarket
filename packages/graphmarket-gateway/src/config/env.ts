@@ -32,8 +32,9 @@ const env = _.omit(
         REDIS_TOKEN_BLACKLIST: str({ default: 'TOKEN_BLACKLIST' }),
         TOKEN_SECRET: str({ devDefault: 'password' }),
         TOKEN_ALGORITHM: str({ default: 'HS256' }),
-        SERVICES_USERS_URL: url({ devDefault: 'http://localhost:8081/graphql' }),
-        SERVICES_PRODUCTS_URL: url({ devDefault: 'http://localhost:8082/graphql' }),
+        SERVICE_AUTHENTICATIONS_URL: url({ devDefault: 'http://localhost:8081/graphql' }),
+        SERVICES_USERS_URL: url({ devDefault: 'http://localhost:8082/graphql' }),
+        SERVICES_PRODUCTS_URL: url({ devDefault: 'http://localhost:8083/graphql' }),
       },
       {
         strict: true,

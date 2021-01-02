@@ -29,4 +29,6 @@ declare module 'express-jwt-blacklist' {
     llifetime?: number,
     callback?: (error: Error, purged: boolean) => void,
   ): void;
+
+  export function purge(user: Object, callback?: (error: Error, purged: boolean) => void): void;
 }

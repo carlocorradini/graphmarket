@@ -5,12 +5,28 @@ import { Service } from 'typedi';
 import jwtBlacklist from 'express-jwt-blacklist';
 
 /**
- * Token service.
+ * Token adapter.
  *
  * @see IToken
  */
 @Service()
-export default class TokenService {
+export default class TokenAdapter {
+  /**
+   * Initialize a new token adapter.
+   *
+   * @param purgeLifetime - Purge lifetime
+   * @param redisUrl - Redis url
+   */
+  public init(redisUrl: string) {
+    jwtBlacklist.configure({
+      strict: false,
+      store: {
+        type: 'redis',
+        url: redisUrl,
+      },
+    });
+  }
+
   /**
    * Sign the given payload into a token string payload.
    *
@@ -74,33 +90,11 @@ export default class TokenService {
    * Purge all tokens before token (inclusive).
    *
    * @param token - Token to purge
-   * @param lifetime - Purge lifetime
    * @returns True if purged, false otherwise
    */
-  public purge(token: IToken, lifetime: number): Promise<boolean>;
-
-  /**
-   * Purge all tokens before token (inclusive) identified by token identifier.
-   *
-   * @param tokenId - Token identifier to purge
-   * @param lifetime - Purge lifetime
-   * @returns True if purged, false otherwise
-   */
-  public purge(tokenId: string, lifetime: number): Promise<boolean>;
-
-  /**
-   * Purge all tokens before token (inclusive).
-   *
-   * @param tokenOrTokenId - Token or token identifier to purge
-   * @param lifetime - Purge lifetime
-   * @returns True if purged, false otherwise
-   */
-  public purge(tokenOrTokenId: IToken | string, lifetime: number): Promise<boolean> {
-    const token: Pick<IToken, 'sub'> =
-      typeof tokenOrTokenId !== 'string' ? tokenOrTokenId : { sub: tokenOrTokenId };
-
+  public purge(token: Pick<IToken, 'sub' | 'iat'>): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      jwtBlacklist.purge(token, lifetime, (error, purged) => {
+      jwtBlacklist.purge(token, (error, purged) => {
         if (error && !purged) reject(error);
         else resolve(purged);
       });

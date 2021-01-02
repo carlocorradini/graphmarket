@@ -24,6 +24,10 @@ const config: IConfigGateway = {
     ALGORITHM: env.TOKEN_ALGORITHM,
   },
   SERVICES: {
+    AUTHENTICATIONS: {
+      NAME: 'authentications',
+      URL: env.SERVICE_AUTHENTICATIONS_URL,
+    },
     USERS: {
       NAME: 'users',
       URL: env.SERVICES_USERS_URL,

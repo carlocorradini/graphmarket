@@ -5,18 +5,18 @@ import server from '@app/server';
 
 const bootstrap = async () => {
   await server.initAdapters();
-  logger.info(`User service adapters initialized`);
+  logger.info(`Adapters initialized`);
 
   await server.connectDatabase();
-  logger.info(`User service connected to database`);
+  logger.info(`Connected to database`);
 
   const serverInfo = await server.listen(config.NODE.PORT);
-  logger.info(`User service listening at ${serverInfo.address} on port ${serverInfo.port}`);
+  logger.info(`Listening at ${serverInfo.address} on port ${serverInfo.port}`);
 
-  logger.info('User service bootstrap successfully');
+  logger.info('Bootstrap successfully');
 };
 
 bootstrap().catch((error) => {
-  logger.error(`User service bootstrap error: ${error.message}`);
+  logger.error(`Bootstrap error: ${error.message}`);
   process.exit(1);
 });

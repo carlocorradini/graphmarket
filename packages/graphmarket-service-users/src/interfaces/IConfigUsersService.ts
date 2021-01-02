@@ -15,9 +15,7 @@ import {
 export default interface IConfigUserService {
   readonly NODE: IConfigNode;
   readonly GRAPHQL: IConfigGraphQL;
-  readonly TOKEN: IConfigToken & {
-    EXPIRATION_TIME: number;
-  };
+  readonly TOKEN: IConfigToken;
   readonly DATABASE: IConfigDatabase;
   readonly REDIS: IConfigRedis;
   readonly ADAPTERS: {

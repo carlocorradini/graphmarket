@@ -1,5 +1,5 @@
 import logger from '@graphmarket/logger';
-import { IConfigUsersService } from '@app/interfaces';
+import { IConfigAuthenticationsService } from '@app/interfaces';
 import env from './env';
 
 /**
@@ -7,7 +7,7 @@ import env from './env';
  *
  * @see env
  */
-const config: IConfigUsersService = {
+const config: IConfigAuthenticationsService = {
   NODE: {
     ENV: env.NODE_ENV,
     PORT: env.PORT,
@@ -19,6 +19,7 @@ const config: IConfigUsersService = {
   TOKEN: {
     SECRET: env.TOKEN_SECRET,
     ALGORITHM: env.TOKEN_ALGORITHM,
+    EXPIRATION_TIME: env.TOKEN_EXPIRATION_TIME,
   },
   DATABASE: {
     TYPE: 'postgres',
@@ -41,14 +42,6 @@ const config: IConfigUsersService = {
     },
     EMAIL: {
       API_KEY: env.ADAPTER_EMAIL_API_KEY,
-    },
-    UPLOAD: {
-      CLOUD_NAME: env.ADAPTER_UPLOAD_CLOUD_NAME,
-      API_KEY: env.ADAPTER_UPLOAD_API_KEY,
-      API_SECRET: env.ADAPTER_UPLOAD_API_SECRET,
-      FOLDER: env.ADAPTER_UPLOAD_FOLDER,
-      MAX_FILE_SIZE: env.ADAPTER_UPLOAD_MAX_FILE_SIZE,
-      MAX_FILES: env.ADAPTER_UPLOAD_MAX_FILES,
     },
   },
 };

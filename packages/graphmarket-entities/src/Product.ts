@@ -111,7 +111,7 @@ export default class Product {
   /**
    * Product's photos.
    */
-  @Column({ length: 512 })
+  @Column({ type: 'varchar', length: 512, array: true })
   @Field(() => [GraphQLURL])
   photos!: string[];
 

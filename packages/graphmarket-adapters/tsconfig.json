@@ -1,6 +1,9 @@
 {
   "extends": "../../tsconfig.common.json",
   "compilerOptions": {
-    "baseUrl": "."
-  }
+    "baseUrl": ".",
+    "outDir": "build"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/**/*", "build/**/*", "tests/**/*"]
 }

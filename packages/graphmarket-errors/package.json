@@ -19,7 +19,8 @@
     "prebuild": "npm run clean",
     "build": "npx ttsc --project tsconfig.json",
     "test": "npx jest --config jest.config.ts --no-watchman --silent",
-    "test:debug": "npm run test -- --verbose --silent false"
+    "test:debug": "npm run test -- --verbose --silent false",
+    "coverage": "npm run test -- --coverage"
   },
   "devDependencies": {
     "@types/faker": "^5.1.5",

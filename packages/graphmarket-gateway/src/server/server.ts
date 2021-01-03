@@ -2,7 +2,7 @@ import { AddressInfo } from 'net';
 import { ApolloGateway } from '@apollo/gateway';
 import { ApolloServer } from 'apollo-server-express';
 import { buildExpressApp } from '@graphmarket/helpers';
-import { IGraphQLContext } from '@graphmarket/interface';
+import { IGraphQLContext } from '@graphmarket/interfaces';
 import config from '@app/config';
 import { services, buildServiceDatasource } from '@app/services';
 

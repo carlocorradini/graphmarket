@@ -4,5 +4,5 @@ import commonConfig from './jest.config.common';
 export default {
   ...commonConfig,
   projects: ['<rootDir>/packages/*/jest.config.ts'],
-  coverageDirectory: '<rootDir>/coverage',
+  // coverageDirectory: '<rootDir>/coverage/',
 } as Config.InitialOptions;

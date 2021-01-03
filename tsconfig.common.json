@@ -19,7 +19,6 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
-    "baseUrl": ".",
     "typeRoots": ["node_modules/@types", "src/typings"],
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -41,6 +40,6 @@
       }
     ]
   },
-  "include": ["src/**/*", "jest.config.ts"],
-  "exclude": ["node_modules/**/*", "build/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/**/*", "build/**/*", "tests/**/*"]
 }

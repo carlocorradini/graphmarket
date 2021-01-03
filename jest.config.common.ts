@@ -6,7 +6,7 @@ export default {
   testEnvironment: 'node',
   testTimeout: 10000,
   collectCoverage: true,
-  roots: ['<rootDir>/src', '<rootDir>/tests'],
+  roots: ['<rootDir>/tests'],
   globals: {
     'ts-jest': {
       compiler: 'ttypescript',

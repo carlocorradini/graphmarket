@@ -1,12 +1,3 @@
 {
-  "extends": "../../tsconfig.common.json",
-  "compilerOptions": {
-    "outDir": "./build",
-    "baseUrl": ".",
-    "paths": {
-      "@app/*": ["src/*"]
-    },
-    "typeRoots": ["src/typings"]
-  },
-  "include": ["src/**/*"]
+  "extends": "../../tsconfig.common.json"
 }

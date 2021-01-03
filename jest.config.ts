@@ -1,13 +1,10 @@
 import type { Config } from '@jest/types';
 
-const config: Config.InitialOptions = {
+export default {
   verbose: true,
-  roots: ['<rootDir>/tests'],
   preset: 'ts-jest',
   testEnvironment: 'node',
   testTimeout: 10000,
-  globalSetup: './tests/globalSetup.ts',
-  globalTeardown: './tests/globalTeardown.ts',
   globals: {
     'ts-jest': {
       compiler: 'ttypescript',
@@ -22,6 +19,4 @@ const config: Config.InitialOptions = {
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
-};
-
-export default config;
+} as Config.InitialOptions;

@@ -1,10 +1,10 @@
 {
-    "recommendations": [
-        "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint",
-        "mikestead.dotenv",
-        "orta.vscode-jest",
-        "eg2.vscode-npm-script",
-        "ms-azuretools.vscode-docker"
-    ]
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "mikestead.dotenv",
+    "orta.vscode-jest",
+    "eg2.vscode-npm-script",
+    "ms-azuretools.vscode-docker"
+  ]
 }

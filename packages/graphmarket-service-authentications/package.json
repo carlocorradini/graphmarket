@@ -1,0 +1,50 @@
+{
+  "name": "@graphmarket/service-authentications",
+  "version": "1.0.0",
+  "description": "Graph Market service authentications",
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "private": true,
+  "files": [
+    "build"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carlocorradini/graphmarket.git",
+    "directory": "packages/graphmarket-service-authentications"
+  },
+  "scripts": {
+    "clean": "npx rimraf build log",
+    "prebuild": "npm run clean",
+    "build": "npx ttsc --project tsconfig.json",
+    "start": "node build/bootstrap.js",
+    "start:dev": "npx cross-env NODE_ENV=development ts-node-dev --prefer-ts true --no-notify --quiet --exit-child -r tsconfig-paths/register --transpile-only src/bootstrap.ts"
+  },
+  "dependencies": {
+    "@graphmarket/adapters": "^1.0.0",
+    "@graphmarket/entities": "^1.0.0",
+    "@graphmarket/errors": "^1.0.0",
+    "@graphmarket/graphql-scalars": "^1.0.0",
+    "@graphmarket/helpers": "^1.0.0",
+    "@graphmarket/interfaces": "^1.0.0",
+    "@graphmarket/logger": "^1.0.0",
+    "@graphmarket/utils": "^1.0.0",
+    "convert-units": "^2.3.4",
+    "envalid": "^6.0.2",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^1.1.1",
+    "typedi": "^0.8.0",
+    "typeorm": "^0.2.29"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.1",
+    "tsconfig-paths": "^3.9.0",
+    "ttypescript": "^1.5.12",
+    "typescript": "^4.1.3",
+    "typescript-transform-paths": "^2.1.0"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "lib": ["ESNext", "ESNext.asynciterable"],
+    "allowJs": true,
+    "checkJs": true,
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": false,
+    "outDir": "build",
+    "removeComments": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "typeRoots": ["node_modules/@types", "src/typings"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "emitDeclarationOnly": false,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@app/*": ["src/*"]
+    },
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths"
+      },
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      }
+    ]
+  }
+}

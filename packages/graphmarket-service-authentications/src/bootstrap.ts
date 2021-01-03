@@ -3,6 +3,9 @@ import logger from '@graphmarket/logger';
 import config from '@app/config';
 import server from '@app/server';
 
+/**
+ * Boostrap the authentication service.
+ */
 const bootstrap = async () => {
   await server.initAdapters();
   logger.info(`Adapters initialized`);

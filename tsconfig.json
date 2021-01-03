@@ -1,53 +1,8 @@
 {
+  "extends": "./tsconfig.common.json",
   "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
-    "lib": [
-      "ESNext",
-      "ESNext.asynciterable"
-    ],
-    "allowJs": true,
-    "checkJs": true,
-    "declaration": true,
-    "declarationMap": false,
-    "sourceMap": false,
-    "outDir": "build/",
-    "removeComments": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
-    "baseUrl": ".",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "emitDeclarationOnly": false,
-    "forceConsistentCasingInFileNames": true,
-    "plugins": [
-      {
-        "transform": "typescript-transform-paths"
-      },
-      {
-        "transform": "typescript-transform-paths",
-        "afterDeclarations": true
-      }
-    ]
+    "noEmit": true,
+    "baseUrl": "."
   },
-  "include": [
-    "jest.config.ts"
-  ],
-  "exclude": [
-    "node_modules/**/*",
-    "build/**/*"
-  ]
+  "include": ["jest.config.ts", "jest.config.common.ts"]
 }

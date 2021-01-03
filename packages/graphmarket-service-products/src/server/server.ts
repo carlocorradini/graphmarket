@@ -7,6 +7,9 @@ import { UploadAdapter } from '@graphmarket/adapters';
 import config from '@app/config';
 import { ProductResolver, resolveProductReference, UserProductResolver } from '@app/resolvers';
 
+/**
+ * Federated GraphQL schema.
+ */
 const schema = buildFederatedSchema(
   {
     resolvers: [ProductResolver, UserProductResolver],
@@ -18,6 +21,9 @@ const schema = buildFederatedSchema(
   },
 );
 
+/**
+ * Service instance.
+ */
 const app = buildService({
   graphql: {
     schema,
@@ -30,6 +36,12 @@ const app = buildService({
   },
 });
 
+/**
+ * Start listening at the given port.
+ *
+ * @param port - Listening port
+ * @returns Address information
+ */
 const listen = (port: number): Promise<AddressInfo> =>
   new Promise((resolve, reject) => {
     const server = app
@@ -41,6 +53,11 @@ const listen = (port: number): Promise<AddressInfo> =>
       });
   });
 
+/**
+ * Create and returns a connection with the database.
+ *
+ * @returns Database connection
+ */
 const connectDatabase = (): Promise<Connection> =>
   createConnection(<ConnectionOptions>{
     type: config.DATABASE.TYPE,
@@ -58,6 +75,9 @@ const connectDatabase = (): Promise<Connection> =>
     },
   });
 
+/**
+ * Initialize the adapters used in the service.
+ */
 const initAdapters = (): Promise<void> => {
   Container.get(UploadAdapter).init(
     config.ADAPTERS.UPLOAD.CLOUD_NAME,

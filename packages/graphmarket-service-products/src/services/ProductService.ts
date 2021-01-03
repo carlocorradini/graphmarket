@@ -20,10 +20,14 @@ export default class ProductService {
    */
   @Transaction()
   public async create(
-    product: Product,
+    sellerId: string,
+    product: Exclude<Product, 'seller' | 'sellerId'>,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product> {
-    const newProduct: Product = await manager!.save(Product, manager!.create(Product, product));
+    const newProduct: Product = await manager!.save(
+      Product,
+      manager!.create(Product, { ...product, seller: { id: sellerId } }),
+    );
 
     logger.info(`Created product ${newProduct.id}`);
 
@@ -38,7 +42,7 @@ export default class ProductService {
    * @returns Product found, undefined otherwise
    */
   @Transaction()
-  public async readOne(
+  public readOne(
     id: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product | undefined> {
@@ -54,7 +58,7 @@ export default class ProductService {
    * @returns Product found
    */
   @Transaction()
-  public async readOneOrFail(
+  public readOneOrFail(
     id: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product> {
@@ -69,10 +73,27 @@ export default class ProductService {
    * @returns Products found
    */
   @Transaction()
-  public async read(
-    options?: FindManyOptions,
+  public read(
+    options?: Pick<FindManyOptions, 'skip' | 'take'>,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product[]> {
     return manager!.find(Product, { ...options, cache: true });
+  }
+
+  /**
+   * Read mutiple products for sale of the seller identified by the sellerId.
+   *
+   * @param sellerId - Seller id
+   * @param options - Find options
+   * @param manager - Transaction manager
+   * @returns Products for sale of the seller found
+   */
+  @Transaction()
+  public readforSale(
+    sellerId: string,
+    options?: Pick<FindManyOptions, 'skip' | 'take'>,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<Product[]> {
+    return manager!.find(Product, { ...options, where: { seller: { id: sellerId } }, cache: true });
   }
 }

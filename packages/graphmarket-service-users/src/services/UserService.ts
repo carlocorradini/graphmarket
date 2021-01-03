@@ -68,7 +68,7 @@ export default class UserService {
    * @returns User found, undefined otherwise
    */
   @Transaction()
-  public async readOne(
+  public readOne(
     id: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User | undefined> {
@@ -84,10 +84,7 @@ export default class UserService {
    * @returns User found
    */
   @Transaction()
-  public async readOneOrFail(
-    id: string,
-    @TransactionManager() manager?: EntityManager,
-  ): Promise<User> {
+  public readOneOrFail(id: string, @TransactionManager() manager?: EntityManager): Promise<User> {
     return manager!.findOneOrFail(User, id, { cache: true });
   }
 
@@ -99,7 +96,7 @@ export default class UserService {
    * @returns Users found
    */
   @Transaction()
-  public async read(
+  public read(
     options?: FindManyOptions,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User[]> {
@@ -149,7 +146,6 @@ export default class UserService {
   public async updateAvatar(
     id: string,
     avatar: ReadStream,
-    token: Pick<IToken, 'sub' | 'iat'>,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User> {
     // Check if user exists
@@ -159,7 +155,10 @@ export default class UserService {
     const url: string = (await this.uploadAdapter.upload({ resource: avatar, type: 'USER_AVATAR' }))
       .secure_url;
 
-    return this.update(id, { avatar: url }, token, manager);
+    // Update avatar url
+    manager!.update(User, id, manager!.create(User, { avatar: url }));
+
+    return manager!.findOneOrFail(User, id);
   }
 
   /**

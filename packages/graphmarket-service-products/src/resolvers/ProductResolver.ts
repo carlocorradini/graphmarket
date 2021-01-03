@@ -1,10 +1,11 @@
-import { Arg, Args, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { UserRoles, Product } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
 import { GraphQLUUID } from '@graphmarket/graphql-scalars';
-import { ProductService } from '@app/services';
+import { IGraphQLContext } from '@graphmarket/interfaces';
 import { ProductCreateInput } from '@app/inputs';
+import { ProductService } from '@app/services';
 
 /**
  * Product resolver.
@@ -29,8 +30,11 @@ export default class ProductResolver {
    */
   @Mutation(() => Product)
   @Authorized(UserRoles.SELLER)
-  createProduct(@Arg('data', () => ProductCreateInput) data: ProductCreateInput): Promise<Product> {
-    return this.productService.create(data as Product);
+  createProduct(
+    @Arg('data', () => ProductCreateInput) data: ProductCreateInput,
+    @Ctx() ctx: IGraphQLContext,
+  ): Promise<Product> {
+    return this.productService.create(ctx.user!.id, data as Product);
   }
 
   /**

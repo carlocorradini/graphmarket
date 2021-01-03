@@ -99,7 +99,7 @@ export default class UserResolver {
     @Arg('file', () => GraphQLUpload) file: FileUpload,
     @Ctx() ctx: IGraphQLContext,
   ): Promise<User> {
-    return this.userService.updateAvatar(ctx.user!.id, file.createReadStream(), ctx.user!);
+    return this.userService.updateAvatar(ctx.user!.id, file.createReadStream());
   }
 
   /**

@@ -2,16 +2,22 @@ import { AddressInfo } from 'net';
 import { ApolloGateway } from '@apollo/gateway';
 import { ApolloServer } from 'apollo-server-express';
 import { buildExpressApp } from '@graphmarket/helpers';
-import { IGraphQLContext } from '@graphmarket/interfaces';
+import { IGraphQLContext } from '@graphmarket/interface';
 import config from '@app/config';
 import { services, buildServiceDatasource } from '@app/services';
 
+/**
+ * Apollo gateway instance.
+ */
 const gateway: ApolloGateway = new ApolloGateway({
   serviceList: services,
   buildService: ({ url }) => buildServiceDatasource(url),
   __exposeQueryPlanExperimental: false,
 });
 
+/**
+ * Apollo server instance.
+ */
 const server: ApolloServer = new ApolloServer({
   gateway,
   playground: config.GRAPHQL.PLAYGROUND,
@@ -22,6 +28,9 @@ const server: ApolloServer = new ApolloServer({
   }),
 });
 
+/**
+ * Express app instance.
+ */
 const app = buildExpressApp({
   graphql: { path: config.GRAPHQL.PATH },
   token: { secret: config.TOKEN.SECRET, algorithm: config.TOKEN.ALGORITHM },
@@ -33,6 +42,12 @@ server.applyMiddleware({
   path: config.GRAPHQL.PATH,
 });
 
+/**
+ * Start listening at the given port.
+ *
+ * @param port - Listening port
+ * @returns Address information
+ */
 const listen = (port: number): Promise<AddressInfo> =>
   new Promise((resolve, reject) => {
     const serverGateway = app

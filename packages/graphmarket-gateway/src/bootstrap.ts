@@ -3,6 +3,9 @@ import config from '@app/config';
 import { server } from '@app/server';
 import { services } from '@app/services';
 
+/**
+ * Bootstrap the gateway.
+ */
 const bootstrap = async (): Promise<void> => {
   logger.info(`Available ${services.length} services`);
   // eslint-disable-next-line no-restricted-syntax

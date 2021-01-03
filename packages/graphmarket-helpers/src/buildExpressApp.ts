@@ -8,6 +8,12 @@ import jwtBlacklist from 'express-jwt-blacklist';
 import { EnvUtil } from '@graphmarket/utils';
 import { IBuildExpressAppOptions } from '@app/interfaces';
 
+/**
+ * Build express app given the options.
+ *
+ * @param options - Express app build options
+ * @returns Express app
+ */
 const buildExpressApp = (options: IBuildExpressAppOptions) => {
   const app = express();
 

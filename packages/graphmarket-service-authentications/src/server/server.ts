@@ -7,11 +7,17 @@ import { EmailAdapter, PhoneAdapter, TokenAdapter } from '@graphmarket/adapters'
 import Container from 'typedi';
 import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 
+/**
+ * Federated GraphQL schema.
+ */
 const schema = buildFederatedSchema({
   resolvers: [AuthenticationResolver],
   container: Container,
 });
 
+/**
+ * Service instance.
+ */
 const app = buildService({
   graphql: {
     schema,
@@ -20,6 +26,12 @@ const app = buildService({
   },
 });
 
+/**
+ * Start listening at the given port.
+ *
+ * @param port - Listening port
+ * @returns Address information
+ */
 const listen = (port: number): Promise<AddressInfo> =>
   new Promise((resolve, reject) => {
     const server = app
@@ -31,6 +43,11 @@ const listen = (port: number): Promise<AddressInfo> =>
       });
   });
 
+/**
+ * Create and returns a connection with the database.
+ *
+ * @returns Database connection
+ */
 const connectDatabase = (): Promise<Connection> =>
   createConnection(<ConnectionOptions>{
     type: config.DATABASE.TYPE,
@@ -48,6 +65,9 @@ const connectDatabase = (): Promise<Connection> =>
     },
   });
 
+/**
+ * Initialize the adapters used in the service.
+ */
 const initAdapters = (): Promise<void> => {
   Container.get(TokenAdapter).init(config.REDIS.URL);
   Container.get(PhoneAdapter).init(config.ADAPTERS.PHONE.USERNAME, config.ADAPTERS.PHONE.PASSWORD, {

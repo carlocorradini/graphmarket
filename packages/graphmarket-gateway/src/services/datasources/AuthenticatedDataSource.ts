@@ -3,7 +3,16 @@ import { GraphQLRequestContext, ValueOrPromise } from 'apollo-server-types';
 import { RemoteGraphQLDataSource } from '@apollo/gateway';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 
+/**
+ * Authenticated datasource.
+ * Used when a service needs authentication support.
+ */
 export default class AuthenticatedDataSource extends RemoteGraphQLDataSource {
+  /**
+   * Construct a new authenticated datasource.
+   *
+   * @param config - Datasource configuration
+   */
   public constructor(
     config?: Partial<RemoteGraphQLDataSource<IGraphQLContext>> &
       object &
@@ -12,6 +21,11 @@ export default class AuthenticatedDataSource extends RemoteGraphQLDataSource {
     super(config);
   }
 
+  /**
+   * Modify each fetch request adding the user token (if present) before it's sent to the service.
+   *
+   * @param param0 - Request context
+   */
   public willSendRequest?({
     request,
     context,

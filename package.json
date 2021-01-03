@@ -16,7 +16,6 @@
     "url": "https://github.com/carlocorradini/graphmarket/issues",
     "email": "carlo.corradini@studenti.unitn.it"
   },
-  "main": "./build/index.js",
   "private": true,
   "author": {
     "name": "Carlo Corradini",

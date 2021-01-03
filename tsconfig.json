@@ -2,7 +2,6 @@
   "extends": "./tsconfig.common.json",
   "compilerOptions": {
     "noEmit": true,
-    "rootDir": ".",
     "baseUrl": "."
   },
   "include": ["jest.config.ts", "jest.config.common.ts"]

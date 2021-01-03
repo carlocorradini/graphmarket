@@ -5,7 +5,6 @@ export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testTimeout: 10000,
-  collectCoverage: true,
   roots: ['<rootDir>/tests'],
   globals: {
     'ts-jest': {

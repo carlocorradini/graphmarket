@@ -1,5 +1,6 @@
 import { AuthChecker } from 'type-graphql';
 import { IGraphQLContext } from '@graphmarket/interfaces';
+import { UserRoles } from '@graphmarket/entities';
 
 /**
  * Check if the user's role is allowed to execute the operation.
@@ -8,7 +9,10 @@ import { IGraphQLContext } from '@graphmarket/interfaces';
  * @param roles - Allowed roles to execute the operation
  * @returns True if authorized, false otherwise
  */
-const authorizationMiddleware: AuthChecker<IGraphQLContext> = ({ context: { user } }, roles) => {
+const authorizationMiddleware: AuthChecker<IGraphQLContext, UserRoles> = (
+  { context: { user } },
+  roles,
+) => {
   // If `@Authorized()`, check only is user exist
   if (roles.length === 0) return user !== undefined;
 

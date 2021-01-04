@@ -5,7 +5,8 @@ export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testTimeout: 10000,
-  roots: ['<rootDir>/tests'],
+  roots: ['<rootDir>/tests', '<rootDir>/src'],
+  collectCoverageFrom: ['src/**/*.ts'],
   globals: {
     'ts-jest': {
       compiler: 'ttypescript',

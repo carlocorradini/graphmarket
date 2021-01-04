@@ -1,0 +1,21 @@
+.logo {
+  width: 128px;
+  height: 128px;
+  
+  &.tiny {
+    width: 32px;
+    height: 32px;
+  }
+  &.small {
+    width: 64px;
+    height: 64px;
+  }
+  &.normal {
+    width: 128px;
+    height: 128px;
+  }
+  &.big {
+    width: 256px;
+    height: 256px;
+  }
+}

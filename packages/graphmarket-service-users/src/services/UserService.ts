@@ -104,6 +104,25 @@ export default class UserService {
   }
 
   /**
+   * Read the seller of the product identified by productId.
+   *
+   * @param productId - Product id
+   * @param manager - Transaction manager
+   * @returns Seller of the product
+   */
+  @Transaction()
+  public readSeller(
+    productId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<User> {
+    return manager!
+      .createQueryBuilder(User, 'user')
+      .innerJoin('user.productsForSale', 'product')
+      .where('product.id = :productId', { productId })
+      .getOneOrFail();
+  }
+
+  /**
    * Update a user that matches the id with the given data.
    * If the password is updated the tokens are purged.
    *

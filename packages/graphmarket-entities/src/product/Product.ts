@@ -26,7 +26,7 @@ import ProductCategories from './ProductCategories';
  * Product entity.
  */
 @Entity('product')
-@ObjectType()
+@ObjectType('Product')
 @Directive(`@key(fields: "id")`)
 export default class Product {
   /**

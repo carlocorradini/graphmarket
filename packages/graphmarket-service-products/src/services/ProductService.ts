@@ -86,7 +86,7 @@ export default class ProductService {
    * @param sellerId - Seller id
    * @param options - Find options
    * @param manager - Transaction manager
-   * @returns Products for sale of the seller found
+   * @returns Products for sale of the seller
    */
   @Transaction()
   public readforSale(

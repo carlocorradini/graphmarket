@@ -13,7 +13,7 @@ import { ProductResolver, resolveProductReference, UserProductResolver } from '@
 const schema = buildFederatedSchema(
   {
     resolvers: [ProductResolver, UserProductResolver],
-    orphanedTypes: [UserExternal, Product],
+    orphanedTypes: [Product, UserExternal],
     container: Container,
   },
   {

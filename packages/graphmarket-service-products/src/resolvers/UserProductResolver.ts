@@ -22,13 +22,13 @@ export default class UserProductResolver {
    * Resolves all available products for sale of a seller.
    *
    * @param param0 - Pagination arguments
-   * @param seller - Seller to retrieve data of
-   * @returns Products for sale of the seller found
+   * @param seller - Seller to obtain products for sale of
+   * @returns Products for sale of the seller
    */
   @FieldResolver(() => [Product])
   productsForSale(
-    @Args() { skip, take }: PaginationArgs,
     @Root() seller: UserExternal,
+    @Args() { skip, take }: PaginationArgs,
   ): Promise<Product[]> {
     return this.productService.readforSale(seller.id, { skip, take });
   }

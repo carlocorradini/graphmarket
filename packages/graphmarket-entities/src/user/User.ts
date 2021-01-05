@@ -7,6 +7,8 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
+  RelationId,
 } from 'typeorm';
 import {
   GraphQLNonEmptyString,
@@ -18,6 +20,7 @@ import {
   GraphQLID,
 } from '@graphmarket/graphql-scalars';
 import { CryptUtil } from '@graphmarket/utils';
+import { Product } from '@app/product';
 import UserGenders from './UserGenders';
 import UserRoles from './UserRoles';
 
@@ -151,18 +154,15 @@ export default class User {
   @Column({ default: false, select: false })
   verified?: boolean;
 
-  // TODO
   /**
    * User's products for sale.
    */
-  /* @OneToMany(() => ProductExternal, (product) => product.seller)
-  @Authorized([UserRoles.ADMINISTRATOR, UserRoles.SELLER])
-  @Field(() => [ProductExternal])
-  productsForSale!: ProductExternal[];
+  @OneToMany(() => Product, (product) => product.seller, { nullable: false })
+  productsForSale!: Product[];
 
   /**
    * User's products for sale ids.
    */
-  /* @RelationId((user: User) => user.productsForSale)
-  productsForSaleIds!: string[]; */
+  @RelationId((user: User) => user.productsForSale)
+  productsForSaleIds!: string[];
 }

@@ -1,19 +1,19 @@
 import { AddressInfo } from 'net';
-import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
-import { User } from '@graphmarket/entities';
-import config from '@app/config';
-import { UserResolver, resolveUserReference } from '@app/resolvers';
-import { EmailAdapter, PhoneAdapter, UploadAdapter, TokenAdapter } from '@graphmarket/adapters';
 import Container from 'typedi';
 import { Connection, createConnection, ConnectionOptions } from 'typeorm';
+import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
+import { User, Product, ProductExternal } from '@graphmarket/entities';
+import { EmailAdapter, PhoneAdapter, UploadAdapter, TokenAdapter } from '@graphmarket/adapters';
+import config from '@app/config';
+import { UserResolver, resolveUserReference, ProductUserResolver } from '@app/resolvers';
 
 /**
  * Federated GraphQL schema.
  */
 const schema = buildFederatedSchema(
   {
-    resolvers: [UserResolver],
-    orphanedTypes: [User],
+    resolvers: [UserResolver, ProductUserResolver],
+    orphanedTypes: [User, ProductExternal],
     container: Container,
   },
   {
@@ -68,7 +68,7 @@ const connectDatabase = (): Promise<Connection> =>
     synchronize: config.DATABASE.SYNCHRONIZE,
     dropSchema: config.DATABASE.DROP_SCHEMA,
     logging: config.DATABASE.LOGGING,
-    entities: [User],
+    entities: [User, Product],
     cache: {
       type: 'ioredis',
       port: config.REDIS.URL,

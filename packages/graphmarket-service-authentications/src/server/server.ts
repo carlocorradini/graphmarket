@@ -1,6 +1,6 @@
 import { AddressInfo } from 'net';
 import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
-import { User } from '@graphmarket/entities';
+import { User, Product } from '@graphmarket/entities';
 import config from '@app/config';
 import { AuthenticationResolver } from '@app/resolvers';
 import { EmailAdapter, PhoneAdapter, TokenAdapter } from '@graphmarket/adapters';
@@ -58,7 +58,7 @@ const connectDatabase = (): Promise<Connection> =>
     synchronize: config.DATABASE.SYNCHRONIZE,
     dropSchema: config.DATABASE.DROP_SCHEMA,
     logging: config.DATABASE.LOGGING,
-    entities: [User],
+    entities: [User, Product],
     cache: {
       type: 'ioredis',
       port: config.REDIS.URL,

@@ -4,7 +4,7 @@ import { UserRoles, Product } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
 import { GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
-import { ProductCreateInput } from '@app/inputs';
+import { ProductCreateInput, ProductUpdateInput } from '@app/inputs';
 import { ProductService } from '@app/services';
 
 /**
@@ -57,5 +57,41 @@ export default class ProductResolver {
   @Query(() => [Product])
   products(@Args() { skip, take }: PaginationArgs): Promise<Product[]> {
     return this.productService.read({ skip, take });
+  }
+
+  /**
+   * Update the product identified by the id.
+   * Only the seller of the product can update it.
+   *
+   * @param id - Product's id
+   * @param data - Product's data
+   * @param ctx - Request context
+   * @returns Updated product
+   */
+  @Mutation(() => Product)
+  @Authorized(UserRoles.SELLER)
+  updateProduct(
+    @Arg('id', () => GraphQLUUID) id: string,
+    @Arg('data', () => ProductUpdateInput) data: ProductUpdateInput,
+    @Ctx() ctx: IGraphQLContext,
+  ): Promise<Product> {
+    return this.productService.update(id, ctx.user!.id, data);
+  }
+
+  /**
+   * Delete the product identified by the id.
+   * Only the seller of the product can delete id.
+   *
+   * @param id - Product's id
+   * @param ctx - Request context
+   * @returns Deleted product
+   */
+  @Mutation(() => Product)
+  @Authorized(UserRoles.SELLER)
+  deleteProduct(
+    @Arg('id', () => GraphQLUUID) id: string,
+    @Ctx() ctx: IGraphQLContext,
+  ): Promise<Product> {
+    return this.productService.delete(id, ctx.user!.id);
   }
 }

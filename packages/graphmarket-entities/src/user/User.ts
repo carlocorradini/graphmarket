@@ -157,7 +157,7 @@ export default class User {
   /**
    * User's products for sale.
    */
-  @OneToMany(() => Product, (product) => product.seller)
+  @OneToMany(() => Product, (product) => product.seller, { nullable: false })
   productsForSale!: Product[];
 
   /**

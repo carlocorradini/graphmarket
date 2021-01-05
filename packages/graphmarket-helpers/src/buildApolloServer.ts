@@ -1,4 +1,5 @@
 import { ApolloServer } from 'apollo-server-express';
+import { ApolloServerPluginInlineTraceDisabled } from 'apollo-server-core';
 import { IBuildApolloServerOptions } from '@app/interfaces';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 
@@ -14,6 +15,7 @@ const buildApolloServer = (options: IBuildApolloServerOptions): ApolloServer => 
     playground: options.graphql.playground,
     uploads: false,
     subscriptions: false,
+    plugins: [ApolloServerPluginInlineTraceDisabled()],
     context: ({ req }): IGraphQLContext => ({
       user: req.headers.user ? JSON.parse(req.headers.user as string) : undefined,
     }),

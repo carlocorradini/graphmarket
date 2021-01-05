@@ -109,6 +109,7 @@ export default class UserService {
    *
    * @param id - User's id
    * @param user - User update properties
+   * @param token - User's token
    * @param manager - Transaction manager
    * @returns Updated user
    * @see TokenService
@@ -166,6 +167,7 @@ export default class UserService {
    * All user's tokens are purged.
    *
    * @param id - User's id
+   * @param token - User's token
    * @param manager - Transaction manager
    * @returns Deleted user
    * @see TokenService

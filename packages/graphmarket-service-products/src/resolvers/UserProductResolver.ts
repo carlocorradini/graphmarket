@@ -27,8 +27,8 @@ export default class UserProductResolver {
    */
   @FieldResolver(() => [Product])
   productsForSale(
-    @Args() { skip, take }: PaginationArgs,
     @Root() seller: UserExternal,
+    @Args() { skip, take }: PaginationArgs,
   ): Promise<Product[]> {
     return this.productService.readforSale(seller.id, { skip, take });
   }

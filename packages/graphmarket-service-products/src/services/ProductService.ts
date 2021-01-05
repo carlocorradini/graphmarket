@@ -96,4 +96,58 @@ export default class ProductService {
   ): Promise<Product[]> {
     return manager!.find(Product, { ...options, where: { seller: { id: sellerId } }, cache: true });
   }
+
+  /**
+   * Update the product identified by the id.
+   * Only the seller (identified by sellerId) of the product can update it.
+   *
+   * @param id - Product's id
+   * @param sellerIdd - Seller id
+   * @param product - Product update properties
+   * @param manager - Transaction manager
+   * @returns Updated product
+   */
+  @Transaction()
+  public async update(
+    id: string,
+    sellerId: string,
+    product: Partial<Omit<Product, 'id' | 'seller' | 'sellerId'>>,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<Product> {
+    // Check if product exists and the seller matches
+    await manager!.findOneOrFail(Product, id, { where: { seller: { id: sellerId } } });
+
+    await manager!.update(Product, id, manager!.create(Product, product));
+
+    logger.info(`Updated product ${id}`);
+
+    return manager!.findOneOrFail(Product, id);
+  }
+
+  /**
+   * Delete the product identified by the id.
+   * Only the seller (identified by sellerId) of the product can delete it.
+   *
+   * @param id - Product's id
+   * @param sellerId - Seller id
+   * @param manager - Transaction manager
+   * @returns Deleted product
+   */
+  @Transaction()
+  public async delete(
+    id: string,
+    sellerId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<Product> {
+    // Check if product exists and the seller matches
+    const product: Product = await manager!.findOneOrFail(Product, id, {
+      where: { seller: { id: sellerId } },
+    });
+
+    await manager!.delete(Product, id);
+
+    logger.info(`Deleted product ${id}`);
+
+    return product;
+  }
 }

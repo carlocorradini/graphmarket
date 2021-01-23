@@ -2,18 +2,30 @@ import { AddressInfo } from 'net';
 import Container from 'typedi';
 import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
-import { Product, User, Inventory, InventoryExternal, Purchase } from '@graphmarket/entities';
+import {
+  Product,
+  User,
+  Inventory,
+  InventoryExternal,
+  Purchase,
+  PurchaseExternal,
+} from '@graphmarket/entities';
 import { UploadAdapter } from '@graphmarket/adapters';
 import config from '@app/config';
-import { InventoryProductResolver, ProductResolver, resolveProductReference } from '@app/resolvers';
+import {
+  InventoryProductResolver,
+  ProductResolver,
+  PurchaseProductResolver,
+  resolveProductReference,
+} from '@app/resolvers';
 
 /**
  * Federated GraphQL schema.
  */
 const schema = buildFederatedSchema(
   {
-    resolvers: [ProductResolver, InventoryProductResolver],
-    orphanedTypes: [Product, InventoryExternal],
+    resolvers: [ProductResolver, InventoryProductResolver, PurchaseProductResolver],
+    orphanedTypes: [Product, InventoryExternal, PurchaseExternal],
     container: Container,
   },
   {

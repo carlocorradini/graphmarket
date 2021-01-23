@@ -85,6 +85,26 @@ export default class ProductService {
   }
 
   /**
+   * Read the product of the purchase identified by the purchaseId.
+   *
+   * @param purchaseId - Purchase id
+   * @param manager - Transaction manager
+   * @returns Product of the purchase
+   */
+  @Transaction()
+  public readOneByPurchase(
+    purchaseId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<Product> {
+    return manager!
+      .createQueryBuilder(Product, 'product')
+      .innerJoin('product.inventories', 'inventory')
+      .innerJoin('inventory.purchases', 'purchase')
+      .where('purchase.id = :purchaseId', { purchaseId })
+      .getOneOrFail();
+  }
+
+  /**
    * Read multiple products.
    *
    * @param options - Find options

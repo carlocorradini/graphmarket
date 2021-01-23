@@ -76,6 +76,25 @@ export default class UserService {
   }
 
   /**
+   * Read the seller of the inventory identified by inventoryId.
+   *
+   * @param inventoryId - Inventory id
+   * @param manager - Transaction manager
+   * @returns Seller of the inventory
+   */
+  @Transaction()
+  public readOnebyInventory(
+    inventoryId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<User> {
+    return manager!
+      .createQueryBuilder(User, 'user')
+      .innerJoin('user.inventories', 'inventory')
+      .where('inventory.id = :inventoryId', { inventoryId })
+      .getOneOrFail();
+  }
+
+  /**
    * Read a user that matches the id.
    * If no user exists rejects.
    *
@@ -101,25 +120,6 @@ export default class UserService {
     @TransactionManager() manager?: EntityManager,
   ): Promise<User[]> {
     return manager!.find(User, { ...options, cache: true });
-  }
-
-  /**
-   * Read the seller of the product identified by productId.
-   *
-   * @param productId - Product id
-   * @param manager - Transaction manager
-   * @returns Seller of the product
-   */
-  @Transaction()
-  public readSeller(
-    productId: string,
-    @TransactionManager() manager?: EntityManager,
-  ): Promise<User> {
-    return manager!
-      .createQueryBuilder(User, 'user')
-      .innerJoin('user.productsForSale', 'product')
-      .where('product.id = :productId', { productId })
-      .getOneOrFail();
   }
 
   /**

@@ -100,23 +100,6 @@ export default class ProductService {
   }
 
   /**
-   * Read mutiple products for sale of the seller identified by the sellerId.
-   *
-   * @param sellerId - Seller id
-   * @param options - Find options
-   * @param manager - Transaction manager
-   * @returns Products for sale of the seller
-   */
-  @Transaction()
-  public readforSale(
-    sellerId: string,
-    options?: Pick<FindManyOptions, 'skip' | 'take'>,
-    @TransactionManager() manager?: EntityManager,
-  ): Promise<Product[]> {
-    return manager!.find(Product, { ...options, where: { seller: { id: sellerId } }, cache: true });
-  }
-
-  /**
    * Update the product identified by the id.
    * Only the seller (identified by sellerId) of the product can update it.
    *

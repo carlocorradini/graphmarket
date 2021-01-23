@@ -20,9 +20,9 @@ import {
   GraphQLID,
 } from '@graphmarket/graphql-scalars';
 import { CryptUtil } from '@graphmarket/utils';
-import { Product } from '@app/product';
 import UserGenders from './UserGenders';
 import UserRoles from './UserRoles';
+import { Inventory } from '@app/inventory';
 
 /**
  * User entity.
@@ -155,14 +155,14 @@ export default class User {
   verified?: boolean;
 
   /**
-   * User's products for sale.
+   * Seller's inventories.
    */
-  @OneToMany(() => Product, (product) => product.seller, { nullable: false })
-  productsForSale!: Product[];
+  @OneToMany(() => Inventory, (inventory) => inventory.seller, { nullable: false })
+  inventories!: Inventory[];
 
   /**
-   * User's products for sale ids.
+   * Seller's inventories ids.
    */
-  @RelationId((user: User) => user.productsForSale)
-  productsForSaleIds!: string[];
+  @RelationId((seller: User) => seller.inventories)
+  inventoriesIds!: string[];
 }

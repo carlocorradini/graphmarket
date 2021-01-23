@@ -6,8 +6,6 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
   RelationId,
   OneToMany,
 } from 'typeorm';
@@ -18,7 +16,6 @@ import {
   GraphQLURL,
   GraphQLDateTime,
 } from '@graphmarket/graphql-scalars';
-import { User } from '@app/user';
 import { Inventory } from '@app/inventory';
 import ProductCategories from './ProductCategories';
 
@@ -90,19 +87,6 @@ export default class Product {
   @UpdateDateColumn({ name: 'updated_at' })
   @Field(() => GraphQLDateTime)
   updatedAt!: Date;
-
-  /**
-   * Product's seller.
-   */
-  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
-  @JoinColumn({ name: 'seller_id' })
-  seller!: User;
-
-  /**
-   * Product's seller id.
-   */
-  @RelationId((product: Product) => product.seller)
-  sellerId!: string;
 
   /**
    * Product's inventories.

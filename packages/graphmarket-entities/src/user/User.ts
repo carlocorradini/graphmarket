@@ -20,9 +20,9 @@ import {
   GraphQLID,
 } from '@graphmarket/graphql-scalars';
 import { CryptUtil } from '@graphmarket/utils';
+import { Inventory } from '@app/inventory';
 import UserGenders from './UserGenders';
 import UserRoles from './UserRoles';
-import { Inventory } from '@app/inventory';
 
 /**
  * User entity.

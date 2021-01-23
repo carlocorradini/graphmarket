@@ -12,7 +12,6 @@ import {
 import {
   GraphQLNonEmptyString,
   GraphQLID,
-  GraphQLPositiveInt,
   GraphQLURL,
   GraphQLDateTime,
 } from '@graphmarket/graphql-scalars';
@@ -54,13 +53,6 @@ export default class Product {
   @Column({ length: 256, nullable: true, default: undefined })
   @Field(() => GraphQLNonEmptyString, { nullable: true })
   description?: string;
-
-  /**
-   * Product's price in cents.
-   */
-  @Column({ type: 'bigint' })
-  @Field(() => GraphQLPositiveInt)
-  price!: number;
 
   /**
    * Product's photos.

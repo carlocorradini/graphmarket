@@ -19,8 +19,6 @@ import {
 } from '@graphmarket/graphql-scalars';
 import { User } from '@app/user';
 import ProductCategories from './ProductCategories';
-// TODO
-// import ProductConditions from './ProductConditions';
 
 /**
  * Product entity.

@@ -21,8 +21,8 @@ export default class UserProductResolver {
   /**
    * Resolves all available products for sale of a seller.
    *
-   * @param param0 - Pagination arguments
    * @param seller - Seller to obtain products for sale of
+   * @param param0 - Pagination arguments
    * @returns Products for sale of the seller
    */
   @FieldResolver(() => [Product])

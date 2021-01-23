@@ -102,7 +102,7 @@ export default class ProductService {
    * Only the seller (identified by sellerId) of the product can update it.
    *
    * @param id - Product's id
-   * @param sellerIdd - Seller id
+   * @param sellerId - Seller id
    * @param product - Product update properties
    * @param manager - Transaction manager
    * @returns Updated product

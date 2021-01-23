@@ -3,18 +3,14 @@ import {
   IConfigGraphQL,
   IConfigDatabase,
   IConfigRedis,
-  IConfigUploadAdapter,
 } from '@graphmarket/interfaces';
 
 /**
- * Products service configuration.
+ * Inventories service configuration.
  */
-export default interface IConfigProductsService {
+export default interface IConfigInventoriesService {
   readonly NODE: IConfigNode;
   readonly GRAPHQL: IConfigGraphQL;
   readonly DATABASE: IConfigDatabase;
   readonly REDIS: IConfigRedis;
-  readonly ADAPTERS: {
-    readonly UPLOAD: IConfigUploadAdapter;
-  };
 }

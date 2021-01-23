@@ -10,9 +10,9 @@ import {
 } from '@graphmarket/interfaces';
 
 /**
- * User service configuration.
+ * Users service configuration.
  */
-export default interface IConfigUserService {
+export default interface IConfigUsersService {
   readonly NODE: IConfigNode;
   readonly GRAPHQL: IConfigGraphQL;
   readonly TOKEN: IConfigToken;

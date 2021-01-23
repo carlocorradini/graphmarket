@@ -20,6 +20,11 @@ const services: IService[] = [
     url: config.SERVICES.PRODUCTS.URL,
     features: { authentication: true, upload: true },
   },
+  {
+    name: 'inventories',
+    url: config.SERVICES.INVENTORIES.URL,
+    features: { authentication: true },
+  },
 ];
 
 export default services;

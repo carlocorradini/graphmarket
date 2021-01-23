@@ -6,6 +6,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
   Unique,
@@ -19,6 +20,7 @@ import {
 } from '@graphmarket/graphql-scalars';
 import { Product, ProductConditions } from '@app/product';
 import { User } from '@app/user';
+import { Purchase } from '@app/purchase';
 
 /**
  * Inventory entity.
@@ -74,7 +76,10 @@ export default class Inventory {
   /**
    * Product.
    */
-  @ManyToOne(() => Product, { onDelete: 'CASCADE', nullable: false })
+  @ManyToOne(() => Product, (product) => product.inventories, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
   @JoinColumn({ name: 'product_id' })
   product!: Product;
 
@@ -87,7 +92,7 @@ export default class Inventory {
   /**
    * Product's seller.
    */
-  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
+  @ManyToOne(() => User, (user) => user.inventories, { nullable: false })
   @JoinColumn({ name: 'seller_id' })
   seller!: User;
 
@@ -96,4 +101,16 @@ export default class Inventory {
    */
   @RelationId((inventory: Inventory) => inventory.seller)
   sellerId!: string;
+
+  /**
+   * Product's purchases.
+   */
+  @OneToMany(() => Purchase, (purchase) => purchase.inventory)
+  purchases!: Purchase[];
+
+  /**
+   * Product's purchases ids.
+   */
+  @RelationId((inventory: Inventory) => inventory.purchases)
+  purchasesIds!: string[];
 }

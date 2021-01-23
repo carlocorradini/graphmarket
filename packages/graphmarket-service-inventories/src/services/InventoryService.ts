@@ -2,6 +2,7 @@
 import { Service } from 'typedi';
 import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
 import { Inventory } from '@graphmarket/entities';
+import { PaginationArgs } from '@graphmarket/graphql-args';
 import logger from '@graphmarket/logger';
 
 /**
@@ -79,7 +80,10 @@ export default class InventoryService {
    */
   @Transaction()
   public read(
-    options?: Pick<FindManyOptions, 'skip' | 'take'>,
+    options: Pick<FindManyOptions, 'skip' | 'take'> = {
+      skip: PaginationArgs.DEFAULT_SKIP,
+      take: PaginationArgs.DEFAULT_TAKE,
+    },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Inventory[]> {
     return manager!.find(Inventory, { ...options, cache: true });

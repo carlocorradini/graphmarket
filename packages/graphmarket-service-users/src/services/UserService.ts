@@ -6,6 +6,7 @@ import { User } from '@graphmarket/entities';
 import logger from '@graphmarket/logger';
 import { PhoneAdapter, EmailAdapter, UploadAdapter, TokenAdapter } from '@graphmarket/adapters';
 import { IToken } from '@graphmarket/interfaces';
+import { PaginationArgs } from '@graphmarket/graphql-args';
 
 /**
  * User service.
@@ -116,7 +117,10 @@ export default class UserService {
    */
   @Transaction()
   public read(
-    options?: FindManyOptions,
+    options: Pick<FindManyOptions, 'skip' | 'take'> = {
+      skip: PaginationArgs.DEFAULT_SKIP,
+      take: PaginationArgs.DEFAULT_TAKE,
+    },
     @TransactionManager() manager?: EntityManager,
   ): Promise<User[]> {
     return manager!.find(User, { ...options, cache: true });

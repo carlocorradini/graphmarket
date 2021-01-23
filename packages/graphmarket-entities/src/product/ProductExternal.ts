@@ -7,9 +7,9 @@ import Product from './Product';
  *
  * @see Product
  */
-@Directive('@extends')
-@Directive(`@key(fields: "id")`)
 @ObjectType('Product')
+@Directive(`@key(fields: "id")`)
+@Directive('@extends')
 export default class ProductExternal implements Partial<Product> {
   /**
    * Product's id.

@@ -1,19 +1,24 @@
-import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 import { AddressInfo } from 'net';
 import Container from 'typedi';
+import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
-import { User, Product, Inventory, Purchase } from '@graphmarket/entities';
-import { EmailAdapter, PhoneAdapter, TokenAdapter } from '@graphmarket/adapters';
+import { Inventory, Product, Purchase, User } from '@graphmarket/entities';
 import config from '@app/config';
-import { AuthenticationResolver } from '@app/resolvers';
+import { PurchaseResolver, resolvePurchaseReference } from '@app/resolvers';
 
 /**
  * Federated GraphQL schema.
  */
-const schema = buildFederatedSchema({
-  resolvers: [AuthenticationResolver],
-  container: Container,
-});
+const schema = buildFederatedSchema(
+  {
+    resolvers: [PurchaseResolver],
+    orphanedTypes: [Purchase],
+    container: Container,
+  },
+  {
+    Inventory: { __resolveReference: resolvePurchaseReference },
+  },
+);
 
 /**
  * Service instance.
@@ -58,24 +63,11 @@ const connectDatabase = (): Promise<Connection> =>
     synchronize: config.DATABASE.SYNCHRONIZE,
     dropSchema: config.DATABASE.DROP_SCHEMA,
     logging: config.DATABASE.LOGGING,
-    entities: [User, Product, Inventory, Purchase],
+    entities: [Purchase, User, Inventory, Product],
     cache: {
       type: 'ioredis',
       port: config.REDIS.URL,
     },
   });
 
-/**
- * Initialize the adapters used in the service.
- */
-const initAdapters = (): Promise<void> => {
-  Container.get(TokenAdapter).init(config.REDIS.URL);
-  Container.get(PhoneAdapter).init(config.ADAPTERS.PHONE.USERNAME, config.ADAPTERS.PHONE.PASSWORD, {
-    VERIFICATION: config.ADAPTERS.PHONE.SERVICES.VERIFICATION,
-  });
-  Container.get(EmailAdapter).init(config.ADAPTERS.EMAIL.API_KEY);
-
-  return Promise.resolve();
-};
-
-export default { listen, connectDatabase, initAdapters };
+export default { listen, connectDatabase };

@@ -2,6 +2,7 @@
 import { Service } from 'typedi';
 import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
 import { Product } from '@graphmarket/entities';
+import { PaginationArgs } from '@graphmarket/graphql-args';
 import logger from '@graphmarket/logger';
 
 /**
@@ -20,13 +21,12 @@ export default class ProductService {
    */
   @Transaction()
   public async create(
-    sellerId: string,
-    product: Exclude<Product, 'seller' | 'sellerId'>,
+    product: Product,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product> {
     const newProduct: Product = await manager!.save(
       Product,
-      manager!.create(Product, { ...product, seller: { id: sellerId } }),
+      manager!.create(Product, { ...product }),
     );
 
     logger.info(`Created product ${newProduct.id}`);
@@ -93,7 +93,10 @@ export default class ProductService {
    */
   @Transaction()
   public read(
-    options?: Pick<FindManyOptions, 'skip' | 'take'>,
+    options: Pick<FindManyOptions, 'skip' | 'take'> = {
+      skip: PaginationArgs.DEFAULT_SKIP,
+      take: PaginationArgs.DEFAULT_TAKE,
+    },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product[]> {
     return manager!.find(Product, { ...options, cache: true });
@@ -101,10 +104,8 @@ export default class ProductService {
 
   /**
    * Update the product identified by the id.
-   * Only the seller (identified by sellerId) of the product can update it.
    *
    * @param id - Product's id
-   * @param sellerId - Seller id
    * @param product - Product update properties
    * @param manager - Transaction manager
    * @returns Updated product
@@ -112,12 +113,11 @@ export default class ProductService {
   @Transaction()
   public async update(
     id: string,
-    sellerId: string,
     product: Partial<Omit<Product, 'id' | 'seller' | 'sellerId'>>,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product> {
-    // Check if product exists and the seller matches
-    await manager!.findOneOrFail(Product, id, { where: { seller: { id: sellerId } } });
+    // Check if product exists
+    await manager!.findOneOrFail(Product, id);
 
     await manager!.update(Product, id, manager!.create(Product, product));
 
@@ -128,23 +128,15 @@ export default class ProductService {
 
   /**
    * Delete the product identified by the id.
-   * Only the seller (identified by sellerId) of the product can delete it.
    *
    * @param id - Product's id
-   * @param sellerId - Seller id
    * @param manager - Transaction manager
    * @returns Deleted product
    */
   @Transaction()
-  public async delete(
-    id: string,
-    sellerId: string,
-    @TransactionManager() manager?: EntityManager,
-  ): Promise<Product> {
-    // Check if product exists and the seller matches
-    const product: Product = await manager!.findOneOrFail(Product, id, {
-      where: { seller: { id: sellerId } },
-    });
+  public async delete(id: string, @TransactionManager() manager?: EntityManager): Promise<Product> {
+    // Check if product exists
+    const product: Product = await manager!.findOneOrFail(Product, id);
 
     await manager!.delete(Product, id);
 

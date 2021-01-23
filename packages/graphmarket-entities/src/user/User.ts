@@ -21,6 +21,7 @@ import {
 } from '@graphmarket/graphql-scalars';
 import { CryptUtil } from '@graphmarket/utils';
 import { Inventory } from '@app/inventory';
+import { Purchase } from '@app/purchase';
 import UserGenders from './UserGenders';
 import UserRoles from './UserRoles';
 
@@ -157,7 +158,7 @@ export default class User {
   /**
    * Seller's inventories.
    */
-  @OneToMany(() => Inventory, (inventory) => inventory.seller, { nullable: false })
+  @OneToMany(() => Inventory, (inventory) => inventory.seller)
   inventories!: Inventory[];
 
   /**
@@ -165,4 +166,16 @@ export default class User {
    */
   @RelationId((seller: User) => seller.inventories)
   inventoriesIds!: string[];
+
+  /**
+   * User's purchases.
+   */
+  @OneToMany(() => Purchase, (purchase) => purchase.user)
+  purchases!: Purchase[];
+
+  /**
+   * User's purchases ids.
+   */
+  @RelationId((user: User) => user.purchases)
+  purchasesIds!: string[];
 }

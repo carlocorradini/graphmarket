@@ -36,6 +36,9 @@ const config: IConfigGateway = {
     INVENTORIES: {
       URL: env.SERVICES_INVENTORIES_URL,
     },
+    PURCHASES: {
+      URL: env.SERVICES_PURCHASES_URL,
+    },
   },
 };
 

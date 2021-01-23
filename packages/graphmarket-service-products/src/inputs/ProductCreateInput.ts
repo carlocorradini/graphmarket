@@ -1,6 +1,6 @@
 import { Field, InputType } from 'type-graphql';
 import { Length } from 'class-validator';
-import { GraphQLNonEmptyString, GraphQLPositiveInt } from '@graphmarket/graphql-scalars';
+import { GraphQLNonEmptyString } from '@graphmarket/graphql-scalars';
 import { Product, ProductCategories } from '@graphmarket/entities';
 
 /**
@@ -27,10 +27,4 @@ export default class ProductCreateInput implements Partial<Product> {
   @Field(() => GraphQLNonEmptyString, { nullable: true })
   @Length(1, 256)
   description?: string;
-
-  /**
-   * Product's price in cents.
-   */
-  @Field(() => GraphQLPositiveInt)
-  price!: number;
 }

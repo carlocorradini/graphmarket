@@ -7,9 +7,9 @@ import User from './User';
  *
  * @see User
  */
-@Directive('@extends')
-@Directive(`@key(fields: "id")`)
 @ObjectType('User')
+@Directive(`@key(fields: "id")`)
+@Directive('@extends')
 export default class UserExternal implements Partial<User> {
   /**
    * User's id.

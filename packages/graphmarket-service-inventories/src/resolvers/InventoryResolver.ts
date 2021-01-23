@@ -30,7 +30,11 @@ export default class InventoryResolver {
    */
   @Mutation(() => Inventory)
   @Authorized(UserRoles.SELLER)
-  createInventory(@Arg('productId', () => GraphQLUUID) productId: string, @Arg('data', () => InventoryCreateInput) data: InventoryCreateInput,  @Ctx() ctx: IGraphQLContext,): Promise<Inventory> {
+  createInventory(
+    @Arg('productId', () => GraphQLUUID) productId: string,
+    @Arg('data', () => InventoryCreateInput) data: InventoryCreateInput,
+    @Ctx() ctx: IGraphQLContext,
+  ): Promise<Inventory> {
     return this.inventoryService.create(productId, ctx.user!.id, data as Inventory);
   }
 

@@ -19,5 +19,6 @@ export default interface IConfigGateway {
     readonly USERS: IConfigService;
     readonly PRODUCTS: IConfigService;
     readonly INVENTORIES: IConfigService;
+    readonly PURCHASES: IConfigService;
   };
 }

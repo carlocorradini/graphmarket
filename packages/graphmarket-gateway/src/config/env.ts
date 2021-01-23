@@ -24,6 +24,7 @@ const env = buildEnv(
       SERVICES_USERS_URL: url({ devDefault: 'http://localhost:8082/graphql' }),
       SERVICES_PRODUCTS_URL: url({ devDefault: 'http://localhost:8083/graphql' }),
       SERVICES_INVENTORIES_URL: url({ devDefault: 'http://localhost:8084/graphql' }),
+      SERVICES_PURCHASES_URL: url({ devDefault: 'http://localhost:8085/graphql' }),
     },
     {
       strict: true,

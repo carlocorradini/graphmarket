@@ -1,18 +1,18 @@
 import { Directive, Field, ObjectType } from 'type-graphql';
 import { GraphQLID } from '@graphmarket/graphql-scalars';
-import Inventory from './Inventory';
+import Purchase from './Purchase';
 
 /**
- * Inventory external entity.
+ * Purchase external entity.
  *
- * @see Inventory
+ * @see Purchase
  */
-@ObjectType('Inventory')
+@ObjectType('Purchase')
 @Directive(`@key(fields: "id")`)
 @Directive('@extends')
-export default class InventoryExternal implements Partial<Inventory> {
+export default class PurchaseExternal implements Partial<Purchase> {
   /**
-   * Inventory's id.
+   * Purchase's id.
    */
   @Directive('@external')
   @Field(() => GraphQLID)

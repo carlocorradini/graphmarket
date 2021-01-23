@@ -1,9 +1,8 @@
-import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Args, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { UserRoles, Product } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
 import { GraphQLUUID } from '@graphmarket/graphql-scalars';
-import { IGraphQLContext } from '@graphmarket/interfaces';
 import { ProductCreateInput, ProductUpdateInput } from '@app/inputs';
 import { ProductService } from '@app/services';
 
@@ -29,12 +28,9 @@ export default class ProductResolver {
    * @returns Created product
    */
   @Mutation(() => Product)
-  @Authorized(UserRoles.SELLER)
-  createProduct(
-    @Arg('data', () => ProductCreateInput) data: ProductCreateInput,
-    @Ctx() ctx: IGraphQLContext,
-  ): Promise<Product> {
-    return this.productService.create(ctx.user!.id, data as Product);
+  @Authorized(UserRoles.ADMINISTRATOR)
+  createProduct(@Arg('data', () => ProductCreateInput) data: ProductCreateInput): Promise<Product> {
+    return this.productService.create(data as Product);
   }
 
   /**
@@ -61,37 +57,30 @@ export default class ProductResolver {
 
   /**
    * Update the product identified by the id.
-   * Only the seller of the product can update it.
    *
    * @param id - Product's id
    * @param data - Product's data
-   * @param ctx - Request context
    * @returns Updated product
    */
   @Mutation(() => Product)
-  @Authorized(UserRoles.SELLER)
+  @Authorized(UserRoles.ADMINISTRATOR)
   updateProduct(
     @Arg('id', () => GraphQLUUID) id: string,
     @Arg('data', () => ProductUpdateInput) data: ProductUpdateInput,
-    @Ctx() ctx: IGraphQLContext,
   ): Promise<Product> {
-    return this.productService.update(id, ctx.user!.id, data);
+    return this.productService.update(id, data);
   }
 
   /**
    * Delete the product identified by the id.
-   * Only the seller of the product can delete id.
    *
    * @param id - Product's id
    * @param ctx - Request context
    * @returns Deleted product
    */
   @Mutation(() => Product)
-  @Authorized(UserRoles.SELLER)
-  deleteProduct(
-    @Arg('id', () => GraphQLUUID) id: string,
-    @Ctx() ctx: IGraphQLContext,
-  ): Promise<Product> {
-    return this.productService.delete(id, ctx.user!.id);
+  @Authorized(UserRoles.ADMINISTRATOR)
+  deleteProduct(@Arg('id', () => GraphQLUUID) id: string): Promise<Product> {
+    return this.productService.delete(id);
   }
 }

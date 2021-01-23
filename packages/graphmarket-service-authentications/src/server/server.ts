@@ -1,11 +1,11 @@
+import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 import { AddressInfo } from 'net';
+import Container from 'typedi';
 import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
-import { User, Product } from '@graphmarket/entities';
+import { User, Product, Inventory } from '@graphmarket/entities';
+import { EmailAdapter, PhoneAdapter, TokenAdapter } from '@graphmarket/adapters';
 import config from '@app/config';
 import { AuthenticationResolver } from '@app/resolvers';
-import { EmailAdapter, PhoneAdapter, TokenAdapter } from '@graphmarket/adapters';
-import Container from 'typedi';
-import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 
 /**
  * Federated GraphQL schema.
@@ -58,7 +58,7 @@ const connectDatabase = (): Promise<Connection> =>
     synchronize: config.DATABASE.SYNCHRONIZE,
     dropSchema: config.DATABASE.DROP_SCHEMA,
     logging: config.DATABASE.LOGGING,
-    entities: [User, Product],
+    entities: [User, Product, Inventory],
     cache: {
       type: 'ioredis',
       port: config.REDIS.URL,

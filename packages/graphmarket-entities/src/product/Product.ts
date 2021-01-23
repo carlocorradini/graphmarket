@@ -9,6 +9,7 @@ import {
   ManyToOne,
   JoinColumn,
   RelationId,
+  OneToMany,
 } from 'typeorm';
 import {
   GraphQLNonEmptyString,
@@ -18,6 +19,7 @@ import {
   GraphQLDateTime,
 } from '@graphmarket/graphql-scalars';
 import { User } from '@app/user';
+import { Inventory } from '@app/inventory';
 import ProductCategories from './ProductCategories';
 
 /**
@@ -101,4 +103,16 @@ export default class Product {
    */
   @RelationId((product: Product) => product.seller)
   sellerId!: string;
+
+  /**
+   * Product's inventories.
+   */
+  @OneToMany(() => Inventory, (inventory) => inventory.product, { nullable: false })
+  inventories!: Inventory[];
+
+  /**
+   * Product's inventories ids.
+   */
+  @RelationId((product: Product) => product.inventories)
+  inventoriesIds!: string[];
 }

@@ -2,7 +2,7 @@ import { AddressInfo } from 'net';
 import Container from 'typedi';
 import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
-import { User, Product, ProductExternal } from '@graphmarket/entities';
+import { User, Product, ProductExternal, Inventory } from '@graphmarket/entities';
 import { EmailAdapter, PhoneAdapter, UploadAdapter, TokenAdapter } from '@graphmarket/adapters';
 import config from '@app/config';
 import { UserResolver, resolveUserReference, ProductUserResolver } from '@app/resolvers';
@@ -68,7 +68,7 @@ const connectDatabase = (): Promise<Connection> =>
     synchronize: config.DATABASE.SYNCHRONIZE,
     dropSchema: config.DATABASE.DROP_SCHEMA,
     logging: config.DATABASE.LOGGING,
-    entities: [User, Product],
+    entities: [User, Product, Inventory],
     cache: {
       type: 'ioredis',
       port: config.REDIS.URL,

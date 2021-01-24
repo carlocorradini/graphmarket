@@ -96,6 +96,25 @@ export default class UserService {
   }
 
   /**
+   * Read the seller of the purchase identified by purchaseId.
+   *
+   * @param purchaseId - Purchase id
+   * @param manager - Transaction manager
+   * @returns Seller of the purchase
+   */
+  @Transaction()
+  public readOnebyPurchase(
+    purchaseId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<User> {
+    return manager!
+      .createQueryBuilder(User, 'user')
+      .innerJoin('user.purchases', 'purchase')
+      .where('purchase.id = :purchaseId', { purchaseId })
+      .getOneOrFail();
+  }
+
+  /**
    * Read a user that matches the id.
    * If no user exists rejects.
    *

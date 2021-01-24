@@ -2,17 +2,17 @@ import { AddressInfo } from 'net';
 import Container from 'typedi';
 import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
-import { Inventory, Product, Purchase, User } from '@graphmarket/entities';
+import { Inventory, Product, Purchase, User, UserExternal } from '@graphmarket/entities';
+import { PurchaseResolver, resolvePurchaseReference, UserPurchaseResolver } from '@app/resolvers';
 import config from '@app/config';
-import { PurchaseResolver, resolvePurchaseReference } from '@app/resolvers';
 
 /**
  * Federated GraphQL schema.
  */
 const schema = buildFederatedSchema(
   {
-    resolvers: [PurchaseResolver],
-    orphanedTypes: [Purchase],
+    resolvers: [PurchaseResolver, UserPurchaseResolver],
+    orphanedTypes: [Purchase, UserExternal],
     container: Container,
   },
   {

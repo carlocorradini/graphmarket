@@ -1,7 +1,17 @@
-import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Authorized,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { Purchase } from '@graphmarket/entities';
-import { GraphQLUUID } from '@graphmarket/graphql-scalars';
+import { GraphQLPositiveInt, GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import { PaginationArgs } from '@graphmarket/graphql-args';
 import { PurchaseCreateInput } from '@app/inputs';
@@ -21,6 +31,19 @@ export default class PurchaseResolver {
    */
   @Inject()
   private readonly purchaseService!: PurchaseService;
+
+  /**
+   * Resolves purchase's total price.
+   *
+   * @param purchase - Purchase
+   * @returns Total price
+   */
+  @FieldResolver(() => GraphQLPositiveInt)
+  @Authorized()
+  // eslint-disable-next-line class-methods-use-this
+  async totalPrice(@Root() purchase: Purchase): Promise<number> {
+    return purchase.quantity * purchase.price;
+  }
 
   /**
    * Create a new purchase from the given data.

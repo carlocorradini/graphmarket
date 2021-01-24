@@ -41,7 +41,7 @@ export default class Inventory {
   /**
    * Product's price in cents.
    */
-  @Column({ type: 'bigint' })
+  @Column({ type: 'integer' })
   @Field(() => GraphQLPositiveInt)
   price!: number;
 

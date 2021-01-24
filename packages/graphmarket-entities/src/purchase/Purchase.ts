@@ -29,6 +29,13 @@ export default class Purchase {
   id!: string;
 
   /**
+   * Purchase's product price.
+   */
+  @Column({ type: 'integer' })
+  @Field(() => GraphQLPositiveInt)
+  price!: number;
+
+  /**
    * Purchase's quantity.
    */
   @Column({ type: 'integer' })

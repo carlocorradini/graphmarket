@@ -1,14 +1,9 @@
 /* eslint-disable class-methods-use-this */
 import { Service } from 'typedi';
-import {
-  EntityManager,
-  FindManyOptions,
-  MoreThanOrEqual,
-  Transaction,
-  TransactionManager,
-} from 'typeorm';
+import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
 import { Purchase, Inventory } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
+import { InsufficientQuantityError } from '@graphmarket/errors';
 import logger from '@graphmarket/logger';
 
 /**
@@ -24,6 +19,7 @@ export default class PurchaseService {
    * @param purchase - Purchase data input properties
    * @param manager - Transaction manager
    * @returns Created purchase
+   * @throws QuantityError If quantity exceeds inventory's quantity
    */
 
   @Transaction()
@@ -33,23 +29,12 @@ export default class PurchaseService {
     purchase: Exclude<Purchase, 'user' | 'userId' | 'inventory' | 'inventoryId'>,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Purchase> {
-    if (
-      (await manager!.count(Inventory, {
-        where: { id: inventoryId, quantity: MoreThanOrEqual(purchase.quantity) },
-      })) <= 0
-    ) {
-      // TODO mettere errore custom
-      throw Error('Not enough quantity');
-    }
+    const inventory: Inventory = await manager!.findOneOrFail(Inventory, inventoryId);
 
-    const newPurchase: Purchase = await manager!.save(
-      Purchase,
-      manager!.create(Purchase, {
-        ...purchase,
-        user: { id: userId },
-        inventory: { id: inventoryId },
-      }),
-    );
+    // Check inventory's quantity
+    if (inventory.quantity < purchase.quantity) {
+      throw new InsufficientQuantityError();
+    }
 
     // Decrease inventory's quantity
     await manager!
@@ -59,6 +44,17 @@ export default class PurchaseService {
       .set({ quantity: () => 'quantity - :quantity' })
       .setParameter('quantity', purchase.quantity)
       .execute();
+
+    // Save purchase
+    const newPurchase: Purchase = await manager!.save(
+      Purchase,
+      manager!.create(Purchase, {
+        ...purchase,
+        price: inventory.price,
+        user: { id: userId },
+        inventory: { id: inventoryId },
+      }),
+    );
 
     logger.info(`Created purchase ${newPurchase.id}`);
 
@@ -105,7 +101,10 @@ export default class PurchaseService {
    */
   @Transaction()
   public read(
-    options?: Pick<FindManyOptions, 'skip' | 'take'>,
+    options: Pick<FindManyOptions, 'skip' | 'take'> = {
+      skip: PaginationArgs.DEFAULT_SKIP,
+      take: PaginationArgs.DEFAULT_TAKE,
+    },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Purchase[]> {
     return manager!.find(Purchase, { ...options, cache: true });

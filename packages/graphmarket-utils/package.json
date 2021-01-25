@@ -5,10 +5,12 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "private": true,
   "files": [
     "build"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/carlocorradini/graphmarket.git",

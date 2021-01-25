@@ -9,7 +9,8 @@ import {
   InventoryExternal,
   Purchase,
   PurchaseExternal,
-  Review
+  Review,
+  ReviewExternal,
 } from '@graphmarket/entities';
 import { UploadAdapter } from '@graphmarket/adapters';
 import config from '@app/config';
@@ -18,6 +19,7 @@ import {
   ProductResolver,
   PurchaseProductResolver,
   resolveProductReference,
+  ReviewProductResolver,
 } from '@app/resolvers';
 
 /**
@@ -25,8 +27,13 @@ import {
  */
 const schema = buildFederatedSchema(
   {
-    resolvers: [ProductResolver, InventoryProductResolver, PurchaseProductResolver],
-    orphanedTypes: [Product, InventoryExternal, PurchaseExternal],
+    resolvers: [
+      ProductResolver,
+      InventoryProductResolver,
+      PurchaseProductResolver,
+      ReviewProductResolver,
+    ],
+    orphanedTypes: [Product, InventoryExternal, PurchaseExternal, ReviewExternal],
     container: Container,
   },
   {

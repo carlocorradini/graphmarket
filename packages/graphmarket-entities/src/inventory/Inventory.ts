@@ -94,7 +94,7 @@ export default class Inventory {
   /**
    * Product's seller.
    */
-  @ManyToOne(() => User, (user) => user.inventories, { nullable: false })
+  @ManyToOne(() => User, (seller) => seller.inventories, { nullable: false })
   @JoinColumn({ name: 'seller_id' })
   seller!: User;
 

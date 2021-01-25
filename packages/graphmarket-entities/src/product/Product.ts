@@ -85,7 +85,7 @@ export default class Product {
   /**
    * Product's inventories.
    */
-  @OneToMany(() => Inventory, (inventory) => inventory.product, { nullable: false })
+  @OneToMany(() => Inventory, (inventory) => inventory.product)
   inventories!: Inventory[];
 
   /**
@@ -97,7 +97,7 @@ export default class Product {
   /**
    * Product's reviews.
    */
-  @OneToMany(() => Review, (review) => review.author)
+  @OneToMany(() => Review, (review) => review.product)
   reviews!: Review[];
 
   /**

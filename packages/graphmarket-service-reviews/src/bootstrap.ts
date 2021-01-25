@@ -4,12 +4,9 @@ import config from '@app/config';
 import server from '@app/server';
 
 /**
- * Bootstrap the users service.
+ * Bootstrap the reviews service.
  */
 const bootstrap = async () => {
-  await server.initAdapters();
-  logger.info(`Adapters initialized`);
-
   await server.connectDatabase();
   logger.info(`Database connected`);
 

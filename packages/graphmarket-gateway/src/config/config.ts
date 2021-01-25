@@ -39,6 +39,9 @@ const config: IConfigGateway = {
     PURCHASES: {
       URL: env.SERVICES_PURCHASES_URL,
     },
+    REVIEWS: {
+      URL: env.SERVICES_REVIEWS_URL,
+    }
   },
 };
 

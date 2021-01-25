@@ -4,7 +4,7 @@ import config from '@app/config';
 import server from '@app/server';
 
 /**
- * Bootstrap the user service.
+ * Bootstrap the purchases service.
  */
 const bootstrap = async () => {
   await server.connectDatabase();

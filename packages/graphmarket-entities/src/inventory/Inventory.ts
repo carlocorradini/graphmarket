@@ -1,5 +1,6 @@
 import { Directive, Field, ObjectType } from 'type-graphql';
 import {
+  Check,
   Column,
   CreateDateColumn,
   Entity,
@@ -27,6 +28,7 @@ import { Purchase } from '@app/purchase';
  */
 @Entity('inventory')
 @Unique(['product', 'seller', 'condition'])
+@Check(`"price" > 0`)
 @ObjectType('Inventory')
 @Directive(`@key(fields: "id")`)
 export default class Inventory {

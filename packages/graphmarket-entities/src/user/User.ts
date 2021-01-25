@@ -22,6 +22,7 @@ import {
 import { CryptUtil } from '@graphmarket/utils';
 import { Inventory } from '@app/inventory';
 import { Purchase } from '@app/purchase';
+import { Review } from '@app/review';
 import UserGenders from './UserGenders';
 import UserRoles from './UserRoles';
 
@@ -156,18 +157,6 @@ export default class User {
   verified?: boolean;
 
   /**
-   * Seller's inventories.
-   */
-  @OneToMany(() => Inventory, (inventory) => inventory.seller)
-  inventories!: Inventory[];
-
-  /**
-   * Seller's inventories ids.
-   */
-  @RelationId((seller: User) => seller.inventories)
-  inventoriesIds!: string[];
-
-  /**
    * User's purchases.
    */
   @OneToMany(() => Purchase, (purchase) => purchase.user)
@@ -178,4 +167,28 @@ export default class User {
    */
   @RelationId((user: User) => user.purchases)
   purchasesIds!: string[];
+
+  /**
+   * User's reviews.
+   */
+  @OneToMany(() => Review, (review) => review.author)
+  reviews!: Review[];
+
+  /**
+   * User's reviews ids.
+   */
+  @RelationId((user: User) => user.reviews)
+  reviewsIds!: string[];
+
+  /**
+   * Seller's inventories.
+   */
+  @OneToMany(() => Inventory, (inventory) => inventory.seller)
+  inventories!: Inventory[];
+
+  /**
+   * Seller's inventories ids.
+   */
+  @RelationId((seller: User) => seller.inventories)
+  inventoriesIds!: string[];
 }

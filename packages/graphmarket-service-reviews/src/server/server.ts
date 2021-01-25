@@ -2,21 +2,27 @@ import { AddressInfo } from 'net';
 import Container from 'typedi';
 import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
-import { Inventory, Product, Purchase, User, UserExternal, Review } from '@graphmarket/entities';
-import { PurchaseResolver, resolvePurchaseReference, UserPurchaseResolver } from '@app/resolvers';
+import {
+  Review,
+  Inventory,
+  Product,
+  Purchase,
+  User
+} from '@graphmarket/entities';
 import config from '@app/config';
+import {ReviewResolver, resolveReviewReference} from '@app/resolvers';
 
 /**
  * Federated GraphQL schema.
  */
 const schema = buildFederatedSchema(
   {
-    resolvers: [PurchaseResolver, UserPurchaseResolver],
-    orphanedTypes: [Purchase, UserExternal],
+    resolvers: [ReviewResolver],
+    orphanedTypes: [Review],
     container: Container,
   },
   {
-    Inventory: { __resolveReference: resolvePurchaseReference },
+    Review: { __resolveReference: resolveReviewReference },
   },
 );
 
@@ -63,7 +69,7 @@ const connectDatabase = (): Promise<Connection> =>
     synchronize: config.DATABASE.SYNCHRONIZE,
     dropSchema: config.DATABASE.DROP_SCHEMA,
     logging: config.DATABASE.LOGGING,
-    entities: [Purchase, User, Inventory, Product, Review],
+    entities: [Review, Purchase, User, Product, Inventory],
     cache: {
       type: 'ioredis',
       port: config.REDIS.URL,

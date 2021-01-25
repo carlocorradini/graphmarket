@@ -14,7 +14,7 @@ export default class ProductExternal implements Partial<Product> {
   /**
    * Product's id.
    */
-  @Directive('@external')
   @Field(() => GraphQLID)
+  @Directive('@external')
   id!: string;
 }

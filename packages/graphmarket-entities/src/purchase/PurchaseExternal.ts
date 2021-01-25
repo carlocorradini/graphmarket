@@ -14,7 +14,7 @@ export default class PurchaseExternal implements Partial<Purchase> {
   /**
    * Purchase's id.
    */
-  @Directive('@external')
   @Field(() => GraphQLID)
+  @Directive('@external')
   id!: string;
 }

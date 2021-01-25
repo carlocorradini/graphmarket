@@ -16,6 +16,8 @@ import {
   GraphQLDateTime,
 } from '@graphmarket/graphql-scalars';
 import { Inventory } from '@app/inventory';
+import { Review } from '@app/review';
+import { User } from '@app/user';
 import ProductCategories from './ProductCategories';
 
 /**
@@ -91,4 +93,16 @@ export default class Product {
    */
   @RelationId((product: Product) => product.inventories)
   inventoriesIds!: string[];
+
+  /**
+   * Product's reviews.
+   */
+  @OneToMany(() => Review, (review) => review.author)
+  reviews!: Review[];
+
+  /**
+   * Product's reviews ids.
+   */
+  @RelationId((user: User) => user.reviews)
+  reviewsIds!: string[];
 }

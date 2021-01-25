@@ -30,6 +30,11 @@ const services: IService[] = [
     url: config.SERVICES.PURCHASES.URL,
     features: { authentication: true },
   },
+  {
+    name: 'reviews',
+    url: config.SERVICES.REVIEWS.URL,
+    features: { authentication: true },
+  },
 ];
 
 export default services;

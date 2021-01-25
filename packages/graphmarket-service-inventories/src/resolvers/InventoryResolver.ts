@@ -11,7 +11,7 @@ import { InventoryCreateInput, InventoryUpdateInput } from '@app/inputs';
  * Inventory resolver.
  *
  * @see Inventory
- * @see IventoryService
+ * @see InventoryService
  */
 @Resolver(Inventory)
 @Service()
@@ -25,7 +25,9 @@ export default class InventoryResolver {
   /**
    * Create a new inventory from the given data.
    *
+   * @param productId - Product id
    * @param data - Inventory's data
+   * @param ctx - Request context
    * @returns Created inventory
    */
   @Mutation(() => Inventory)

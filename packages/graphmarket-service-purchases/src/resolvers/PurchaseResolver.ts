@@ -41,7 +41,7 @@ export default class PurchaseResolver {
   @FieldResolver(() => GraphQLPositiveInt)
   @Authorized()
   // eslint-disable-next-line class-methods-use-this
-  async totalPrice(@Root() purchase: Purchase): Promise<number> {
+  async amount(@Root() purchase: Purchase): Promise<number> {
     return purchase.quantity * purchase.price;
   }
 

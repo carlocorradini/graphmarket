@@ -9,6 +9,7 @@ import {
   InventoryExternal,
   Purchase,
   PurchaseExternal,
+  Review
 } from '@graphmarket/entities';
 import { EmailAdapter, PhoneAdapter, UploadAdapter, TokenAdapter } from '@graphmarket/adapters';
 import config from '@app/config';
@@ -80,7 +81,7 @@ const connectDatabase = (): Promise<Connection> =>
     synchronize: config.DATABASE.SYNCHRONIZE,
     dropSchema: config.DATABASE.DROP_SCHEMA,
     logging: config.DATABASE.LOGGING,
-    entities: [User, Product, Inventory, Purchase],
+    entities: [User, Product, Inventory, Purchase, Review],
     cache: {
       type: 'ioredis',
       port: config.REDIS.URL,

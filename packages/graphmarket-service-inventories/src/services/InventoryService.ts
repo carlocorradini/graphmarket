@@ -15,6 +15,8 @@ export default class InventoryService {
   /**
    * Create a new inventory.
    *
+   * @param productId - Product id
+   * @param sellerId - Seller id
    * @param inventory - Inventory data input properties
    * @param manager - Transaction manager
    * @returns Created inventory

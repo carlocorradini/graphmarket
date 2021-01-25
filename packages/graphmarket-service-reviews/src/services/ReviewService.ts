@@ -186,4 +186,25 @@ export default class ReviewService {
 
     return review;
   }
+
+  /**
+   * Returns the average rating of the product identified by the productId.
+   *
+   * @param productId - Product id
+   * @param manager - Transaction manager
+   * @returns Average rating of the product
+   */
+  @Transaction()
+  public async ratingByProduct(
+    productId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<number> {
+    const { rating }: { rating: number } = await manager!
+      .createQueryBuilder(Review, 'review')
+      .select('ROUND(COALESCE(AVG(review.rating), 0) * 2, 0) / 2', 'rating')
+      .where('review.product_id = :productId', { productId })
+      .getRawOne();
+
+    return rating;
+  }
 }

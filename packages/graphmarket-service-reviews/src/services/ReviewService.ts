@@ -29,7 +29,7 @@ export default class ReviewService {
     review: Exclude<Review, 'author' | 'authorId' | 'product' | 'productId'>,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review> {
-    // Check if there is not already a review for the product by the user
+    // Check if there is not already a review for the product made by the author
     if (
       (await manager!.count(Review, {
         where: { author: { id: authorId }, product: { id: productId } },

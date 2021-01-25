@@ -15,7 +15,7 @@ import {
   GraphQLDateTime,
   GraphQLID,
   GraphQLNonEmptyString,
-  GraphQLPositiveInt,
+  GraphQLReviewRating,
 } from '@graphmarket/graphql-scalars';
 import { User } from '@app/user';
 import { Product } from '@app/product';
@@ -25,7 +25,7 @@ import { Product } from '@app/product';
  */
 @Entity('review')
 @Check(`"rating" >= 1 AND "rating" <= 5`)
-@ObjectType('Review', {description: `Review`})
+@ObjectType('Review', { description: `Review` })
 @Directive(`@key(fields: "id")`)
 export default class Review {
   /**
@@ -33,7 +33,7 @@ export default class Review {
    */
   @PrimaryGeneratedColumn('uuid')
   @Index()
-  @Field(() => GraphQLID, {description: `Review's id`})
+  @Field(() => GraphQLID, { description: `Review's id` })
   id!: string;
 
   /**
@@ -54,21 +54,21 @@ export default class Review {
    * Review's rating.
    */
   @Column({ type: 'smallint' })
-  @Field(() => GraphQLPositiveInt, {description: `Review's rating`})
+  @Field(() => GraphQLReviewRating, { description: `Review's rating` })
   rating!: number;
 
   /**
    * Review creation date and time.
    */
   @CreateDateColumn({ name: 'created_at', update: false })
-  @Field(() => GraphQLDateTime, , {description: `Review's creation date and time`})
+  @Field(() => GraphQLDateTime, { description: `Review's creation date and time` })
   createdAt!: Date;
 
   /**
    * Review last updated date and time.
    */
   @UpdateDateColumn({ name: 'updated_at' })
-  @Field(() => GraphQLDateTime, {description: `Review's last updated date and time`})
+  @Field(() => GraphQLDateTime, { description: `Review's last updated date and time` })
   updatedAt!: Date;
 
   /**

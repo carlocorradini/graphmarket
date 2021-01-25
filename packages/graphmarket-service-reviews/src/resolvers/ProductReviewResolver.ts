@@ -3,7 +3,7 @@ import { Inject, Service } from 'typedi';
 import { ProductExternal, Review } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
 import { ReviewService } from '@app/services';
-import { GraphQLNonNegativeFloat } from '@graphmarket/graphql-scalars';
+import { GraphQLProductRating } from '@graphmarket/graphql-scalars';
 
 /**
  * Product review resolver.
@@ -40,7 +40,7 @@ export default class ProductReviewResolver {
    * @param product - Product to obtain the average rating of
    * @returns Average rating of the product
    */
-  @FieldResolver(() => GraphQLNonNegativeFloat, { description: `Product's average rating` })
+  @FieldResolver(() => GraphQLProductRating, { description: `Product's average rating` })
   rating(@Root() product: ProductExternal): Promise<number> {
     return this.reviewService.ratingByProduct(product.id);
   }

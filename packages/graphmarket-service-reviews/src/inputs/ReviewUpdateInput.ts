@@ -1,6 +1,6 @@
 import { Field, InputType } from 'type-graphql';
-import { Length, Max, Min } from 'class-validator';
-import { GraphQLNonEmptyString, GraphQLPositiveInt } from '@graphmarket/graphql-scalars';
+import { Length } from 'class-validator';
+import { GraphQLNonEmptyString, GraphQLProductRating } from '@graphmarket/graphql-scalars';
 import { Review } from '@graphmarket/entities';
 
 /**
@@ -25,8 +25,6 @@ export default class ReviewUpdateInput implements Partial<Review> {
   /**
    * Review's rating.
    */
-  @Field(() => GraphQLPositiveInt, { nullable: true })
-  @Min(1)
-  @Max(5)
+  @Field(() => GraphQLProductRating, { nullable: true })
   rating?: number;
 }

@@ -2,7 +2,12 @@
   "version": "independent",
   "npmClient": "npm",
   "stream": true,
-  "packages": ["packages/*"],
+  "packages": [
+    "packages/*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "command": {
     "bootstrap": {
       "hoist": true

@@ -1,7 +1,8 @@
-import { FieldResolver, Resolver, Root } from 'type-graphql';
+import { Args, FieldResolver, Resolver, Root } from 'type-graphql';
 import { Inject, Service } from 'typedi';
-import { InventoryService } from '@app/services';
 import { Inventory, ProductExternal } from '@graphmarket/entities';
+import { PaginationArgs } from '@graphmarket/graphql-args';
+import { InventoryService } from '@app/services';
 
 /**
  * Product inventory resolver.
@@ -21,10 +22,14 @@ export default class ProductInventoryResolver {
    * Resolves the inventories available for the product.
    *
    * @param product - Product to obtain the inventories of
+   * @param param1 - Pagination arguments
    * @returns Inventories of the product
    */
   @FieldResolver(() => [Inventory])
-  inventories(@Root() product: ProductExternal): Promise<Inventory[]> {
-    return this.inventoryService.readByProduct(product.id);
+  inventories(
+    @Root() product: ProductExternal,
+    @Args() { skip, take }: PaginationArgs,
+  ): Promise<Inventory[]> {
+    return this.inventoryService.readByProduct(product.id, { skip, take });
   }
 }

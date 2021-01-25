@@ -114,6 +114,7 @@ export default class PurchaseService {
    * Read the purchases of the user identified by userId.
    *
    * @param userId - User id
+   * @param options - Find options
    * @param manager - Transaction manager
    * @returns Purchases of the user
    */

@@ -95,30 +95,40 @@ export default class InventoryService {
    * Read the available inventories of the product identified by the productId.
    *
    * @param productId - Product's id
+   * @param options - Find options
    * @param manager - Transaction manager
    * @returns Inventories found
    */
   @Transaction()
   public readByProduct(
     productId: string,
+    options: Pick<FindManyOptions, 'skip' | 'take'> = {
+      skip: PaginationArgs.DEFAULT_SKIP,
+      take: PaginationArgs.DEFAULT_TAKE,
+    },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Inventory[]> {
-    return manager!.find(Inventory, { where: { product: { id: productId } } });
+    return manager!.find(Inventory, { ...options, where: { product: { id: productId } } });
   }
 
   /**
    * Read the available inventories of the seller identified by the sellerId.
    *
    * @param sellerId - Seller's id
+   * @param options - Find options
    * @param manager - Transaction manager
    * @returns Inventories found
    */
   @Transaction()
   public readBySeller(
     sellerId: string,
+    options: Pick<FindManyOptions, 'skip' | 'take'> = {
+      skip: PaginationArgs.DEFAULT_SKIP,
+      take: PaginationArgs.DEFAULT_TAKE,
+    },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Inventory[]> {
-    return manager!.find(Inventory, { where: { seller: { id: sellerId } } });
+    return manager!.find(Inventory, { ...options, where: { seller: { id: sellerId } } });
   }
 
   /**

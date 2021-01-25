@@ -1,6 +1,7 @@
-import { FieldResolver, Resolver, Root } from 'type-graphql';
+import { Args, FieldResolver, Resolver, Root } from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { Inventory, UserExternal } from '@graphmarket/entities';
+import { PaginationArgs } from '@graphmarket/graphql-args';
 import { InventoryService } from '@app/services';
 
 /**
@@ -21,10 +22,11 @@ export default class UserInventoryResolver {
    * Resolves the inventories of a seller.
    *
    * @param seller - Seller to obtain the inventories of
+   * @param param1 - Pagination arguments
    * @returns Inventories of the seller
    */
   @FieldResolver(() => [Inventory])
-  inventories(@Root() seller: UserExternal): Promise<Inventory[]> {
-    return this.inventoryService.readBySeller(seller.id);
+  inventories(@Root() seller: UserExternal, @Args() { skip, take }: PaginationArgs): Promise<Inventory[]> {
+    return this.inventoryService.readBySeller(seller.id, {skip, take});
   }
 }

@@ -11,7 +11,7 @@ import { PurchaseService } from '@app/services';
  */
 @Resolver(() => UserExternal)
 @Service()
-export default class PurchaseUserResolver {
+export default class UserPurchaseResolver {
   /**
    * Purchase service.
    */
@@ -22,6 +22,7 @@ export default class PurchaseUserResolver {
    * Resolves the puchases of the user.
    *
    * @param user - User to obtain the purchases of
+   * @param param1 - Pagination arguments
    * @returns Purchases of the user
    */
   @FieldResolver(() => [Purchase])

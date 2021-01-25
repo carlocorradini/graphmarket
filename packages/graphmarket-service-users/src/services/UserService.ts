@@ -115,6 +115,25 @@ export default class UserService {
   }
 
   /**
+   * Read the author of the review identified by reviewId.
+   *
+   * @param reviewId - Review id
+   * @param manager - Transaction manager
+   * @returns Author of the review
+   */
+  @Transaction()
+  public readOneByReview(
+    reviewId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<User> {
+    return manager!
+      .createQueryBuilder(User, 'user')
+      .innerJoin('user.reviews', 'review')
+      .where('review.id = :reviewId', { reviewId })
+      .getOneOrFail();
+  }
+
+  /**
    * Read a user that matches the id.
    * If no user exists rejects.
    *

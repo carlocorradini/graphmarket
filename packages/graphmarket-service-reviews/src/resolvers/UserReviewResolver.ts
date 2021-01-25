@@ -25,7 +25,7 @@ export default class UserReviewResolver {
    * @param param1 - Pagination arguments
    * @returns Reviews of the user
    */
-  @FieldResolver(() => [Review])
+  @FieldResolver(() => [Review], { description: `User's reviews` })
   reviews(@Root() user: UserExternal, @Args() { skip, take }: PaginationArgs): Promise<Review[]> {
     return this.reviewService.readByAuthor(user.id, { skip, take });
   }

@@ -30,7 +30,7 @@ export default class InventoryResolver {
    * @param ctx - Request context
    * @returns Created inventory
    */
-  @Mutation(() => Inventory)
+  @Mutation(() => Inventory, { description: `Create a new inventory` })
   @Authorized(UserRoles.SELLER)
   createInventory(
     @Arg('productId', () => GraphQLUUID) productId: string,
@@ -46,7 +46,10 @@ export default class InventoryResolver {
    * @param id - Inventory's id
    * @returns Inventory that match the id
    */
-  @Query(() => Inventory, { nullable: true })
+  @Query(() => Inventory, {
+    nullable: true,
+    description: `Return the inventory that matches the id`,
+  })
   inventory(@Arg('id', () => GraphQLUUID) id: string): Promise<Inventory | undefined> {
     return this.inventoryService.readOne(id);
   }
@@ -57,7 +60,7 @@ export default class InventoryResolver {
    * @param param0 - Pagination arguments
    * @returns All available inventories
    */
-  @Query(() => [Inventory])
+  @Query(() => [Inventory], { description: `Return all inventories` })
   inventories(@Args() { skip, take }: PaginationArgs): Promise<Inventory[]> {
     return this.inventoryService.read({ skip, take });
   }
@@ -71,7 +74,9 @@ export default class InventoryResolver {
    * @param ctx - Request context
    * @returns Updated inventory
    */
-  @Mutation(() => Inventory)
+  @Mutation(() => Inventory, {
+    description: `Update the inventory. Only the seller is allowed to update it`,
+  })
   @Authorized(UserRoles.SELLER)
   updateInventory(
     @Arg('id', () => GraphQLUUID) id: string,
@@ -89,7 +94,9 @@ export default class InventoryResolver {
    * @param ctx - Request context
    * @returns Deleted inventory
    */
-  @Mutation(() => Inventory)
+  @Mutation(() => Inventory, {
+    description: `Delete the inventory. Only the seller is allowed to update it`,
+  })
   @Authorized(UserRoles.SELLER)
   deleteInventory(
     @Arg('id', () => GraphQLUUID) id: string,

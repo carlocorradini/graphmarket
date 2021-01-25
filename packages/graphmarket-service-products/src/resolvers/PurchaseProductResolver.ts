@@ -23,7 +23,7 @@ export default class PurchaseProductResolver {
    * @param purchase - Purchase to obtain the product of
    * @returns Product of the purchase
    */
-  @FieldResolver(() => Product)
+  @FieldResolver(() => Product, { description: `Purchase's product` })
   product(@Root() purchase: PurchaseExternal): Promise<Product> {
     return this.productService.readOneByPurchase(purchase.id);
   }

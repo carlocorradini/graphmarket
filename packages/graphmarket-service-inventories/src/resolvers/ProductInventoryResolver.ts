@@ -25,7 +25,7 @@ export default class ProductInventoryResolver {
    * @param param1 - Pagination arguments
    * @returns Inventories of the product
    */
-  @FieldResolver(() => [Inventory])
+  @FieldResolver(() => [Inventory], { description: `Product's inventories` })
   inventories(
     @Root() product: ProductExternal,
     @Args() { skip, take }: PaginationArgs,

@@ -25,7 +25,7 @@ export default class UserPurchaseResolver {
    * @param param1 - Pagination arguments
    * @returns Purchases of the user
    */
-  @FieldResolver(() => [Purchase])
+  @FieldResolver(() => [Purchase], { description: `User's purchases` })
   purchases(
     @Root() user: UserExternal,
     @Args() { skip, take }: PaginationArgs,

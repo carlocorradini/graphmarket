@@ -32,7 +32,7 @@ export default class AuthenticationResolver {
    * @param phoneCode - Phone code
    * @returns Verified user
    */
-  @Mutation(() => GraphQLBoolean)
+  @Mutation(() => GraphQLBoolean, { description: `Verify a user` })
   verify(
     @Arg('id', () => GraphQLUUID) id: string,
     @Arg('emailCode', () => GraphQLNonEmptyString) emailCode: string,
@@ -48,7 +48,7 @@ export default class AuthenticationResolver {
    * @param password - User's password
    * @returns Encoded authentication token
    */
-  @Mutation(() => GraphQLNonEmptyString)
+  @Mutation(() => GraphQLNonEmptyString, { description: `Authenticate a user` })
   signIn(
     @Arg('username', () => GraphQLNonEmptyString) username: string,
     @Arg('password', () => GraphQLNonEmptyString) password: string,
@@ -61,7 +61,7 @@ export default class AuthenticationResolver {
    *
    * @param ctx - Request context
    */
-  @Mutation(() => GraphQLVoid, { nullable: true })
+  @Mutation(() => GraphQLVoid, { nullable: true, description: `Disconnect a user` })
   @Authorized()
   signOut(@Ctx() ctx: IGraphQLContext): Promise<void> {
     return this.authenticationService.signOut(ctx.user!);

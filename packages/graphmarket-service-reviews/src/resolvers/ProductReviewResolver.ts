@@ -26,7 +26,7 @@ export default class ProductReviewResolver {
    * @param param1 - Pagination arguments
    * @returns Reviews of the product
    */
-  @FieldResolver(() => [Review])
+  @FieldResolver(() => [Review], { description: `Product's reviews` })
   reviews(
     @Root() product: ProductExternal,
     @Args() { skip, take }: PaginationArgs,
@@ -36,11 +36,11 @@ export default class ProductReviewResolver {
 
   /**
    * Resolves the average rating of the product from all reviews.
-   * 
+   *
    * @param product - Product to obtain the average rating of
    * @returns Average rating of the product
    */
-  @FieldResolver(() => GraphQLNonNegativeFloat)
+  @FieldResolver(() => GraphQLNonNegativeFloat, { description: `Product's average rating` })
   rating(@Root() product: ProductExternal): Promise<number> {
     return this.reviewService.ratingByProduct(product.id);
   }

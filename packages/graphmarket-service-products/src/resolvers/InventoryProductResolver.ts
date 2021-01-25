@@ -23,7 +23,7 @@ export default class InventoryProductResolver {
    * @param inventory - Inventory to obtain the product of
    * @returns Product of the inventory
    */
-  @FieldResolver(() => Product)
+  @FieldResolver(() => Product, { description: `Inventory's product` })
   product(@Root() inventory: InventoryExternal): Promise<Product> {
     return this.productService.readOneByInventory(inventory.id);
   }

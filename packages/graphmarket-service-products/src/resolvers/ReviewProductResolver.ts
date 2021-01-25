@@ -23,7 +23,7 @@ export default class ReviewProductResolver {
    * @param review - Review to obtain the product of
    * @returns Product of the review
    */
-  @FieldResolver(() => Product)
+  @FieldResolver(() => Product, { description: `Review's product` })
   product(@Root() review: ReviewExternal): Promise<Product> {
     return this.productService.readOneByReview(review.id);
   }

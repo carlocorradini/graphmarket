@@ -9,6 +9,6 @@ enum UserRoles {
   SELLER = 'SELLER',
 }
 
-registerEnumType(UserRoles, { name: 'UserRoles' });
+registerEnumType(UserRoles, { name: 'UserRoles', description: `User roles` });
 
 export default UserRoles;

@@ -29,7 +29,7 @@ import { Purchase } from '@app/purchase';
 @Entity('inventory')
 @Unique(['product', 'seller', 'condition'])
 @Check(`"price" > 0`)
-@ObjectType('Inventory')
+@ObjectType('Inventory', { description: `Product's inventory` })
 @Directive(`@key(fields: "id")`)
 export default class Inventory {
   /**
@@ -37,42 +37,42 @@ export default class Inventory {
    */
   @PrimaryGeneratedColumn('uuid')
   @Index()
-  @Field(() => GraphQLID)
+  @Field(() => GraphQLID, { description: `Inventory's id` })
   id!: string;
 
   /**
    * Product's price in cents.
    */
   @Column({ type: 'integer' })
-  @Field(() => GraphQLPositiveInt)
+  @Field(() => GraphQLPositiveInt, { description: `Inventory's price in cents` })
   price!: number;
 
   /**
    * Product's quantity.
    */
   @Column({ type: 'integer' })
-  @Field(() => GraphQLNonNegativeInt)
+  @Field(() => GraphQLNonNegativeInt, { description: `Inventory's quantity` })
   quantity!: number;
 
   /**
    * Product's condition.
    */
   @Column({ type: 'enum', enum: ProductConditions })
-  @Field(() => ProductConditions)
+  @Field(() => ProductConditions, { description: `Inventory's condition` })
   condition!: ProductConditions;
 
   /**
    * Inventory creation date and time.
    */
   @CreateDateColumn({ name: 'created_at', update: false })
-  @Field(() => GraphQLDateTime)
+  @Field(() => GraphQLDateTime, { description: `Inventory creation date and time` })
   createdAt!: Date;
 
   /**
    * Inventory last updated date and time.
    */
   @UpdateDateColumn({ name: 'updated_at' })
-  @Field(() => GraphQLDateTime)
+  @Field(() => GraphQLDateTime, { description: `Inventory last updated date and time ` })
   updatedAt!: Date;
 
   /**

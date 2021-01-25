@@ -17,7 +17,7 @@ import { Inventory } from '@app/inventory';
  * Purchase entity.
  */
 @Entity('purchase')
-@ObjectType('Purchase')
+@ObjectType('Purchase', { description: `Purchase` })
 @Directive(`@key(fields: "id")`)
 export default class Purchase {
   /**
@@ -25,28 +25,28 @@ export default class Purchase {
    */
   @PrimaryGeneratedColumn('uuid')
   @Index()
-  @Field(() => GraphQLID)
+  @Field(() => GraphQLID, { description: `Purchase's id` })
   id!: string;
 
   /**
-   * Purchase's product price.
+   * Purchase's product price in cents.
    */
   @Column({ type: 'integer' })
-  @Field(() => GraphQLPositiveInt)
+  @Field(() => GraphQLPositiveInt, { description: `Purchase's product price in cents` })
   price!: number;
 
   /**
-   * Purchase's quantity.
+   * Purchase's product quantity.
    */
   @Column({ type: 'integer' })
-  @Field(() => GraphQLPositiveInt)
+  @Field(() => GraphQLPositiveInt, { description: `Purchase's product quantity` })
   quantity!: number;
 
   /**
    * Purchase creation date and time.
    */
   @CreateDateColumn({ name: 'created_at', update: false })
-  @Field(() => GraphQLDateTime)
+  @Field(() => GraphQLDateTime, { description: `Purchase's creation date and time` })
   createdAt!: Date;
 
   /**

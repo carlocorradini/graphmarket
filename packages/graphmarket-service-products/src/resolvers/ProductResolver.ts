@@ -27,7 +27,7 @@ export default class ProductResolver {
    * @param data - Product's data
    * @returns Created product
    */
-  @Mutation(() => Product)
+  @Mutation(() => Product, { description: `Create a new product` })
   @Authorized(UserRoles.ADMINISTRATOR)
   createProduct(@Arg('data', () => ProductCreateInput) data: ProductCreateInput): Promise<Product> {
     return this.productService.create(data as Product);
@@ -39,7 +39,7 @@ export default class ProductResolver {
    * @param id - Product's id
    * @returns Product that match the id
    */
-  @Query(() => Product, { nullable: true })
+  @Query(() => Product, { nullable: true, description: `Return the product that matches the id` })
   product(@Arg('id', () => GraphQLUUID) id: string): Promise<Product | undefined> {
     return this.productService.readOne(id);
   }
@@ -50,7 +50,7 @@ export default class ProductResolver {
    * @param param0 - Pagination arguments
    * @returns All available products
    */
-  @Query(() => [Product])
+  @Query(() => [Product], { description: `Return all products` })
   products(@Args() { skip, take }: PaginationArgs): Promise<Product[]> {
     return this.productService.read({ skip, take });
   }
@@ -62,7 +62,7 @@ export default class ProductResolver {
    * @param data - Product's data
    * @returns Updated product
    */
-  @Mutation(() => Product)
+  @Mutation(() => Product, { description: `Update the product` })
   @Authorized(UserRoles.ADMINISTRATOR)
   updateProduct(
     @Arg('id', () => GraphQLUUID) id: string,
@@ -78,7 +78,7 @@ export default class ProductResolver {
    * @param ctx - Request context
    * @returns Deleted product
    */
-  @Mutation(() => Product)
+  @Mutation(() => Product, { description: `Delete the product` })
   @Authorized(UserRoles.ADMINISTRATOR)
   deleteProduct(@Arg('id', () => GraphQLUUID) id: string): Promise<Product> {
     return this.productService.delete(id);

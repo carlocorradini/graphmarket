@@ -33,12 +33,12 @@ export default class PurchaseResolver {
   private readonly purchaseService!: PurchaseService;
 
   /**
-   * Resolves purchase's total price.
+   * Resolves purchase's total amount.
    *
    * @param purchase - Purchase
    * @returns Total price
    */
-  @FieldResolver(() => GraphQLPositiveInt)
+  @FieldResolver(() => GraphQLPositiveInt, { description: `Purchase's total amount` })
   @Authorized()
   // eslint-disable-next-line class-methods-use-this
   async amount(@Root() purchase: Purchase): Promise<number> {
@@ -48,10 +48,12 @@ export default class PurchaseResolver {
   /**
    * Create a new purchase from the given data.
    *
+   * @param inventoryId - Inventory id
    * @param data - Purchase's data
+   * @param ctx - Request context
    * @returns Created purchase
    */
-  @Mutation(() => Purchase)
+  @Mutation(() => Purchase, { description: `Create a new purchase` })
   @Authorized()
   createPurchase(
     @Arg('inventoryId', () => GraphQLUUID) inventoryId: string,
@@ -67,7 +69,9 @@ export default class PurchaseResolver {
    * @param ctx - Request context
    * @returns Purchases of the current authenticated user
    */
-  @Query(() => [Purchase])
+  @Query(() => [Purchase], {
+    description: `Return all purchases of the current authenticated user`,
+  })
   @Authorized()
   mePurchases(
     @Args() { skip, take }: PaginationArgs,

@@ -30,7 +30,7 @@ export default class ReviewResolver {
    * @param ctx - Request context
    * @returns Created review
    */
-  @Mutation(() => Review)
+  @Mutation(() => Review, { description: `Create a new review` })
   @Authorized()
   createReview(
     @Arg('productId', () => GraphQLUUID) productId: string,
@@ -46,7 +46,7 @@ export default class ReviewResolver {
    * @param id - Review's id
    * @returns Review that match the id
    */
-  @Query(() => Review, { nullable: true })
+  @Query(() => Review, { nullable: true, description: `Return the review that marches the id` })
   review(@Arg('id', () => GraphQLUUID) id: string): Promise<Review | undefined> {
     return this.reviewService.readOne(id);
   }
@@ -57,7 +57,7 @@ export default class ReviewResolver {
    * @param param0 - Pagination arguments
    * @returns All available reviews
    */
-  @Query(() => [Review])
+  @Query(() => [Review], { description: `Return all reviews` })
   reviews(@Args() { skip, take }: PaginationArgs): Promise<Review[]> {
     return this.reviewService.read({ skip, take });
   }
@@ -71,7 +71,9 @@ export default class ReviewResolver {
    * @param ctx - Request context
    * @returns Updated review
    */
-  @Mutation(() => Review)
+  @Mutation(() => Review, {
+    description: `Update the review. Only the author is allowed to update it`,
+  })
   @Authorized()
   updateReview(
     @Arg('id', () => GraphQLUUID) id: string,
@@ -89,7 +91,9 @@ export default class ReviewResolver {
    * @param ctx - Request context
    * @returns Deleted review
    */
-  @Mutation(() => Review)
+  @Mutation(() => Review, {
+    description: `Delete the review. Only the author is allowed to delete it`,
+  })
   @Authorized()
   deleteReview(
     @Arg('id', () => GraphQLUUID) id: string,

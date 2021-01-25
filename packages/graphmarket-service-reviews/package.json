@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@graphmarket/entities": "^1.0.0",
+    "@graphmarket/errors": "^1.0.0",
     "@graphmarket/graphql-args": "^1.0.0",
     "@graphmarket/graphql-scalars": "^1.0.0",
     "@graphmarket/helpers": "^1.0.0",
@@ -34,8 +35,8 @@
     "@graphmarket/utils": "^1.0.0",
     "class-validator": "^0.12.2",
     "envalid": "^6.0.2",
-    "pg": "^8.5.1",
     "ioredis": "^4.19.4",
+    "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
     "typedi": "^0.8.0",

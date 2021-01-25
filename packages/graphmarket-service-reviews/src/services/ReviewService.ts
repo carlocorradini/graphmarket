@@ -3,6 +3,7 @@ import { Service } from 'typedi';
 import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
 import { Review } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
+import { EntityAlreadyExistsError } from '@graphmarket/errors';
 import logger from '@graphmarket/logger';
 
 /**
@@ -34,8 +35,7 @@ export default class ReviewService {
         where: { author: { id: authorId }, product: { id: productId } },
       })) !== 0
     ) {
-      // TODO Custom error
-      throw new Error(`A review for ${productId} already exists`);
+      throw new EntityAlreadyExistsError();
     }
 
     const newReview: Review = await manager!.save(

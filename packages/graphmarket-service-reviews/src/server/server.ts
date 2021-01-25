@@ -2,23 +2,22 @@ import { AddressInfo } from 'net';
 import Container from 'typedi';
 import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
-import {
-  Review,
-  Inventory,
-  Product,
-  Purchase,
-  User
-} from '@graphmarket/entities';
+import { Review, Inventory, Product, Purchase, User, ProductExternal, UserExternal } from '@graphmarket/entities';
 import config from '@app/config';
-import {ReviewResolver, resolveReviewReference} from '@app/resolvers';
+import {
+  ReviewResolver,
+  resolveReviewReference,
+  ProductReviewResolver,
+  UserReviewResolver,
+} from '@app/resolvers';
 
 /**
  * Federated GraphQL schema.
  */
 const schema = buildFederatedSchema(
   {
-    resolvers: [ReviewResolver],
-    orphanedTypes: [Review],
+    resolvers: [ReviewResolver, ProductReviewResolver, UserReviewResolver],
+    orphanedTypes: [Review, ProductExternal, UserExternal],
     container: Container,
   },
   {

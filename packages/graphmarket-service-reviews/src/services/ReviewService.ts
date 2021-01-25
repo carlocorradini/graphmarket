@@ -104,24 +104,33 @@ export default class ReviewService {
   @Transaction()
   public readByProduct(
     productId: string,
+    options: Pick<FindManyOptions, 'skip' | 'take'> = {
+      skip: PaginationArgs.DEFAULT_SKIP,
+      take: PaginationArgs.DEFAULT_TAKE,
+    },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review[]> {
-    return manager!.find(Review, { where: { product: { id: productId } } });
+    return manager!.find(Review, { ...options, where: { product: { id: productId } } });
   }
 
   /**
    * Read the available reviews of the author identified by the authorId.
    *
    * @param authorId - Author's id
+   * @param options - Find options
    * @param manager - Transaction manager
    * @returns Reviews found
    */
   @Transaction()
-  public readBySeller(
+  public readByAuthor(
     authorId: string,
+    options: Pick<FindManyOptions, 'skip' | 'take'> = {
+      skip: PaginationArgs.DEFAULT_SKIP,
+      take: PaginationArgs.DEFAULT_TAKE,
+    },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review[]> {
-    return manager!.find(Review, { where: { author: { id: authorId } } });
+    return manager!.find(Review, { ...options, where: { author: { id: authorId } } });
   }
 
   /**

@@ -4,7 +4,7 @@ import config from '@app/config';
 import server from '@app/server';
 
 /**
- * Bootstrap the product service.
+ * Bootstrap the products service.
  */
 const bootstrap = async () => {
   await server.initAdapters();

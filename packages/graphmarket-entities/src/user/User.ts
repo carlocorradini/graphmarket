@@ -20,7 +20,9 @@ import {
   GraphQLID,
 } from '@graphmarket/graphql-scalars';
 import { CryptUtil } from '@graphmarket/utils';
-import { Product } from '@app/product';
+import { Inventory } from '@app/inventory';
+import { Purchase } from '@app/purchase';
+import { Review } from '@app/review';
 import UserGenders from './UserGenders';
 import UserRoles from './UserRoles';
 
@@ -28,7 +30,7 @@ import UserRoles from './UserRoles';
  * User entity.
  */
 @Entity('user')
-@ObjectType('User')
+@ObjectType('User', { description: `User` })
 @Directive(`@key(fields: "id")`)
 export default class User {
   /**
@@ -36,14 +38,14 @@ export default class User {
    */
   @PrimaryGeneratedColumn('uuid')
   @Index()
-  @Field(() => GraphQLID)
+  @Field(() => GraphQLID, { description: `User's id` })
   id!: string;
 
   /**
    * User's username.
    */
   @Column({ length: 64, unique: true, update: false })
-  @Field(() => GraphQLNonEmptyString)
+  @Field(() => GraphQLNonEmptyString, { description: `User's username` })
   username!: string;
 
   /**
@@ -78,7 +80,7 @@ export default class User {
       from: (value) => value,
     },
   })
-  @Field(() => GraphQLNonEmptyString, { nullable: true })
+  @Field(() => GraphQLNonEmptyString, { nullable: true, description: `User's name` })
   name?: string;
 
   /**
@@ -93,35 +95,35 @@ export default class User {
       from: (value) => value,
     },
   })
-  @Field(() => GraphQLNonEmptyString, { nullable: true })
+  @Field(() => GraphQLNonEmptyString, { nullable: true, description: `User's surname` })
   surname?: string;
 
   /**
    * User's gender.
    */
   @Column({ type: 'enum', enum: UserGenders, nullable: true, default: undefined })
-  @Field(() => UserGenders, { nullable: true })
+  @Field(() => UserGenders, { nullable: true, description: `User's gender` })
   gender?: UserGenders;
 
   /**
    * User's date of birth.
    */
   @Column({ type: 'date', name: 'date_of_birth', nullable: true, default: undefined })
-  @Field(() => GraphQLDate, { nullable: true })
+  @Field(() => GraphQLDate, { nullable: true, description: `User's date of birth` })
   dateOfBirth?: Date;
 
   /**
    * User's email.
    */
   @Column({ length: 128, unique: true, update: false })
-  @Field(() => GraphQLEmailAddress)
+  @Field(() => GraphQLEmailAddress, { description: `User's email` })
   email!: string;
 
   /**
    * User's phone.
    */
   @Column({ length: 16, unique: true, update: false })
-  @Field(() => GraphQLPhoneNumber)
+  @Field(() => GraphQLPhoneNumber, { description: `User's phone number` })
   phone!: string;
 
   /**
@@ -131,21 +133,21 @@ export default class User {
     length: 512,
     default: `https://res.cloudinary.com/dxiqa0xwa/image/upload/v1607739761/graphmarket/user/avatar/user.png`,
   })
-  @Field(() => GraphQLURL)
+  @Field(() => GraphQLURL, { description: `User's avatar url` })
   avatar!: string;
 
   /**
    * User creation date and time.
    */
   @CreateDateColumn({ name: 'created_at', update: false })
-  @Field(() => GraphQLDateTime)
+  @Field(() => GraphQLDateTime, { description: `User's creation date and time` })
   createdAt!: Date;
 
   /**
    * User last updated date and time.
    */
   @UpdateDateColumn({ name: 'updated_at' })
-  @Field(() => GraphQLDateTime)
+  @Field(() => GraphQLDateTime, { description: `User's last updated date and time` })
   updatedAt!: Date;
 
   /**
@@ -155,14 +157,38 @@ export default class User {
   verified?: boolean;
 
   /**
-   * User's products for sale.
+   * User's purchases.
    */
-  @OneToMany(() => Product, (product) => product.seller, { nullable: false })
-  productsForSale!: Product[];
+  @OneToMany(() => Purchase, (purchase) => purchase.user)
+  purchases!: Purchase[];
 
   /**
-   * User's products for sale ids.
+   * User's purchases ids.
    */
-  @RelationId((user: User) => user.productsForSale)
-  productsForSaleIds!: string[];
+  @RelationId((user: User) => user.purchases)
+  purchasesIds!: string[];
+
+  /**
+   * User's reviews.
+   */
+  @OneToMany(() => Review, (review) => review.author)
+  reviews!: Review[];
+
+  /**
+   * User's reviews ids.
+   */
+  @RelationId((user: User) => user.reviews)
+  reviewsIds!: string[];
+
+  /**
+   * Seller's inventories.
+   */
+  @OneToMany(() => Inventory, (inventory) => inventory.seller)
+  inventories!: Inventory[];
+
+  /**
+   * Seller's inventories ids.
+   */
+  @RelationId((seller: User) => seller.inventories)
+  inventoriesIds!: string[];
 }

@@ -6,27 +6,25 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
   RelationId,
+  OneToMany,
 } from 'typeorm';
 import {
   GraphQLNonEmptyString,
   GraphQLID,
-  GraphQLPositiveInt,
   GraphQLURL,
   GraphQLDateTime,
 } from '@graphmarket/graphql-scalars';
+import { Inventory } from '@app/inventory';
+import { Review } from '@app/review';
 import { User } from '@app/user';
 import ProductCategories from './ProductCategories';
-// TODO
-// import ProductConditions from './ProductConditions';
 
 /**
  * Product entity.
  */
 @Entity('product')
-@ObjectType('Product')
+@ObjectType('Product', { description: `Product` })
 @Directive(`@key(fields: "id")`)
 export default class Product {
   /**
@@ -34,36 +32,29 @@ export default class Product {
    */
   @PrimaryGeneratedColumn('uuid')
   @Index()
-  @Field(() => GraphQLID)
+  @Field(() => GraphQLID, { description: `Product's id` })
   id!: string;
 
   /**
    * Product's category.
    */
   @Column({ type: 'enum', enum: ProductCategories })
-  @Field(() => ProductCategories)
+  @Field(() => ProductCategories, { description: `Product's category` })
   category!: ProductCategories;
 
   /**
    * Product's name.
    */
   @Column({ length: 128 })
-  @Field(() => GraphQLNonEmptyString)
+  @Field(() => GraphQLNonEmptyString, { description: `Product's name` })
   name!: string;
 
   /**
    * Product's description.
    */
   @Column({ length: 256, nullable: true, default: undefined })
-  @Field(() => GraphQLNonEmptyString, { nullable: true })
+  @Field(() => GraphQLNonEmptyString, { nullable: true, description: `Product's description` })
   description?: string;
-
-  /**
-   * Product's price in cents.
-   */
-  @Column({ type: 'bigint' })
-  @Field(() => GraphQLPositiveInt)
-  price!: number;
 
   /**
    * Product's photos.
@@ -74,33 +65,44 @@ export default class Product {
     array: true,
     default: '{}',
   })
-  @Field(() => [GraphQLURL])
+  @Field(() => [GraphQLURL], { description: `Product's photos` })
   photos!: string[];
 
   /**
    * Product creation date and time.
    */
   @CreateDateColumn({ name: 'created_at', update: false })
-  @Field(() => GraphQLDateTime)
+  @Field(() => GraphQLDateTime, { description: `Product's creation date and time` })
   createdAt!: Date;
 
   /**
    * Product last updated date and time.
    */
   @UpdateDateColumn({ name: 'updated_at' })
-  @Field(() => GraphQLDateTime)
+  @Field(() => GraphQLDateTime, { description: `Product's last updated date and time` })
   updatedAt!: Date;
 
   /**
-   * Product's seller.
+   * Product's inventories.
    */
-  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
-  @JoinColumn({ name: 'seller_id' })
-  seller!: User;
+  @OneToMany(() => Inventory, (inventory) => inventory.product)
+  inventories!: Inventory[];
 
   /**
-   * Product's seller id.
+   * Product's inventories ids.
    */
-  @RelationId((product: Product) => product.seller)
-  sellerId!: string;
+  @RelationId((product: Product) => product.inventories)
+  inventoriesIds!: string[];
+
+  /**
+   * Product's reviews.
+   */
+  @OneToMany(() => Review, (review) => review.product)
+  reviews!: Review[];
+
+  /**
+   * Product's reviews ids.
+   */
+  @RelationId((user: User) => user.reviews)
+  reviewsIds!: string[];
 }

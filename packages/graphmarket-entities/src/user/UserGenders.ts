@@ -78,6 +78,6 @@ enum UserGenders {
   WOMAN = 'WOMAN',
 }
 
-registerEnumType(UserGenders, { name: 'UserGenders' });
+registerEnumType(UserGenders, { name: 'UserGenders', description: `User genders` });
 
 export default UserGenders;

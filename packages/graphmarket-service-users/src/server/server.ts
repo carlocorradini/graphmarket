@@ -2,18 +2,33 @@ import { AddressInfo } from 'net';
 import Container from 'typedi';
 import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
-import { User, Product, ProductExternal } from '@graphmarket/entities';
+import {
+  User,
+  Product,
+  Inventory,
+  InventoryExternal,
+  Purchase,
+  PurchaseExternal,
+  Review,
+  ReviewExternal,
+} from '@graphmarket/entities';
 import { EmailAdapter, PhoneAdapter, UploadAdapter, TokenAdapter } from '@graphmarket/adapters';
 import config from '@app/config';
-import { UserResolver, resolveUserReference, ProductUserResolver } from '@app/resolvers';
+import {
+  UserResolver,
+  resolveUserReference,
+  InventoryUserResolver,
+  PurchaseUserResolver,
+  ReviewUserResolver,
+} from '@app/resolvers';
 
 /**
  * Federated GraphQL schema.
  */
 const schema = buildFederatedSchema(
   {
-    resolvers: [UserResolver, ProductUserResolver],
-    orphanedTypes: [User, ProductExternal],
+    resolvers: [UserResolver, InventoryUserResolver, PurchaseUserResolver, ReviewUserResolver],
+    orphanedTypes: [User, InventoryExternal, PurchaseExternal, ReviewExternal],
     container: Container,
   },
   {
@@ -68,7 +83,7 @@ const connectDatabase = (): Promise<Connection> =>
     synchronize: config.DATABASE.SYNCHRONIZE,
     dropSchema: config.DATABASE.DROP_SCHEMA,
     logging: config.DATABASE.LOGGING,
-    entities: [User, Product],
+    entities: [User, Product, Inventory, Purchase, Review],
     cache: {
       type: 'ioredis',
       port: config.REDIS.URL,

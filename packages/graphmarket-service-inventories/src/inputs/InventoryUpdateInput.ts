@@ -5,17 +5,17 @@ import { Inventory } from '@graphmarket/entities';
 /**
  * Inventory update input.
  */
-@InputType()
+@InputType('InventoryUpdateInput', { description: `Inventory update input` })
 export default class InventoryUpdateInput implements Partial<Inventory> {
   /**
    * Product's price in cents.
    */
-  @Field(() => GraphQLPositiveInt)
+  @Field(() => GraphQLPositiveInt, { description: `Product's price in cents` })
   price!: number;
 
   /**
    * Product's quantity.
    */
-  @Field(() => GraphQLNonNegativeInt)
+  @Field(() => GraphQLNonNegativeInt, { description: `Product's quantity` })
   quantity!: number;
 }

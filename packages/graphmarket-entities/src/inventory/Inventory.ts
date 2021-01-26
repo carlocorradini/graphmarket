@@ -44,21 +44,21 @@ export default class Inventory {
    * Product's price in cents.
    */
   @Column({ type: 'integer' })
-  @Field(() => GraphQLPositiveInt, { description: `Inventory's price in cents` })
+  @Field(() => GraphQLPositiveInt, { description: `Product's price in cents` })
   price!: number;
 
   /**
    * Product's quantity.
    */
   @Column({ type: 'integer' })
-  @Field(() => GraphQLNonNegativeInt, { description: `Inventory's quantity` })
+  @Field(() => GraphQLNonNegativeInt, { description: `Product's quantity` })
   quantity!: number;
 
   /**
    * Product's condition.
    */
   @Column({ type: 'enum', enum: ProductConditions })
-  @Field(() => ProductConditions, { description: `Inventory's condition` })
+  @Field(() => ProductConditions, { description: `Product's condition` })
   condition!: ProductConditions;
 
   /**

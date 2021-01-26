@@ -32,21 +32,21 @@ export default class Product {
    */
   @PrimaryGeneratedColumn('uuid')
   @Index()
-  @Field(() => GraphQLID, {description: `Product's id`})
+  @Field(() => GraphQLID, { description: `Product's id` })
   id!: string;
 
   /**
    * Product's category.
    */
   @Column({ type: 'enum', enum: ProductCategories })
-  @Field(() => ProductCategories, {description: `Product's category`})
+  @Field(() => ProductCategories, { description: `Product's category` })
   category!: ProductCategories;
 
   /**
    * Product's name.
    */
   @Column({ length: 128 })
-  @Field(() => GraphQLNonEmptyString, {description: `Product's name`})
+  @Field(() => GraphQLNonEmptyString, { description: `Product's name` })
   name!: string;
 
   /**
@@ -65,21 +65,21 @@ export default class Product {
     array: true,
     default: '{}',
   })
-  @Field(() => [GraphQLURL], , {description: `Product's photos`})
+  @Field(() => [GraphQLURL], { description: `Product's photos` })
   photos!: string[];
 
   /**
    * Product creation date and time.
    */
   @CreateDateColumn({ name: 'created_at', update: false })
-  @Field(() => GraphQLDateTime, {description: `Product's creation date and time`})
+  @Field(() => GraphQLDateTime, { description: `Product's creation date and time` })
   createdAt!: Date;
 
   /**
    * Product last updated date and time.
    */
   @UpdateDateColumn({ name: 'updated_at' })
-  @Field(() => GraphQLDateTime, {description: `Product's last updated date and time`})
+  @Field(() => GraphQLDateTime, { description: `Product's last updated date and time` })
   updatedAt!: Date;
 
   /**

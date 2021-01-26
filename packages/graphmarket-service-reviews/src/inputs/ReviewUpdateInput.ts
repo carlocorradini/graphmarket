@@ -6,25 +6,25 @@ import { Review } from '@graphmarket/entities';
 /**
  * Review update input.
  */
-@InputType()
+@InputType('ReviewUpdateInput', { description: `Review update input` })
 export default class ReviewUpdateInput implements Partial<Review> {
   /**
    * Review's title.
    */
-  @Field(() => GraphQLNonEmptyString, { nullable: true })
+  @Field(() => GraphQLNonEmptyString, { nullable: true, description: `Review's title` })
   @Length(1, 64)
   title?: string;
 
   /**
    * Review's body.
    */
-  @Field(() => GraphQLNonEmptyString, { nullable: true })
+  @Field(() => GraphQLNonEmptyString, { nullable: true, description: `Review's body` })
   @Length(1, 256)
   body?: string;
 
   /**
    * Review's rating.
    */
-  @Field(() => GraphQLProductRating, { nullable: true })
+  @Field(() => GraphQLProductRating, { nullable: true, description: `Review's rating` })
   rating?: number;
 }

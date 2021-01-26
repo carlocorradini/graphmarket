@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  #  gateway:
+  #    build:
+  #      context: .
+  #      dockerfile: docker/gateway.dockerfile
+  products:
+    build:
+      context: .
+      dockerfile: docker/products.dockerfile
+
+
+

@@ -26,9 +26,9 @@
   },
   "dependencies": {
     "@apollo/federation": "^0.20.7",
-    "@graphmarket/interfaces": "^1.0.0",
-    "@graphmarket/middlewares": "^1.0.0",
-    "@graphmarket/utils": "^1.0.0",
+    "@graphmarket/interfaces": "^1.0.1",
+    "@graphmarket/middlewares": "^1.0.1",
+    "@graphmarket/utils": "^1.0.1",
     "apollo-graphql": "^0.6.0",
     "apollo-server-core": "^2.19.1",
     "apollo-server-express": "^2.19.1",

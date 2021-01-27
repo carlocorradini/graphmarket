@@ -2,6 +2,7 @@
 import { Service } from 'typedi';
 import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
 import { Product } from '@graphmarket/entities';
+import { PaginationArgs } from '@graphmarket/graphql-args';
 import logger from '@graphmarket/logger';
 
 /**
@@ -20,13 +21,12 @@ export default class ProductService {
    */
   @Transaction()
   public async create(
-    sellerId: string,
-    product: Exclude<Product, 'seller' | 'sellerId'>,
+    product: Product,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product> {
     const newProduct: Product = await manager!.save(
       Product,
-      manager!.create(Product, { ...product, seller: { id: sellerId } }),
+      manager!.create(Product, { ...product }),
     );
 
     logger.info(`Created product ${newProduct.id}`);
@@ -66,6 +66,64 @@ export default class ProductService {
   }
 
   /**
+   * Read the product of the inventory identified by the inventoryId.
+   *
+   * @param inventoryId - Inventory id
+   * @param manager - Transaction manager
+   * @returns Product of the inventory
+   */
+  @Transaction()
+  public readOneByInventory(
+    inventoryId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<Product> {
+    return manager!
+      .createQueryBuilder(Product, 'product')
+      .innerJoin('product.inventories', 'inventory')
+      .where('inventory.id = :inventoryId', { inventoryId })
+      .getOneOrFail();
+  }
+
+  /**
+   * Read the product of the purchase identified by the purchaseId.
+   *
+   * @param purchaseId - Purchase id
+   * @param manager - Transaction manager
+   * @returns Product of the purchase
+   */
+  @Transaction()
+  public readOneByPurchase(
+    purchaseId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<Product> {
+    return manager!
+      .createQueryBuilder(Product, 'product')
+      .innerJoin('product.inventories', 'inventory')
+      .innerJoin('inventory.purchases', 'purchase')
+      .where('purchase.id = :purchaseId', { purchaseId })
+      .getOneOrFail();
+  }
+
+  /**
+   * Read the product of the review identified by the reviewId.
+   * 
+   * @param reviewId - Review id
+   * @param manager - Transaction manager
+   * @returns Product of the review
+   */
+  @Transaction()
+  public readOneByReview(
+    reviewId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<Product> {
+    return manager!
+      .createQueryBuilder(Product, 'product')
+      .innerJoin('product.reviews', 'review')
+      .where('review.id = :reviewId', { reviewId })
+      .getOneOrFail();
+  }
+
+  /**
    * Read multiple products.
    *
    * @param options - Find options
@@ -74,26 +132,55 @@ export default class ProductService {
    */
   @Transaction()
   public read(
-    options?: Pick<FindManyOptions, 'skip' | 'take'>,
+    options: Pick<FindManyOptions, 'skip' | 'take'> = {
+      skip: PaginationArgs.DEFAULT_SKIP,
+      take: PaginationArgs.DEFAULT_TAKE,
+    },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product[]> {
     return manager!.find(Product, { ...options, cache: true });
   }
 
   /**
-   * Read mutiple products for sale of the seller identified by the sellerId.
+   * Update the product identified by the id.
    *
-   * @param sellerId - Seller id
-   * @param options - Find options
+   * @param id - Product's id
+   * @param product - Product update properties
    * @param manager - Transaction manager
-   * @returns Products for sale of the seller found
+   * @returns Updated product
    */
   @Transaction()
-  public readforSale(
-    sellerId: string,
-    options?: Pick<FindManyOptions, 'skip' | 'take'>,
+  public async update(
+    id: string,
+    product: Partial<Omit<Product, 'id' | 'seller' | 'sellerId'>>,
     @TransactionManager() manager?: EntityManager,
-  ): Promise<Product[]> {
-    return manager!.find(Product, { ...options, where: { seller: { id: sellerId } }, cache: true });
+  ): Promise<Product> {
+    // Check if product exists
+    await manager!.findOneOrFail(Product, id);
+
+    await manager!.update(Product, id, manager!.create(Product, product));
+
+    logger.info(`Updated product ${id}`);
+
+    return manager!.findOneOrFail(Product, id);
+  }
+
+  /**
+   * Delete the product identified by the id.
+   *
+   * @param id - Product's id
+   * @param manager - Transaction manager
+   * @returns Deleted product
+   */
+  @Transaction()
+  public async delete(id: string, @TransactionManager() manager?: EntityManager): Promise<Product> {
+    // Check if product exists
+    const product: Product = await manager!.findOneOrFail(Product, id);
+
+    await manager!.delete(Product, id);
+
+    logger.info(`Deleted product ${id}`);
+
+    return product;
   }
 }

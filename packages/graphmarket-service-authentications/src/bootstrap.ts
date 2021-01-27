@@ -4,7 +4,7 @@ import config from '@app/config';
 import server from '@app/server';
 
 /**
- * Boostrap the authentication service.
+ * Boostrap the authentications service.
  */
 const bootstrap = async () => {
   await server.initAdapters();

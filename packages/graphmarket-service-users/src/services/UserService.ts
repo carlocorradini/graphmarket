@@ -6,6 +6,7 @@ import { User } from '@graphmarket/entities';
 import logger from '@graphmarket/logger';
 import { PhoneAdapter, EmailAdapter, UploadAdapter, TokenAdapter } from '@graphmarket/adapters';
 import { IToken } from '@graphmarket/interfaces';
+import { PaginationArgs } from '@graphmarket/graphql-args';
 
 /**
  * User service.
@@ -76,6 +77,63 @@ export default class UserService {
   }
 
   /**
+   * Read the seller of the inventory identified by inventoryId.
+   *
+   * @param inventoryId - Inventory id
+   * @param manager - Transaction manager
+   * @returns Seller of the inventory
+   */
+  @Transaction()
+  public readOnebyInventory(
+    inventoryId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<User> {
+    return manager!
+      .createQueryBuilder(User, 'user')
+      .innerJoin('user.inventories', 'inventory')
+      .where('inventory.id = :inventoryId', { inventoryId })
+      .getOneOrFail();
+  }
+
+  /**
+   * Read the seller of the purchase identified by purchaseId.
+   *
+   * @param purchaseId - Purchase id
+   * @param manager - Transaction manager
+   * @returns Seller of the purchase
+   */
+  @Transaction()
+  public readOnebyPurchase(
+    purchaseId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<User> {
+    return manager!
+      .createQueryBuilder(User, 'user')
+      .innerJoin('user.purchases', 'purchase')
+      .where('purchase.id = :purchaseId', { purchaseId })
+      .getOneOrFail();
+  }
+
+  /**
+   * Read the author of the review identified by reviewId.
+   *
+   * @param reviewId - Review id
+   * @param manager - Transaction manager
+   * @returns Author of the review
+   */
+  @Transaction()
+  public readOneByReview(
+    reviewId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<User> {
+    return manager!
+      .createQueryBuilder(User, 'user')
+      .innerJoin('user.reviews', 'review')
+      .where('review.id = :reviewId', { reviewId })
+      .getOneOrFail();
+  }
+
+  /**
    * Read a user that matches the id.
    * If no user exists rejects.
    *
@@ -97,7 +155,10 @@ export default class UserService {
    */
   @Transaction()
   public read(
-    options?: FindManyOptions,
+    options: Pick<FindManyOptions, 'skip' | 'take'> = {
+      skip: PaginationArgs.DEFAULT_SKIP,
+      take: PaginationArgs.DEFAULT_TAKE,
+    },
     @TransactionManager() manager?: EntityManager,
   ): Promise<User[]> {
     return manager!.find(User, { ...options, cache: true });
@@ -109,6 +170,7 @@ export default class UserService {
    *
    * @param id - User's id
    * @param user - User update properties
+   * @param token - User's token
    * @param manager - Transaction manager
    * @returns Updated user
    * @see TokenService
@@ -166,6 +228,7 @@ export default class UserService {
    * All user's tokens are purged.
    *
    * @param id - User's id
+   * @param token - User's token
    * @param manager - Transaction manager
    * @returns Deleted user
    * @see TokenService

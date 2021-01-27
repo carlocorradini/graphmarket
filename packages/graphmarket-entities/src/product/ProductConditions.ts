@@ -12,6 +12,9 @@ enum ProductConditions {
   USED_ACCEPTABLE = 'USED_ACCEPTABLE',
 }
 
-registerEnumType(ProductConditions, { name: 'ProductConditions' });
+registerEnumType(ProductConditions, {
+  name: 'ProductConditions',
+  description: `Product conditions`,
+});
 
 export default ProductConditions;

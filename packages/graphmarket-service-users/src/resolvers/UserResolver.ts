@@ -29,7 +29,7 @@ export default class UserResolver {
    * @param data - User's data
    * @returns Created user
    */
-  @Mutation(() => User)
+  @Mutation(() => User, { description: `Create a new user` })
   createUser(@Arg('data', () => UserCreateInput) data: UserCreateInput): Promise<User> {
     return this.userService.create(data as User);
   }
@@ -40,7 +40,7 @@ export default class UserResolver {
    * @param ctx - Request context
    * @returns Current authenticated user
    */
-  @Query(() => User)
+  @Query(() => User, { description: `Return the current authenticated user` })
   @Authorized()
   me(@Ctx() ctx: IGraphQLContext): Promise<User> {
     return this.userService.readOneOrFail(ctx.user!.id);
@@ -52,7 +52,7 @@ export default class UserResolver {
    * @param id - User's id
    * @returns User that match the id
    */
-  @Query(() => User, { nullable: true })
+  @Query(() => User, { nullable: true, description: `Return the user that matches the id` })
   @Authorized()
   user(@Arg('id', () => GraphQLUUID) id: string): Promise<User | undefined> {
     return this.userService.readOne(id);
@@ -64,7 +64,7 @@ export default class UserResolver {
    * @param param0 - Pagination arguments
    * @returns All available users
    */
-  @Query(() => [User])
+  @Query(() => [User], { description: `Return all users` })
   @Authorized()
   users(@Args() { skip, take }: PaginationArgs): Promise<User[]> {
     return this.userService.read({ skip, take });
@@ -77,7 +77,7 @@ export default class UserResolver {
    * @param ctx - Request context
    * @returns Updated user
    */
-  @Mutation(() => User)
+  @Mutation(() => User, { description: `Update current authenticated user` })
   @Authorized()
   updateMe(
     @Arg('data', () => UserUpdateInput) data: UserUpdateInput,
@@ -93,7 +93,7 @@ export default class UserResolver {
    * @param ctx - Request context
    * @returns Updated user
    */
-  @Mutation(() => User)
+  @Mutation(() => User, { description: `Update avatar of the current authenticated user` })
   @Authorized()
   updateAvatar(
     @Arg('file', () => GraphQLUpload) file: FileUpload,
@@ -108,7 +108,7 @@ export default class UserResolver {
    * @param ctx - Request context
    * @returns Deleted user
    */
-  @Mutation(() => User)
+  @Mutation(() => User, { description: `Delete the current authenticated user` })
   @Authorized()
   deleteMe(@Ctx() ctx: IGraphQLContext): Promise<User> {
     return this.userService.delete(ctx.user!.id, ctx.user!);

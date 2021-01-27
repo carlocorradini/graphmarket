@@ -1,3 +1,6 @@
+export { default as GraphQLProductRating } from './GraphQLProductRating';
+export { default as GraphQLReviewRating } from './GraphQLReviewRating';
+
 export { GraphQLID, GraphQLInt, GraphQLFloat, GraphQLString, GraphQLBoolean } from 'graphql';
 
 export {

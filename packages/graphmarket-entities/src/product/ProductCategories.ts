@@ -36,6 +36,9 @@ enum ProductCategories {
   WATCHES = 'WATCHES',
 }
 
-registerEnumType(ProductCategories, { name: 'ProductCategories' });
+registerEnumType(ProductCategories, {
+  name: 'ProductCategories',
+  description: `Product categories`,
+});
 
 export default ProductCategories;

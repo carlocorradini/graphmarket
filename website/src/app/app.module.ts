@@ -7,6 +7,7 @@ import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
+import { StarRatingModule } from 'angular-star-rating';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
     HomeComponent,
     PageNotFoundComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, GraphQLModule, HttpClientModule],
+  imports: [BrowserModule, AppRoutingModule, GraphQLModule, HttpClientModule, StarRatingModule.forRoot()],
   providers: [Title],
   bootstrap: [AppComponent],
 })

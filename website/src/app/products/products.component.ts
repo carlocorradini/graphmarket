@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { gql } from 'apollo-angular';
+import { ApolloError } from '@apollo/client/core';
+import { Apollo, gql, QueryRef } from 'apollo-angular';
 
 const GET_PRODUCTS = gql`
-  query GetProducts {
-    products {
+  query GetProducts($skip: NonNegativeInt, $take: PositiveInt) {
+    products(skip: $skip, take: $take) {
+      cover
       name
+      price
+      rating
     }
   }
 `;
@@ -17,8 +21,50 @@ const GET_PRODUCTS = gql`
   templateUrl: './products.component.html',
 })
 export class ProductsComponent implements OnInit {
+  public static readonly DEFAULT_TAKE: number = 8;
 
+  public loading: boolean;
 
-  ngOnInit(): void {
+  public products: any;
+
+  private queryProducts!: QueryRef<any>;
+
+  public constructor(private readonly apollo: Apollo) {
+    this.loading = true;
+    this.products = [];
+  }
+
+  public ngOnInit(): void {
+    this.queryProducts = this.apollo.watchQuery<any>({
+      query: GET_PRODUCTS,
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all',
+      variables: {
+        skip: 0,
+        take: ProductsComponent.DEFAULT_TAKE,
+      },
+    });
+
+    this.products = this.queryProducts.valueChanges.subscribe(({ loading, error, data }) => {
+      this.loading = loading;
+      this.products = data.products;
+    });
+  }
+
+  public fetchMore() {
+    this.queryProducts.fetchMore({
+      variables: {
+        skip: this.products.length,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+
+        return Object.assign({}, prev, {
+          products: [...prev.products, ...fetchMoreResult.products],
+        });
+      },
+    });
   }
 }

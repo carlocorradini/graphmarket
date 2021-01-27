@@ -35,6 +35,8 @@
     "@graphmarket/utils": "^1.0.1",
     "convert-units": "^2.3.4",
     "envalid": "^6.0.2",
+    "ioredis": "^4.19.4",
+    "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
     "typedi": "^0.8.0",

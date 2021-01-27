@@ -1,4 +1,4 @@
-FROM node
+FROM node:lts
 
 WORKDIR /graphmarket
 
@@ -6,7 +6,7 @@ COPY tsconfig.common.json .
 
 WORKDIR /graphmarket/packages/graphmarket-gateway
 
-COPY /packages/graphmarket-gateway/package*.json ./
+COPY /packages/graphmarket-gateway/package.json .
 
 RUN npm install
 

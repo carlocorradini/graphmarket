@@ -14,6 +14,6 @@ COPY /packages/graphmarket-service-products .
 
 RUN npm run build
 
-RUN npm prune --production
+RUN npm prune --production=true
 
 CMD ["npm", "run", "start"]

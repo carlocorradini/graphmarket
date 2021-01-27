@@ -1,0 +1,204 @@
+version: '3.9'
+
+services:
+
+  gateway:
+    build:
+      context: .
+      dockerfile: docker/gateway.dev.dockerfile
+    networks:
+      gateway-net:
+        ipv4_address: 192.168.10.2
+    environment:
+      PORT: 80
+      REDIS_URL: redis://192.168.90.3:6379/0 # redis_shared, also used by authentications and users
+      SERVICES_AUTHENTICATIONS_URL: http://192.168.20.2:80/graphql
+      SERVICES_USERS_URL: http://192.168.30.2:80/graphql
+      SERVICES_PRODUCTS_URL: http://192.168.40.2:80/graphql
+      SERVICES_INVENTORIES_URL: http://192.168.50.2:80/graphql
+      SERVICES_PURCHASES_URL: http://192.168.60.2:80/graphql
+      SERVICES_REVIEWS_URL: http://192.168.70.2:80/graphql
+    ports:
+      - 8080:80
+
+  authentications:
+    build:
+      context: .
+      dockerfile: docker/authentications.dev.dockerfile
+    networks:
+      authentications-net:
+        ipv4_address: 192.168.20.2
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://user:password@192.168.80.2:5432/graphmarket
+      REDIS_URL: redis://192.168.90.3:6379/0 # redis_shared, also used by gateway and users
+    ports:
+      - 8081:80
+
+  users:
+    build:
+      context: .
+      dockerfile: docker/users.dev.dockerfile
+    networks:
+      users-net:
+        ipv4_address: 192.168.30.2
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://user:password@192.168.80.2:5432/graphmarket
+      REDIS_URL: redis://192.168.90.3:6379/0 # redis_shared, also used by gateway and authentications
+    ports:
+      - 8082:80
+
+  products:
+    build:
+      context: .
+      dockerfile: docker/products.dev.dockerfile
+    networks:
+      products-net:
+        ipv4_address: 192.168.40.2
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://user:password@192.168.80.2:5432/graphmarket
+      REDIS_URL: redis://192.168.40.3:6379/0
+    ports:
+      - 8083:80
+
+  inventories:
+    build:
+      context: .
+      dockerfile: docker/inventories.dev.dockerfile
+    networks:
+      inventories-net:
+        ipv4_address: 192.168.50.2
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://user:password@192.168.80.2:5432/graphmarket
+      REDIS_URL: redis://192.168.50.3:6379/0
+    ports:
+      - 8084:80
+
+  purchases:
+    build:
+      context: .
+      dockerfile: docker/purchases.dev.dockerfile
+    networks:
+      purchases-net:
+        ipv4_address: 192.168.60.2
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://user:password@192.168.80.2:5432/graphmarket
+      REDIS_URL: redis://192.168.60.3:6379/0
+    ports:
+      - 8085:80
+
+  reviews:
+    build:
+      context: .
+      dockerfile: docker/reviews.dev.dockerfile
+    networks:
+      reviews-net:
+        ipv4_address: 192.168.70.2
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://user:password@192.168.80.2:5432/graphmarket
+      REDIS_URL: redis://192.168.70.3:6379/0
+    ports:
+      - 8086:80
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: graphmarket
+    networks:
+      db-net:
+        ipv4_address: 192.168.80.2
+
+  redis_shared:
+    # Shared by:
+    # gateway, authentication, user
+    image: redis
+    networks:
+      redis_shared-net:
+        ipv4_address: 192.168.90.3
+
+  redis_products:
+    image: redis
+    networks:
+      products-net:
+        ipv4_address: 192.168.40.3
+
+  redis_inventories:
+    image: redis
+    networks:
+      inventories-net:
+        ipv4_address: 192.168.50.3
+
+  redis_purchases:
+    image: redis
+    networks:
+      purchases-net:
+        ipv4_address: 192.168.60.3
+
+  redis_reviews:
+    image: redis
+    networks:
+      reviews-net:
+        ipv4_address: 192.168.70.3
+
+networks:
+
+  gateway-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.10.0/24
+
+  authentications-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.20.0/24
+
+  users-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.30.0/24
+
+  products-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.40.0/24
+
+  inventories-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.50.0/24
+
+  purchases-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.60.0/24
+
+  reviews-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.70.0/24
+
+  db-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.80.0/24
+
+  redis_shared-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.90.0/24

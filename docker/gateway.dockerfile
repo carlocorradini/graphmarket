@@ -12,8 +12,6 @@ RUN npm install
 
 COPY /packages/graphmarket-gateway .
 
-RUN npm run build
+ENV NODE_ENV=production
 
-RUN npm prune --production=true
-
-CMD ["npm", "run", "start"]
+CMD ["npx", "ts-node", "-r", "tsconfig-paths/register", "src/bootstrap.ts"]

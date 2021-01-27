@@ -184,4 +184,30 @@ export default class InventoryService {
 
     return inventory;
   }
+
+  /**
+   * Returns the best selling price of the product from the available inventories.
+   *
+   * @param productId - Product's id
+   * @param manager - Transaction manager
+   * @returns Best selling price of the product from the available inventories
+   */
+  @Transaction()
+  public async priceByProduct(
+    productId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<number | undefined> {
+    const { price }: { price: number | undefined } = (await manager!
+      .createQueryBuilder(Inventory, 'inventory')
+      .addSelect('inventory.condition')
+      .select('MIN(inventory.price)', 'price')
+      .where('inventory.product_id = :productId', { productId })
+      .andWhere('inventory.quantity > 0')
+      .groupBy('inventory.condition')
+      .orderBy('inventory.condition')
+      .limit(1)
+      .getRawOne()) || { price: undefined };
+
+    return price;
+  }
 }

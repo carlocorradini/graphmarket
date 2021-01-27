@@ -1,4 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { gql } from 'apollo-angular';
+
+const GET_PRODUCTS = gql`
+  query GetProducts {
+    products {
+      name
+    }
+  }
+`;
 
 /**
  * Products component.
@@ -7,4 +16,9 @@ import { Component, OnInit } from '@angular/core';
   selector: 'app-products-page',
   templateUrl: './products.component.html',
 })
-export class ProductsComponent {}
+export class ProductsComponent implements OnInit {
+
+
+  ngOnInit(): void {
+  }
+}

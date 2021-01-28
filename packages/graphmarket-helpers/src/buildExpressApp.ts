@@ -1,6 +1,5 @@
 import express from 'express';
 import compression from 'compression';
-import cors from 'cors';
 import helmet from 'helmet';
 import { graphqlUploadExpress } from 'graphql-upload';
 import jwt from 'express-jwt';
@@ -20,7 +19,6 @@ const buildExpressApp = (options: IBuildExpressAppOptions) => {
   app
     .enable('trust proxy')
     .use(compression())
-    .use(cors())
     .use(
       helmet({
         contentSecurityPolicy: EnvUtil.isProduction() ? undefined : false,

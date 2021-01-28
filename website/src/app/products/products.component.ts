@@ -5,10 +5,13 @@ import { Apollo, gql, QueryRef } from 'apollo-angular';
 const GET_PRODUCTS = gql`
   query GetProducts($skip: NonNegativeInt, $take: PositiveInt) {
     products(skip: $skip, take: $take) {
+      id
       cover
       name
       price
       rating
+      available
+      quantity
     }
   }
 `;

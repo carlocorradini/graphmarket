@@ -3,11 +3,7 @@ import { Inject, Service } from 'typedi';
 import { Inventory, ProductExternal } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
 import { InventoryService } from '@app/services';
-import {
-  GraphQLBoolean,
-  GraphQLNonNegativeInt,
-  GraphQLPositiveInt,
-} from '@graphmarket/graphql-scalars';
+import { GraphQLBoolean, GraphQLNonNegativeInt, GraphQLPrice } from '@graphmarket/graphql-scalars';
 
 /**
  * Product inventory resolver.
@@ -70,7 +66,7 @@ export default class ProductInventoryResolver {
    * @param product - Product to obtain the best price of
    * @returns Best price of the product available in the inventories
    */
-  @FieldResolver(() => GraphQLPositiveInt, {
+  @FieldResolver(() => GraphQLPrice, {
     nullable: true,
     description: `Best selling price of the product from the available inventories.`,
   })

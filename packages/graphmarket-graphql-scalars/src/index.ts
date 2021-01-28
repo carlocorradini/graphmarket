@@ -1,3 +1,4 @@
+export { default as GraphQLPrice } from './GraphQLPrice';
 export { default as GraphQLProductRating } from './GraphQLProductRating';
 export { default as GraphQLReviewRating } from './GraphQLReviewRating';
 

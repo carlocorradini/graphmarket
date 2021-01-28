@@ -1,6 +1,6 @@
 {
   "name": "@graphmarket/helpers",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Graph Market helpers",
   "license": "MIT",
   "main": "build/index.js",

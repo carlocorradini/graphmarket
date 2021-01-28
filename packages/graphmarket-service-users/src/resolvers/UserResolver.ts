@@ -1,9 +1,19 @@
-import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Authorized,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { Inject, Service } from 'typedi';
 import { User } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
-import { GraphQLUUID } from '@graphmarket/graphql-scalars';
+import { GraphQLNonEmptyString, GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import { UserService } from '@app/services';
 import { UserCreateInput, UserUpdateInput } from '@app/inputs';
@@ -22,6 +32,18 @@ export default class UserResolver {
    */
   @Inject()
   private readonly userService!: UserService;
+
+  /**
+   * Resolves the user's full name.
+   *
+   * @param user - User to obtain the full name of
+   * @returns User's full name
+   */
+  @FieldResolver(() => GraphQLNonEmptyString, { description: `User's full name` })
+  // eslint-disable-next-line class-methods-use-this
+  async fullName(@Root() user: User): Promise<string> {
+    return `${user.name} ${user.surname}`;
+  }
 
   /**
    * Create a new user from the given data.

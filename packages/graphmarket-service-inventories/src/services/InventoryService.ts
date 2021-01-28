@@ -186,6 +186,27 @@ export default class InventoryService {
   }
 
   /**
+   * Returns the total quantity of the product.
+   *
+   * @param productId - Product id
+   * @param manager - Transaction manager
+   * @returns Total quantity of the product
+   */
+  @Transaction()
+  public async quantityByProduct(
+    productId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<number> {
+    const { quantity }: { quantity: number } = await manager!
+      .createQueryBuilder(Inventory, 'inventory')
+      .select('COALESCE(SUM(inventory.quantity), 0)', 'quantity')
+      .where('inventory.product_id = :productId', { productId })
+      .getRawOne();
+
+    return quantity;
+  }
+
+  /**
    * Returns the best selling price of the product from the available inventories.
    *
    * @param productId - Product's id

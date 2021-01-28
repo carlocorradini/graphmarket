@@ -4,6 +4,4 @@
 export const environment = {
   // Application name
   appName: 'Graph Market',
-  // GraphQL URI
-  apiURI: 'http://localhost:8080/graphql',
 };

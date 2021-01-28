@@ -94,8 +94,6 @@ services:
       - 5432:5432
 
   redis:
-    # Shared by:
-    # gateway, authentication, user
     image: redis
     ports:
       - 6379:6379

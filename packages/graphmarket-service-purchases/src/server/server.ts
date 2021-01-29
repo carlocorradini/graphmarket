@@ -2,8 +2,21 @@ import { AddressInfo } from 'net';
 import Container from 'typedi';
 import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
-import { Inventory, Product, Purchase, User, UserExternal, Review } from '@graphmarket/entities';
-import { PurchaseResolver, resolvePurchaseReference, UserPurchaseResolver } from '@app/resolvers';
+import {
+  Inventory,
+  Product,
+  Purchase,
+  User,
+  UserExternal,
+  Review,
+  ReviewExternal,
+} from '@graphmarket/entities';
+import {
+  PurchaseResolver,
+  resolvePurchaseReference,
+  ReviewPurchaseResolver,
+  UserPurchaseResolver,
+} from '@app/resolvers';
 import config from '@app/config';
 
 /**
@@ -11,8 +24,8 @@ import config from '@app/config';
  */
 const schema = buildFederatedSchema(
   {
-    resolvers: [PurchaseResolver, UserPurchaseResolver],
-    orphanedTypes: [Purchase, UserExternal],
+    resolvers: [PurchaseResolver, UserPurchaseResolver, ReviewPurchaseResolver],
+    orphanedTypes: [Purchase, UserExternal, ReviewExternal],
     container: Container,
   },
   {

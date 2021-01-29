@@ -13,7 +13,7 @@ const bootstrap = async (): Promise<void> => {
     logger.info(`Service ${service.name} at ${service.url}`);
   }
 
-  logger.info('Starting the server...')
+  logger.info('Starting the server...');
   const serverInfo = await server.listen(config.NODE.PORT);
   logger.info(`Listening at ${serverInfo.address} on port ${serverInfo.port}`);
 

@@ -11,7 +11,7 @@ const bootstrap = async () => {
   await server.connectDatabase();
   logger.info(`Database connected`);
 
-  logger.info('Starting the server...')
+  logger.info('Starting the server...');
   const serverInfo = await server.listen(config.NODE.PORT);
   logger.info(`Listening at ${serverInfo.address} on port ${serverInfo.port}`);
 

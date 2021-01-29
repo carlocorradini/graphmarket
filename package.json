@@ -2,10 +2,6 @@
   "name": "graphmarket",
   "version": "1.0.0",
   "description": "Online e-commerce API in GraphQL",
-  "engines": {
-    "node": "^10.3",
-    "npm": "^6.9.0"
-  },
   "license": "MIT",
   "homepage": "https://github.com/carlocorradini/graphmarket",
   "repository": {

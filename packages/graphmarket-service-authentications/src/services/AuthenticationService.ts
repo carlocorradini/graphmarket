@@ -51,10 +51,12 @@ export default class AuthenticationService {
     emailCode: string,
     phoneCode: string,
     @TransactionManager() manager?: EntityManager,
-  ): Promise<boolean> {
+  ): Promise<string> {
+    let user: User | undefined;
+
     try {
       // Obtain user
-      const user: User = await manager!.findOneOrFail(User, id);
+      user = await manager!.findOneOrFail(User, id);
 
       // Check email verification
       await this.emailAdapter.checkVerification(user.email, emailCode);
@@ -69,7 +71,9 @@ export default class AuthenticationService {
 
     await manager!.update(User, id, { verified: true });
 
-    return Promise.resolve(true);
+    return this.tokenAdapter.sign({ id: user.id, roles: user.roles }, config.TOKEN.SECRET, {
+      expiresIn: config.TOKEN.EXPIRATION_TIME,
+    });
   }
 
   /**
@@ -125,5 +129,33 @@ export default class AuthenticationService {
     await this.tokenAdapter.revoke(user);
 
     logger.info(`Sign out procedure succeeded for user ${user.sub}`);
+  }
+
+  /**
+   * Resend the verification codes to the user identified by userId.
+   *
+   * @param userId - User id
+   * @param manager - transaction manager
+   */
+  @Transaction()
+  public async resend(
+    userId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<void> {
+    // Obtain user
+    const user: User = await manager!.findOneOrFail(User, userId, {
+      select: ['verified', 'phone', 'email', 'username'],
+    });
+
+    if (user.verified)
+      throw new VerificationError({ message: `User ${user.id} has been already verified` });
+
+    // Send verification message
+    await this.phoneAdapter.sendVerification(user.phone);
+
+    // Send verification email
+    await this.emailAdapter.sendVerification(user.email, { user: { username: user.username } });
+
+    logger.info(`New verification codes sended for user ${userId}`);
   }
 }

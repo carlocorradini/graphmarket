@@ -11,10 +11,13 @@ import { StarRatingModule } from 'angular-star-rating';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 import { CoreModule } from './core/core.module';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthGuard } from './auth-guard.service';
+import { SignUpComponent } from './sign-up/sign-up.component';
+import { VerifyComponent } from './verify/verify.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +26,8 @@ import { AuthGuard } from './auth-guard.service';
     FooterComponent,
     HomeComponent,
     SignInComponent,
+    SignUpComponent,
+    VerifyComponent,
     PageNotFoundComponent,
   ],
   imports: [
@@ -35,6 +40,7 @@ import { AuthGuard } from './auth-guard.service';
     NgxSpinnerModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
+    ToastrModule.forRoot({ enableHtml: true, positionClass: 'toast-bottom-left' }),
     SweetAlert2Module.forRoot(),
     StarRatingModule.forRoot(),
   ],

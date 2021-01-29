@@ -1,13 +1,24 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, ReplaySubject, Subscription } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged, finalize } from 'rxjs/operators';
-import { User } from '../models';
+import { User, UserGenders } from '../models';
 import { TokenService } from './token.service';
+
+export interface SignUpValues {
+  username: string;
+  password: string;
+  name?: string;
+  surname?: string;
+  gender: UserGenders;
+  dateOfBirth: string;
+  email: string;
+  phone: string;
+}
 
 const QUERY_ME = gql`
   query Me {
-    me {
+    user: me {
       id
       username
       roles
@@ -25,9 +36,49 @@ const MUTATION_SIGN_IN = gql`
   }
 `;
 
+const MUTATION_SIGN_UP = gql`
+  mutation SignUp(
+    $username: NonEmptyString!
+    $password: NonEmptyString!
+    $name: NonEmptyString
+    $surname: NonEmptyString
+    $gender: UserGenders
+    $dateOfBirth: Date
+    $email: EmailAddress!
+    $phone: PhoneNumber!
+  ) {
+    user: createUser(
+      data: {
+        username: $username
+        password: $password
+        name: $name
+        surname: $surname
+        gender: $gender
+        dateOfBirth: $dateOfBirth
+        email: $email
+        phone: $phone
+      }
+    ) {
+      id
+    }
+  }
+`;
+
 const MUTATION_SIGN_OUT = gql`
   mutation SignOut {
     signOut
+  }
+`;
+
+const MUTATION_VERIFY = gql`
+  mutation Verify($userId: UUID!, $phoneCode: NonEmptyString!, $emailCode: NonEmptyString!) {
+    token: verify(userId: $userId, phoneCode: $phoneCode, emailCode: $emailCode)
+  }
+`;
+
+const MUTATION_REVERIFY = gql`
+  mutation ReVerify($userId: UUID!) {
+    reVerify(userId: $userId)
   }
 `;
 
@@ -43,15 +94,18 @@ export class UserService {
 
   public isAuth = this.isAuthSubject.asObservable();
 
-  public constructor(private readonly apollo: Apollo, private readonly tokenService: TokenService) {}
+  public constructor(
+    private readonly apollo: Apollo,
+    private readonly tokenService: TokenService,
+  ) {}
 
   public populate() {
     const token = this.tokenService.getToken();
 
     if (token) {
       this.me().subscribe(
-        (data) => {
-          this.setAuthUser((data as unknown) as User, token);
+        ({ data }) => {
+          this.setAuthUser(token, data.user);
         },
         () => this.removeAuthUser(),
       );
@@ -64,10 +118,12 @@ export class UserService {
     return this.userSubject.value;
   }
 
-  private setAuthUser(user: User, token: string): void {
+  public setAuthUser(token: string, user?: User): void {
     this.tokenService.setToken(token);
-    this.userSubject.next(user);
     this.isAuthSubject.next(true);
+
+    if (user) this.userSubject.next(user);
+    else this.populate();
   }
 
   public removeAuthUser(): void {
@@ -77,7 +133,7 @@ export class UserService {
   }
 
   public me() {
-    return this.apollo.query<User>({ query: QUERY_ME });
+    return this.apollo.query<{ user: User }>({ query: QUERY_ME });
   }
 
   public signIn(username: string, password: string) {
@@ -91,6 +147,14 @@ export class UserService {
     });
   }
 
+  public signUp(data: SignUpValues) {
+    return this.apollo.mutate<{ user: { id: string } }>({
+      mutation: MUTATION_SIGN_UP,
+      errorPolicy: 'all',
+      variables: data,
+    });
+  }
+
   public signOut(): void {
     this.apollo
       .mutate<void>({ mutation: MUTATION_SIGN_OUT, errorPolicy: 'all' })
@@ -98,6 +162,27 @@ export class UserService {
         finalize(() => {
           this.removeAuthUser();
         }),
-      ).subscribe();
+      )
+      .subscribe();
+  }
+
+  public verify(userId: string, phoneCode: string, emailCode: string) {
+    return this.apollo.mutate<{ token: string }>({
+      mutation: MUTATION_VERIFY,
+      errorPolicy: 'all',
+      variables: {
+        userId,
+        phoneCode,
+        emailCode,
+      },
+    });
+  }
+
+  public reVerify(userId: string) {
+    return this.apollo.mutate<void>({
+      mutation: MUTATION_REVERIFY,
+      errorPolicy: 'all',
+      variables: { userId },
+    });
   }
 }

@@ -25,7 +25,7 @@ const GET_PRODUCT = gql`
         createdAt
         author {
           id
-          fullName
+          username
           avatar
         }
       }

@@ -56,7 +56,7 @@
             <div class="uk-width-expand">
               <h4 class="uk-comment-title uk-margin-remove uk-flex uk-flex-middle">
                 <a class="uk-link-reset" [routerLink]="['/users', review.author.id]">
-                  {{ review.author.fullName }}
+                  {{ review.author.username }}
                 </a>
                 <span *ngIf="review.verified" class="uk-label uk-label-success uk-margin-left">
                   <span uk-icon="icon: check"></span>

@@ -8,7 +8,10 @@ import { environment } from '../environments/environment';
 import Swal from 'sweetalert2';
 import { TokenService } from './core';
 
-export function createApollo(httpLink: HttpLink, tokenService: TokenService): ApolloClientOptions<any> {
+export function createApollo(
+  httpLink: HttpLink,
+  tokenService: TokenService,
+): ApolloClientOptions<any> {
   return {
     link: ApolloLink.from([
       setContext(() => ({
@@ -31,6 +34,12 @@ export function createApollo(httpLink: HttpLink, tokenService: TokenService): Ap
         let error: string = 'Unknown Error';
 
         if (graphQLErrors) {
+          if (
+            graphQLErrors.length !== 0 &&
+            graphQLErrors[0].message === 'Verification missing to execute the procedure'
+          )
+            return;
+
           if (graphQLErrors.length !== 0) error = '';
           graphQLErrors.map(({ message, locations, path }) => {
             console.error(

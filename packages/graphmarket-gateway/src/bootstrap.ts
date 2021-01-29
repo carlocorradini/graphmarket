@@ -7,10 +7,10 @@ import { services } from '@app/services';
  * Bootstrap the gateway.
  */
 const bootstrap = async (): Promise<void> => {
-  logger.info(`${services.length} services are available`);
+  logger.debug(`${services.length} services are available`);
   // eslint-disable-next-line no-restricted-syntax
   for (const service of services) {
-    logger.info(`Service ${service.name} at ${service.url}`);
+    logger.debug(`Service ${service.name} at ${service.url}`);
   }
 
   logger.info('Starting the server...');

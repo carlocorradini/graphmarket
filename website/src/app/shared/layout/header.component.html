@@ -1,4 +1,4 @@
-<nav class="uk-navbar-container uk-margin uk-box-shadow-medium" style="z-index: 999;" uk-sticky uk-navbar>
+<nav class="uk-navbar-container uk-margin uk-box-shadow-medium" uk-navbar>
     <div class="uk-navbar-left">
         <a class="uk-navbar-item uk-logo" routerLink="/">
             <img class="logo normal" src="assets/logo.png" alt="logo" />
@@ -7,12 +7,38 @@
     </div>
 
     <div class="uk-navbar-right">
-        <ul class="uk-navbar-nav">
-            <li>
-                <a routerLink="/products" routerLinkActive="uk-active" class="uk-text-bold" >
-                    <span uk-icon="thumbnails"></span>&nbsp;Products
-                </a>
-            </li>
-        </ul>
+        <div class="uk-navbar-item">
+            <a routerLink="/products" class="uk-button uk-button-default">
+                <span uk-icon="thumbnails"></span>
+                Products
+            </a>
+        </div>
+
+        <!-- Not authenticated -->
+        <ng-template [appShowAuth]="false">
+            <div class="uk-navbar-item">
+                <div class="uk-button-group">
+                    <a routerLink="/signin" class="uk-button uk-button-primary">
+                        <span uk-icon="sign-in"></span>
+                        Sign In
+                    </a>
+                    <a routerLink="/signup" class="uk-button uk-button-secondary">
+                        <span uk-icon="plus"></span>
+                        Sign Up
+                    </a>
+                </div>
+
+            </div>
+        </ng-template>
+
+        <!-- Authenticated -->
+        <ng-template [appShowAuth]="true">
+            <div class="uk-navbar-item">
+                <button class="uk-button uk-button-danger" (click)="signOut()">
+                    <span uk-icon="sign-out"></span>
+                    Sign Out
+                </button>
+            </div>
+        </ng-template>
     </div>
 </nav>

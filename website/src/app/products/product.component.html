@@ -45,7 +45,7 @@
   <ng-template [ngIf]="product.reviews.length !== 0" [ngIfElse]="productNoReviews">
     <div *ngFor="let review of product.reviews; let i = index">
       <article class="uk-comment uk-margin-small-bottom">
-        <header class="uk-comment-header">
+        <header class="uk-comment-header uk-margin-small-bottom">
           <div class="uk-grid-medium uk-flex-middle" uk-grid>
             <div class="uk-width-auto">
               <a [routerLink]="['/users', review.author.id]">
@@ -54,10 +54,14 @@
               </a>
             </div>
             <div class="uk-width-expand">
-              <h4 class="uk-comment-title uk-margin-remove">
+              <h4 class="uk-comment-title uk-margin-remove uk-flex uk-flex-middle">
                 <a class="uk-link-reset" [routerLink]="['/users', review.author.id]">
                   {{ review.author.fullName }}
                 </a>
+                <span *ngIf="review.verified" class="uk-label uk-label-success uk-margin-left">
+                  <span uk-icon="icon: check"></span>
+                  Verified
+                </span>
               </h4>
               <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
                 <li>{{ review.createdAt | date: 'MMMM d, y' }}</li>

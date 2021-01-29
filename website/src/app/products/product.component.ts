@@ -9,18 +9,19 @@ const GET_PRODUCT = gql`
   query GetProduct($id: UUID!) {
     product(id: $id) {
       id
-      category,
-      name,
-      description,
-      photos,
-      available,
-      quantity,
+      category
+      name
+      description
+      photos
+      available
+      quantity
       price
-      rating,
+      rating
       reviews {
         title
         body
         rating
+        verified
         createdAt
         author {
           id

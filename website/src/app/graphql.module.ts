@@ -3,12 +3,30 @@ import { APOLLO_OPTIONS } from 'apollo-angular';
 import { ApolloClientOptions, ApolloLink, InMemoryCache } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { onError } from '@apollo/client/link/error';
+import { setContext } from '@apollo/client/link/context';
 import { environment } from '../environments/environment';
 import Swal from 'sweetalert2';
+import { TokenService } from './core';
 
-export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
+export function createApollo(httpLink: HttpLink, tokenService: TokenService): ApolloClientOptions<any> {
   return {
     link: ApolloLink.from([
+      setContext(() => ({
+        headers: {
+          Accept: 'charset=utf-8',
+        },
+      })),
+      setContext(() => {
+        const token = tokenService.getToken();
+
+        if (!token) return {};
+
+        return {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      }),
       onError(({ graphQLErrors, networkError }) => {
         let error: string = 'Unknown Error';
 
@@ -46,10 +64,11 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
 
 @NgModule({
   providers: [
+    TokenService,
     {
       provide: APOLLO_OPTIONS,
       useFactory: createApollo,
-      deps: [HttpLink],
+      deps: [HttpLink, TokenService],
     },
   ],
 })

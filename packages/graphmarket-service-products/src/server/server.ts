@@ -21,6 +21,7 @@ import {
   resolveProductReference,
   ReviewProductResolver,
 } from '@app/resolvers';
+import { URL } from 'url';
 
 /**
  * Federated GraphQL schema.
@@ -78,8 +79,10 @@ const listen = (port: number): Promise<AddressInfo> =>
  *
  * @returns Database connection
  */
-const connectDatabase = (): Promise<Connection> =>
-  createConnection(<ConnectionOptions>{
+const connectDatabase = (): Promise<Connection> => {
+  const redisURL = new URL(config.REDIS.URL);
+
+  return createConnection(<ConnectionOptions>{
     type: config.DATABASE.TYPE,
     url: config.DATABASE.URL,
     extra: {
@@ -91,9 +94,14 @@ const connectDatabase = (): Promise<Connection> =>
     entities: [Product, Inventory, User, Purchase, Review],
     cache: {
       type: 'ioredis',
-      port: config.REDIS.URL,
+      options: {
+        host: redisURL.hostname,
+        port: redisURL.port,
+        password: redisURL.password,
+      },
     },
   });
+};
 
 /**
  * Initialize the adapters used in the service.

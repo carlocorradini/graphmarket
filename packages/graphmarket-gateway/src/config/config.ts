@@ -25,7 +25,7 @@ const config: IConfigGateway = {
   },
   SERVICES: {
     AUTHENTICATIONS: {
-      URL: env.SERVICE_AUTHENTICATIONS_URL,
+      URL: env.SERVICES_AUTHENTICATIONS_URL,
     },
     USERS: {
       URL: env.SERVICES_USERS_URL,

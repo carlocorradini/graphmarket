@@ -18,6 +18,7 @@ import {
   UserPurchaseResolver,
 } from '@app/resolvers';
 import config from '@app/config';
+import { URL } from 'url';
 
 /**
  * Federated GraphQL schema.
@@ -66,8 +67,10 @@ const listen = (port: number): Promise<AddressInfo> =>
  *
  * @returns Database connection
  */
-const connectDatabase = (): Promise<Connection> =>
-  createConnection(<ConnectionOptions>{
+const connectDatabase = (): Promise<Connection> => {
+  const redisURL = new URL(config.REDIS.URL);
+
+  return createConnection(<ConnectionOptions>{
     type: config.DATABASE.TYPE,
     url: config.DATABASE.URL,
     extra: {
@@ -79,8 +82,13 @@ const connectDatabase = (): Promise<Connection> =>
     entities: [Purchase, User, Inventory, Product, Review],
     cache: {
       type: 'ioredis',
-      port: config.REDIS.URL,
+      options: {
+        host: redisURL.hostname,
+        port: redisURL.port,
+        password: redisURL.password,
+      },
     },
   });
+};
 
 export default { listen, connectDatabase };

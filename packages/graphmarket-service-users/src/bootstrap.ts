@@ -7,16 +7,19 @@ import server from '@app/server';
  * Bootstrap the users service.
  */
 const bootstrap = async () => {
+  logger.info('Initializing adapters...');
   await server.initAdapters();
   logger.info(`Adapters initialized`);
 
+  logger.info('Connecting database...');
   await server.connectDatabase();
   logger.info(`Database connected`);
 
+  logger.info('Starting the server...');
   const serverInfo = await server.listen(config.NODE.PORT);
   logger.info(`Listening at ${serverInfo.address} on port ${serverInfo.port}`);
 
-  logger.info('Bootstrap successfully');
+  logger.info('Bootstrap successful');
 };
 
 bootstrap().catch((error) => {

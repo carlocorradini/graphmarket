@@ -1,11 +1,6 @@
 import { Arg, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 import { Service, Inject } from 'typedi';
-import {
-  GraphQLBoolean,
-  GraphQLNonEmptyString,
-  GraphQLUUID,
-  GraphQLVoid,
-} from '@graphmarket/graphql-scalars';
+import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import { AuthenticationService } from '@app/services';
 

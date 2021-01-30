@@ -15,7 +15,7 @@
         </div>
 
         <!-- Not authenticated -->
-        <ng-template [appShowAuth]="false">
+        <ng-template [ngIf]="!isAuth">
             <div class="uk-navbar-item">
                 <div class="uk-button-group">
                     <a routerLink="/signin" class="uk-button uk-button-primary">
@@ -31,7 +31,7 @@
         </ng-template>
 
         <!-- Authenticated -->
-        <ng-template [appShowAuth]="true">
+        <ng-template [ngIf]="isAuth">
             <hr class="uk-divider-vertical">
             <div class="uk-navbar-item">
                 <ul class="uk-navbar-nav">
@@ -40,6 +40,8 @@
                             <img class="uk-border-rounded" [src]="user?.avatar" width="38" height="38"
                                 [alt]="user?.username">&nbsp;&nbsp;
                             <span class="uk-text-middle uk-text-bold">{{ user?.username }}</span>
+                            &nbsp;
+                            <span uk-icon="triangle-down"></span>
                         </a>
                         <div class="uk-navbar-dropdown" uk-dropdown="mode: click">
                             <ul class="uk-nav uk-navbar-dropdown-nav">

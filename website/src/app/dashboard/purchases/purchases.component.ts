@@ -24,7 +24,7 @@ const QUERY_PURCHASES = gql`
   templateUrl: './purchases.component.html',
 })
 export class PurchasesComponent {
-  public static readonly DEFAULT_TAKE: number = 2;
+  public static readonly DEFAULT_TAKE: number = 8;
 
   public purchases: Purchase[];
 
@@ -81,7 +81,7 @@ export class PurchasesComponent {
         }
 
         return Object.assign({}, prev, {
-          products: [...prev.purchases, ...fetchMoreResult.purchases],
+          purchases: [...prev.purchases, ...fetchMoreResult.purchases],
         });
       },
     });

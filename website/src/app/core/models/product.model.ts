@@ -1,3 +1,4 @@
+import { Inventory } from "./inventory.model";
 import { Review } from "./review.model";
 
 export enum ProductCategories {
@@ -47,4 +48,5 @@ export interface Product {
   price?: number;
   rating: string;
   reviews: Review[];
+  inventories: Inventory[];
 }

@@ -12,11 +12,19 @@ import { UserService, User } from 'src/app/core';
 export class HeaderComponent implements OnInit {
   public user?: User;
 
-  public constructor(private readonly router: Router, private readonly userService: UserService) {}
+  public isAuth: boolean;
+
+  public constructor(private readonly router: Router, private readonly userService: UserService) {
+    this.user = undefined;
+    this.isAuth = false;
+  }
 
   public ngOnInit() {
     this.userService.user.subscribe((user) => {
       this.user = user;
+    });
+    this.userService.isAuth.subscribe((isAuth) => {
+      this.isAuth = isAuth;
     });
   }
 

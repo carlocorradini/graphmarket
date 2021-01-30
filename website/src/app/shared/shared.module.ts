@@ -1,8 +1,4 @@
 import { NgModule } from '@angular/core';
-import { ShowAuthDirective } from './show-auth.directive';
 
-@NgModule({
-  declarations: [ShowAuthDirective],
-  exports: [ShowAuthDirective],
-})
+@NgModule()
 export class SharedModule {}

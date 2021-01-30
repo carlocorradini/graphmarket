@@ -1,9 +1,17 @@
 /* eslint-disable class-methods-use-this */
 import { Service } from 'typedi';
-import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
+import {
+  EntityManager,
+  FindOperator,
+  LessThanOrEqual,
+  MoreThan,
+  Transaction,
+  TransactionManager,
+} from 'typeorm';
 import { Inventory } from '@graphmarket/entities';
-import { PaginationArgs } from '@graphmarket/graphql-args';
 import logger from '@graphmarket/logger';
+import { FindInventoryArgs } from '@app/args';
+import { InventoryStock } from '@app/args/FindInventoriesArgs';
 
 /**
  * Inventory service.
@@ -12,6 +20,27 @@ import logger from '@graphmarket/logger';
  */
 @Service()
 export default class InventoryService {
+  /**
+   * Convert the stock enum into a find operator.
+   *
+   * @param stock - The stock to convert
+   * @returns Find operator for the stock
+   */
+  private stockToQuantity(stock: InventoryStock | undefined): FindOperator<number> | undefined {
+    let quantity: FindOperator<number> | undefined = undefined;
+
+    switch (stock) {
+      case InventoryStock.IN_STOCK:
+        quantity = MoreThan(0);
+        break;
+      case InventoryStock.OUT_OF_STOCK:
+        quantity = LessThanOrEqual(0);
+        break;
+    }
+
+    return quantity;
+  }
+
   /**
    * Create a new inventory.
    *
@@ -82,13 +111,20 @@ export default class InventoryService {
    */
   @Transaction()
   public read(
-    options: Pick<FindManyOptions, 'skip' | 'take'> = {
-      skip: PaginationArgs.DEFAULT_SKIP,
-      take: PaginationArgs.DEFAULT_TAKE,
-    },
+    { skip, take, stock }: FindInventoryArgs,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Inventory[]> {
-    return manager!.find(Inventory, { ...options, cache: true });
+    const quantity = this.stockToQuantity(stock);
+
+    return manager!.find(Inventory, {
+      where: {
+        ...(quantity && { quantity }),
+      },
+      skip,
+      take,
+      order: { condition: 'ASC', price: 'ASC' },
+      cache: true,
+    });
   }
 
   /**
@@ -102,13 +138,17 @@ export default class InventoryService {
   @Transaction()
   public readByProduct(
     productId: string,
-    options: Pick<FindManyOptions, 'skip' | 'take'> = {
-      skip: PaginationArgs.DEFAULT_SKIP,
-      take: PaginationArgs.DEFAULT_TAKE,
-    },
+    { skip, take, stock }: FindInventoryArgs,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Inventory[]> {
-    return manager!.find(Inventory, { ...options, where: { product: { id: productId } } });
+    const quantity = this.stockToQuantity(stock);
+
+    return manager!.find(Inventory, {
+      where: { product: { id: productId }, ...(quantity && { quantity }) },
+      skip,
+      take,
+      order: { condition: 'ASC', price: 'ASC' },
+    });
   }
 
   /**
@@ -122,13 +162,17 @@ export default class InventoryService {
   @Transaction()
   public readBySeller(
     sellerId: string,
-    options: Pick<FindManyOptions, 'skip' | 'take'> = {
-      skip: PaginationArgs.DEFAULT_SKIP,
-      take: PaginationArgs.DEFAULT_TAKE,
-    },
+    { skip, take, stock }: FindInventoryArgs,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Inventory[]> {
-    return manager!.find(Inventory, { ...options, where: { seller: { id: sellerId } } });
+    const quantity = this.stockToQuantity(stock);
+
+    return manager!.find(Inventory, {
+      where: { seller: { id: sellerId }, ...(quantity && { quantity }) },
+      skip,
+      take,
+      order: { condition: 'ASC', price: 'ASC' },
+    });
   }
 
   /**

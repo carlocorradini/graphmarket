@@ -1,0 +1,64 @@
+<div class="uk-section uk-flex uk-flex-middle" uk-height-match>
+  <div class="uk-width-1-1">
+    <div class="uk-container">
+      <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+        <div class="uk-width-1-1@m">
+          <div class="uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+            <h3 class="uk-card-title uk-text-center">Account verification!</h3>
+
+            <div class="uk-alert-primary" uk-alert>
+              <a class="uk-alert-close" uk-close></a>
+              <p>
+                <span uk-icon="info"></span>
+                Enter the 6-digit codes (OTP) sent by message and by e-mail
+              </p>
+            </div>
+
+            <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()" ngNativeValidate>
+
+              <div class="uk-margin">
+                <label class="uk-form-label">
+                  Phone OTP <span class="uk-text-danger uk-text-bold">*</span>
+                </label>
+                <div class="uk-inline uk-width-1-1">
+                  <span class="uk-form-icon" uk-icon="hashtag"></span>
+                  <input formControlName="phoneCode" class="uk-input uk-form-large" type="text" placeholder="Phone code"
+                    required minlength="6" maxlength="6" pattern="[0-9]{6}" />
+                </div>
+              </div>
+
+              <div class="uk-margin">
+                <label class="uk-form-label">
+                  E-mail OTP <span class="uk-text-danger uk-text-bold">*</span>
+                </label>
+                <div class="uk-inline uk-width-1-1">
+                  <span class="uk-form-icon" uk-icon="hashtag"></span>
+                  <input formControlName="emailCode" class="uk-input uk-form-large" type="text"
+                    placeholder="E-mail code" required minlength="6" maxlength="6" pattern="[0-9]{6}" />
+                </div>
+              </div>
+
+              <div class="uk-text-small uk-text-meta">
+                <span class="uk-text-danger uk-text-bold">*</span> required field
+              </div>
+
+              <div class="uk-margin">
+                <button type="submit" class="uk-button uk-button-large uk-button-danger uk-width-1-1">
+                  <span uk-icon="check"></span>
+                  Verify
+                </button>
+              </div>
+            </form>
+
+            <hr class="uk-divider-icon">
+
+            <button class="uk-button uk-button-small uk-width-1-1" (click)="resend()">
+              <span uk-icon="refresh"></span>
+              Resend verification codes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

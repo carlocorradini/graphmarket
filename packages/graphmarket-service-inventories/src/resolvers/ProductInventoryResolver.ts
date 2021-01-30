@@ -3,6 +3,7 @@ import { Inject, Service } from 'typedi';
 import { Inventory, ProductExternal } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
 import { InventoryService } from '@app/services';
+import { GraphQLBoolean, GraphQLNonNegativeInt, GraphQLPrice } from '@graphmarket/graphql-scalars';
 
 /**
  * Product inventory resolver.
@@ -31,5 +32,45 @@ export default class ProductInventoryResolver {
     @Args() { skip, take }: PaginationArgs,
   ): Promise<Inventory[]> {
     return this.inventoryService.readByProduct(product.id, { skip, take });
+  }
+
+  /**
+   * Resolves if the product is available.
+   *
+   * @param product - Product to obtain the availability of
+   * @returns True if the product is available in the inventories
+   */
+  @FieldResolver(() => GraphQLBoolean, {
+    description: `Boolean flag that checks if the product is available in at least one inventory. The quantity must be greater than 0`,
+  })
+  async available(@Root() product: ProductExternal): Promise<boolean> {
+    return (await this.inventoryService.quantityByProduct(product.id)) > 0;
+  }
+
+  /**
+   * Resolves the total quantity of the product in the inventories.
+   *
+   * @param product - Product to obtain the total quantity of
+   * @returns Total quantity of the product available in the inventories
+   */
+  @FieldResolver(() => GraphQLNonNegativeInt, {
+    description: `Total quantity of the product available from the inventories`,
+  })
+  quantity(@Root() product: ProductExternal): Promise<number> {
+    return this.inventoryService.quantityByProduct(product.id);
+  }
+
+  /**
+   * Resolves the best selling price of the product from the available inventories.
+   *
+   * @param product - Product to obtain the best price of
+   * @returns Best price of the product available in the inventories
+   */
+  @FieldResolver(() => GraphQLPrice, {
+    nullable: true,
+    description: `Best selling price of the product from the available inventories.`,
+  })
+  price(@Root() product: ProductExternal): Promise<number | undefined> {
+    return this.inventoryService.priceByProduct(product.id);
   }
 }

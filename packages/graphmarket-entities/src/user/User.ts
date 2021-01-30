@@ -65,7 +65,7 @@ export default class User {
    * User's roles.
    */
   @Column({ type: 'enum', enum: UserRoles, array: true, default: [UserRoles.USER] })
-  @Field(() => [UserRoles])
+  @Field(() => [UserRoles], { description: `User's roles` })
   roles!: UserRoles[];
 
   /**

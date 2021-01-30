@@ -1,0 +1,99 @@
+<ng-template [ngIf]="!loading && !error && product">
+
+  <div class="uk-grid-column-small uk-child-width-1-2@m" uk-grid>
+    <div>
+      <div id="product-slideshow" uk-slideshow="autoplay: true; animation: push; ratio: 1:1">
+        <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1">
+          <ul class="uk-slideshow-items">
+            <ng-template [ngIf]="product.photos.length !== 0" [ngIfElse]="productNoPhotos">
+              <li *ngFor="let photo of product.photos; let i = index">
+                <img [src]="photo" alt="Photo {{ i }}" uk-cover>
+              </li>
+            </ng-template>
+            <ng-template #productNoPhotos>
+              <li>
+                <img
+                  src="https://res.cloudinary.com/dxiqa0xwa/image/upload/v1609604389/graphmarket/product/photo/product.png"
+                  alt="No photo available" uk-cover>
+              </li>
+            </ng-template>
+          </ul>
+
+          <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous
+            uk-slideshow-item="previous"></a>
+          <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next
+            uk-slideshow-item="next"></a>
+        </div>
+
+        <ul class="uk-slideshow-nav uk-dotnav uk-flex-center uk-margin"></ul>
+      </div>
+    </div>
+
+    <div>
+      <h1 class="uk-heading-bullet uk-heading-medium">{{ product.name }}</h1>
+      <h3 class="uk-text-light">{{ product.description }}</h3>
+      <p class="uk-text-bold uk-text-large">{{ product.price }} $</p>
+      <div class="uk-display-block">
+        <star-rating class="uk-display-inline-block" [starType]="'svg'" [rating]="product.rating" [step]="0.5"
+          [numOfStars]="5" [readOnly]="true" [showHalfStars]="true" [disabled]="product.rating === 0 ? true : false"
+          staticColor="ok"></star-rating>
+      </div>
+    </div>
+  </div>
+
+  <h1 class="uk-heading-line"><span><span uk-icon="icon: commenting; ratio: 2"></span> Reviews</span></h1>
+  <ng-template [ngIf]="product.reviews.length !== 0" [ngIfElse]="productNoReviews">
+    <div *ngFor="let review of product.reviews; let i = index">
+      <article class="uk-comment uk-margin-small-bottom">
+        <header class="uk-comment-header uk-margin-small-bottom">
+          <div class="uk-grid-medium uk-flex-middle" uk-grid>
+            <div class="uk-width-auto">
+              <a [routerLink]="['/user', review.author.id]">
+                <img class="uk-comment-avatar" [src]="review.author.avatar" width="45" height="45"
+                  alt="review.author.fullName">
+              </a>
+            </div>
+            <div class="uk-width-expand">
+              <h4 class="uk-comment-title uk-margin-remove uk-flex uk-flex-middle">
+                <a class="uk-link-reset" [routerLink]="['/user', review.author.id]">
+                  {{ review.author.username }}
+                </a>
+                <span *ngIf="review.verified" class="uk-label uk-label-success uk-margin-left">
+                  <span uk-icon="icon: check"></span>
+                  Verified
+                </span>
+              </h4>
+              <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                <li>{{ review.createdAt | date: 'MMMM d, y' }}</li>
+                <li>
+                  <star-rating class="uk-display-inline-block" [starType]="'svg'" [rating]="review.rating"
+                    [numOfStars]="5" [readOnly]="true" staticColor="ok"></star-rating>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </header>
+        <div class="uk-comment-body">
+          <p>
+            <span *ngIf="review.title" class="uk-display-block">
+              {{ review.title }}
+            </span>
+            <span *ngIf="review.body" class="uk-text-meta uk-text-small uk-display-block">
+              {{ review.body }}
+            </span>
+          </p>
+        </div>
+      </article>
+
+      <hr *ngIf="i !== product.reviews.length - 1" class="uk-divider-small">
+    </div>
+  </ng-template>
+  <ng-template #productNoReviews>
+    <div class="uk-alert-primary" uk-alert>
+      <p>
+        <span uk-icon="info"></span>
+        No reviews available
+      </p>
+    </div>
+  </ng-template>
+</ng-template>

@@ -1,6 +1,6 @@
 {
   "name": "@graphmarket/utils",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Graph Market utilities",
   "license": "MIT",
   "main": "build/index.js",

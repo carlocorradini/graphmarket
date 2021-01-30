@@ -135,4 +135,31 @@ export default class PurchaseService {
       .limit(options.take)
       .getMany();
   }
+
+  /**
+   * Check if the review is verified.
+   * A review is verified if the author has bought the product at least one time.
+   *
+   * @param reviewId - Review id
+   * @param manager - Transaction manager
+   * @returns True if verified, false otherwise
+   */
+  @Transaction()
+  public async verifiedByReview(
+    reviewId: string,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<boolean> {
+    const count = await manager!
+      .createQueryBuilder(Purchase, 'purchase')
+      .innerJoin('purchase.inventory', 'inventory')
+      .innerJoin(
+        'review',
+        'review',
+        'review.product_id = inventory.product_id AND review.author_id = purchase.user_id AND review.id = :reviewId',
+        { reviewId },
+      )
+      .getCount();
+
+    return count > 0;
+  }
 }

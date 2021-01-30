@@ -64,6 +64,6 @@ export default class UserCreateInput implements Partial<User> {
    * User's phone.
    */
   @Field(() => GraphQLPhoneNumber, { description: `User's phone number` })
-  @IsPhoneNumber(null)
+  @IsPhoneNumber()
   phone!: string;
 }

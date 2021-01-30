@@ -3,6 +3,12 @@
 @import 'components/import.scss';
 
 /* UIKit */
-@import "variables-theme.scss";
-@import "mixins-theme.scss";
-@import "uikit-theme.scss";
+@import 'variables-theme.scss';
+@import 'mixins-theme.scss';
+@import 'uikit-theme.scss';
+
+/* Star Rating */
+@import '~css-star-rating/css/star-rating.min.css';
+
+/* Toastr */
+@import '~ngx-toastr/toastr';

@@ -1,8 +1,17 @@
-import { Arg, Args, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Authorized,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { UserRoles, Product } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
-import { GraphQLUUID } from '@graphmarket/graphql-scalars';
+import { GraphQLURL, GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { ProductCreateInput, ProductUpdateInput } from '@app/inputs';
 import { ProductService } from '@app/services';
 
@@ -20,6 +29,21 @@ export default class ProductResolver {
    */
   @Inject()
   private readonly productService!: ProductService;
+
+  /**
+   * Resolves the cover of the product.
+   *
+   * @param product - Product to obtain the cover of
+   * @returns Cover of the product
+   */
+  @FieldResolver(() => GraphQLURL, {
+    nullable: true,
+    description: `Product's cover.It is the first image of the available photos`,
+  })
+  // eslint-disable-next-line class-methods-use-this
+  async cover(@Root() product: Product): Promise<string | undefined> {
+    return product.photos.length !== 0 ? product.photos[0] : undefined;
+  }
 
   /**
    * Create a new product from the given data.

@@ -6,6 +6,7 @@ import { environment as commonEnvironment } from './environment.common';
 export const environment = {
   ...commonEnvironment,
   production: false,
+  apiURI: 'http://localhost:8080/graphql',
 };
 
 /*

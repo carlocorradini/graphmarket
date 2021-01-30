@@ -91,7 +91,7 @@ export default class ReviewService {
     },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review[]> {
-    return manager!.find(Review, { ...options, cache: true });
+    return manager!.find(Review, { ...options, order: { createdAt: 'DESC' }, cache: true });
   }
 
   /**
@@ -110,7 +110,11 @@ export default class ReviewService {
     },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review[]> {
-    return manager!.find(Review, { ...options, where: { product: { id: productId } } });
+    return manager!.find(Review, {
+      ...options,
+      where: { product: { id: productId } },
+      order: { createdAt: 'DESC' },
+    });
   }
 
   /**
@@ -130,7 +134,11 @@ export default class ReviewService {
     },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review[]> {
-    return manager!.find(Review, { ...options, where: { author: { id: authorId } } });
+    return manager!.find(Review, {
+      ...options,
+      where: { author: { id: authorId } },
+      order: { createdAt: 'DESC' },
+    });
   }
 
   /**

@@ -1,11 +1,6 @@
 import { Arg, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 import { Service, Inject } from 'typedi';
-import {
-  GraphQLBoolean,
-  GraphQLNonEmptyString,
-  GraphQLUUID,
-  GraphQLVoid,
-} from '@graphmarket/graphql-scalars';
+import { GraphQLNonEmptyString, GraphQLUUID, GraphQLVoid } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import { AuthenticationService } from '@app/services';
 
@@ -27,18 +22,31 @@ export default class AuthenticationResolver {
   /**
    * Verify a user.
    *
-   * @param id - User's id
+   * @param userId - User's id
    * @param emailCode - Email code
    * @param phoneCode - Phone code
-   * @returns Verified user
+   * @returns Encoded authentication token
    */
-  @Mutation(() => GraphQLBoolean, { description: `Verify a user` })
+  @Mutation(() => GraphQLNonEmptyString, { description: `Verify a user` })
   verify(
-    @Arg('id', () => GraphQLUUID) id: string,
+    @Arg('userId', () => GraphQLUUID) userId: string,
     @Arg('emailCode', () => GraphQLNonEmptyString) emailCode: string,
     @Arg('phoneCode', () => GraphQLNonEmptyString) phoneCode: string,
-  ): Promise<boolean> {
-    return this.authenticationService.verify(id, emailCode, phoneCode);
+  ): Promise<string> {
+    return this.authenticationService.verify(userId, emailCode, phoneCode);
+  }
+
+  /**
+   * Resend verification codes to the user identified by userId.
+   *
+   * @param userId - User id
+   */
+  @Mutation(() => GraphQLVoid, {
+    nullable: true,
+    description: `Resend verification codes to the user`,
+  })
+  async reVerify(@Arg('userId', () => GraphQLUUID) userId: string): Promise<void> {
+    await this.authenticationService.resend(userId);
   }
 
   /**

@@ -13,15 +13,11 @@ import {
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
-import {
-  GraphQLDateTime,
-  GraphQLID,
-  GraphQLNonNegativeInt,
-  GraphQLPositiveInt,
-} from '@graphmarket/graphql-scalars';
+import { GraphQLDateTime, GraphQLID, GraphQLNonNegativeInt } from '@graphmarket/graphql-scalars';
 import { Product, ProductConditions } from '@app/product';
 import { User } from '@app/user';
 import { Purchase } from '@app/purchase';
+import { GraphQLPrice } from '../../../graphmarket-graphql-scalars/build';
 
 /**
  * Inventory entity.
@@ -44,7 +40,7 @@ export default class Inventory {
    * Product's price in cents.
    */
   @Column({ type: 'integer' })
-  @Field(() => GraphQLPositiveInt, { description: `Product's price in cents` })
+  @Field(() => GraphQLPrice, { description: `Product's price in cents` })
   price!: number;
 
   /**

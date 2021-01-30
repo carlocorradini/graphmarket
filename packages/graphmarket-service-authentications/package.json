@@ -33,6 +33,7 @@
     "@graphmarket/interfaces": "^1.0.1",
     "@graphmarket/logger": "^1.0.1",
     "@graphmarket/utils": "^1.0.1",
+    "class-validator": "^0.13.1",
     "convert-units": "^2.3.4",
     "envalid": "^6.0.2",
     "ioredis": "^4.19.4",

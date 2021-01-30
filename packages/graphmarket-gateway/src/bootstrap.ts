@@ -1,7 +1,7 @@
 import logger from '@graphmarket/logger';
 import config from '@app/config';
 import { server } from '@app/server';
-import { services } from '@app/services';
+import { healthChecks, services } from '@app/services';
 
 /**
  * Bootstrap the gateway.
@@ -12,6 +12,10 @@ const bootstrap = async (): Promise<void> => {
   for (const service of services) {
     logger.debug(`Service ${service.name} at ${service.url}`);
   }
+
+  logger.info('Starting health checks...');
+  await healthChecks();
+  logger.info('Health checks completed');
 
   logger.info('Starting the server...');
   const serverInfo = await server.listen(config.NODE.PORT);

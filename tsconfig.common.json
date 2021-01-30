@@ -2,14 +2,17 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
-    "lib": ["ESNext", "ESNext.asynciterable"],
+    "lib": [
+      "ESNext",
+      "ESNext.asynciterable"
+    ],
     "allowJs": true,
     "checkJs": true,
     "declaration": true,
     "declarationMap": false,
     "sourceMap": false,
     "outDir": "build",
-    "removeComments": true,
+    "removeComments": false,
     "strict": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
@@ -19,7 +22,10 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
-    "typeRoots": ["node_modules/@types", "src/typings"],
+    "typeRoots": [
+      "node_modules/@types",
+      "src/typings"
+    ],
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
@@ -28,7 +34,9 @@
     "emitDeclarationOnly": false,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@app/*": ["src/*"]
+      "@app/*": [
+        "src/*"
+      ]
     },
     "plugins": [
       {

@@ -4,10 +4,10 @@ import { Apollo, gql } from 'apollo-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
 import Swal from 'sweetalert2';
-import { Inventory, Product, PurchaseService, UserService } from '../core';
+import { Inventory, Product, PurchaseService, Review, UserService } from '../core';
 
-const GET_PRODUCT = gql`
-  query GetProduct($id: UUID!) {
+const QUERY_PRODUCT = gql`
+  query QueryProduct($id: UUID!) {
     product(id: $id) {
       id
       category
@@ -40,11 +40,32 @@ const GET_PRODUCT = gql`
   }
 `;
 
+const QUERY_REVIEWS = gql`
+  query QueryReviews($id: UUID!, $skip: NonNegativeInt, $take: PositiveInt) {
+    product: product(id: $id) {
+      reviews(skip: $skip, take: $take) {
+        title
+        body
+        rating
+        verified
+        createdAt
+        author {
+          id
+          username
+          avatar
+        }
+      }
+    }
+  }
+`;
+
 @Component({
   selector: 'app-product-page',
   templateUrl: './product.component.html',
 })
 export class ProductComponent implements OnInit {
+  public static readonly DEFAULT_REVIEWS_TAKE: number = 8;
+
   public product: Product | undefined;
 
   public inventory: Inventory | undefined;
@@ -79,7 +100,7 @@ export class ProductComponent implements OnInit {
 
     this.apollo
       .query<{ product: Product }>({
-        query: GET_PRODUCT,
+        query: QUERY_PRODUCT,
         errorPolicy: 'all',
         variables: {
           id: productId,
@@ -90,9 +111,10 @@ export class ProductComponent implements OnInit {
           this.spinner.hide();
           this.loading = loading;
           this.product = data.product;
-          if (this.product.inventories.length > 0) this.inventory = this.product.inventories[0];
 
           if (!this.product) this.showProductNotFound(productId);
+          else if (this.product.inventories.length > 0)
+            this.inventory = this.product.inventories[0];
         },
         error: () => {
           this.spinner.hide();
@@ -156,5 +178,33 @@ export class ProductComponent implements OnInit {
           }
         });
     });
+  }
+
+  public fetchMoreReviews() {
+    this.spinner.show();
+
+    this.apollo
+      .query<{ product: { reviews: Review[] } }>({
+        query: QUERY_REVIEWS,
+        errorPolicy: 'all',
+        variables: {
+          id: this.product?.id,
+          skip: this.product?.reviews.length,
+          take: ProductComponent.DEFAULT_REVIEWS_TAKE,
+        },
+      })
+      .pipe(
+        finalize(() => {
+          this.spinner.hide();
+        }),
+      )
+      .subscribe(({ data }) => {
+        if (!this.product) return;
+
+        this.product = {
+          ...this.product,
+          reviews: [...this.product.reviews, ...data.product.reviews],
+        };
+      });
   }
 }

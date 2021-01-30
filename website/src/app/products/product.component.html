@@ -48,14 +48,14 @@
         <header class="uk-comment-header uk-margin-small-bottom">
           <div class="uk-grid-medium uk-flex-middle" uk-grid>
             <div class="uk-width-auto">
-              <a [routerLink]="['/users', review.author.id]">
+              <a [routerLink]="['/user', review.author.id]">
                 <img class="uk-comment-avatar" [src]="review.author.avatar" width="45" height="45"
                   alt="review.author.fullName">
               </a>
             </div>
             <div class="uk-width-expand">
               <h4 class="uk-comment-title uk-margin-remove uk-flex uk-flex-middle">
-                <a class="uk-link-reset" [routerLink]="['/users', review.author.id]">
+                <a class="uk-link-reset" [routerLink]="['/user', review.author.id]">
                   {{ review.author.username }}
                 </a>
                 <span *ngIf="review.verified" class="uk-label uk-label-success uk-margin-left">

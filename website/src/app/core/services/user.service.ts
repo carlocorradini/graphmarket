@@ -24,8 +24,25 @@ const QUERY_ME = gql`
       roles
       name
       surname
+      dateOfBirth
+      fullName
+      email
+      phone
+      avatar
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const QUERY_USER = gql`
+  query User($id: UUID!) {
+    user: user(id: $id) {
+      id
+      username
       fullName
       avatar
+      createdAt
     }
   }
 `;
@@ -133,7 +150,15 @@ export class UserService {
   }
 
   public me() {
-    return this.apollo.query<{ user: User }>({ query: QUERY_ME });
+    return this.apollo.query<{ user: User }>({ query: QUERY_ME, errorPolicy: 'all' });
+  }
+
+  public userById(userId: string) {
+    return this.apollo.query<{ user?: User }>({
+      query: QUERY_USER,
+      errorPolicy: 'all',
+      variables: { id: userId },
+    });
   }
 
   public signIn(username: string, password: string) {

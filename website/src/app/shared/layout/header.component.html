@@ -27,17 +27,47 @@
                         Sign Up
                     </a>
                 </div>
-
             </div>
         </ng-template>
 
         <!-- Authenticated -->
         <ng-template [appShowAuth]="true">
+            <hr class="uk-divider-vertical">
             <div class="uk-navbar-item">
-                <button class="uk-button uk-button-danger" (click)="signOut()">
-                    <span uk-icon="sign-out"></span>
-                    Sign Out
-                </button>
+                <ul class="uk-navbar-nav">
+                    <li>
+                        <a>
+                            <img class="uk-border-rounded" [src]="user?.avatar" width="38" height="38"
+                                [alt]="user?.username">&nbsp;&nbsp;
+                            <span class="uk-text-middle uk-text-bold">{{ user?.username }}</span>
+                        </a>
+                        <div class="uk-navbar-dropdown" uk-dropdown="mode: click">
+                            <ul class="uk-nav uk-navbar-dropdown-nav">
+                                <li>
+                                    <a routerLink="/dashboard">
+                                        <span uk-icon="settings"></span>
+                                        &nbsp;
+                                        Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                    <a routerLink="/dashboard/profile">
+                                        <img class="uk-border-rounded" [src]="user?.avatar" width="24" height="24"
+                                            [alt]="user?.username">&nbsp;
+                                        <span class="uk-text-middle">Profile</span>
+                                    </a>
+                                </li>
+                                <li class="uk-nav-divider"></li>
+                                <li>
+                                    <button class="uk-button uk-button-danger" (click)="signOut()">
+                                        <span uk-icon="sign-out"></span>
+                                        Sign Out
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </ng-template>
     </div>

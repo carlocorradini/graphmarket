@@ -83,8 +83,13 @@ export interface User {
   id: string;
   username: string;
   roles: UserRoles[];
-  name: string;
-  surname: string;
-  fullName: string;
+  name?: string;
+  surname?: string;
+  dateOfBirth?: Date;
+  fullName?: string;
   avatar: string;
+  createdAt: Date;
+  updatedAt: Date;
+  email?: string;
+  phone?: string;
 }

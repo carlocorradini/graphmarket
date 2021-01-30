@@ -11,7 +11,7 @@ import {
 } from 'type-graphql';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { Inject, Service } from 'typedi';
-import { User } from '@graphmarket/entities';
+import { User, UserRoles } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
 import { GraphQLNonEmptyString, GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
@@ -75,7 +75,6 @@ export default class UserResolver {
    * @returns User that match the id
    */
   @Query(() => User, { nullable: true, description: `Return the user that matches the id` })
-  @Authorized()
   user(@Arg('id', () => GraphQLUUID) id: string): Promise<User | undefined> {
     return this.userService.readOne(id);
   }
@@ -87,7 +86,7 @@ export default class UserResolver {
    * @returns All available users
    */
   @Query(() => [User], { description: `Return all users` })
-  @Authorized()
+  @Authorized(UserRoles.ADMINISTRATOR)
   users(@Args() { skip, take }: PaginationArgs): Promise<User[]> {
     return this.userService.read({ skip, take });
   }

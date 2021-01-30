@@ -1,0 +1,32 @@
+<div class="uk-section uk-flex uk-flex-middle" uk-height-match>
+  <div class="uk-width-1-1">
+    <div class="uk-container">
+      <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+        <div class="uk-width-1-1@m">
+          <div class="uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+
+            <div class="uk-card uk-card-default uk-width-1-1">
+              <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                  <div class="uk-width-auto">
+                    <img class="uk-border-circle" width="40" height="40" [src]="user?.avatar" [alt]=user?.username>
+                  </div>
+                  <div class="uk-width-expand">
+                    <h3 class="uk-card-title uk-margin-remove-bottom">{{ user?.username }}</h3>
+                    <p class="uk-text-meta uk-margin-remove-top">
+                      {{ user?.createdAt }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="uk-card-body">
+                <p>{{ user?.fullName ? user?.fullName : 'Unknown full name' }}</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

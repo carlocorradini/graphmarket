@@ -39,7 +39,7 @@
       </tr>
       <tr>
         <td>Date of birth</td>
-        <td>{{ user?.dateOfBirth ? user?.dateOfBirth : 'Unknown' }}</td>
+        <td>{{ user?.dateOfBirth ? (user?.dateOfBirth | date: 'MMMM d, y') : 'Unknown' }}</td>
       </tr>
       <tr>
         <td>Email</td>
@@ -51,11 +51,11 @@
       </tr>
       <tr>
         <td>Created at</td>
-        <td>{{ user?.createdAt ? user?.createdAt : 'Unknown' }}</td>
+        <td>{{ user?.createdAt ? (user?.createdAt | date: 'MMMM d, y, h:mm:ss a') : 'Unknown' }}</td>
       </tr>
       <tr>
         <td>Updated at</td>
-        <td>{{ user?.updatedAt ? user?.updatedAt : 'Unknown' }}</td>
+        <td>{{ user?.updatedAt ? (user?.updatedAt | date: 'MMMM d, y, h:mm:ss a') : 'Unknown' }}</td>
       </tr>
     </tbody>
   </table>

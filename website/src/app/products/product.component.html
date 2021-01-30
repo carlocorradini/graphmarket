@@ -35,7 +35,7 @@
       <p class="uk-text-bold uk-text-large">{{ product.price }} $</p>
       <div class="uk-display-block">
         <star-rating class="uk-display-inline-block" [starType]="'svg'" [rating]="product.rating" [step]="0.5"
-          [numOfStars]="5" [readOnly]="true" [showHalfStars]="true" [disabled]="product.rating === 0 ? true : false"
+          [numOfStars]="5" [readOnly]="true" [showHalfStars]="true" [disabled]="product.rating === '0' ? true : false"
           staticColor="ok"></star-rating>
       </div>
     </div>

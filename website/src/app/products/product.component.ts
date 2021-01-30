@@ -4,6 +4,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
+import { Product } from '../core';
 
 const GET_PRODUCT = gql`
   query GetProduct($id: UUID!) {
@@ -38,7 +39,7 @@ const GET_PRODUCT = gql`
   templateUrl: './product.component.html',
 })
 export class ProductComponent implements OnInit, OnDestroy {
-  public product: any;
+  public product: Product | undefined;
 
   public loading: boolean;
 
@@ -62,7 +63,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.spinner.show();
 
     this.queryProduct = this.apollo
-      .watchQuery<any>({
+      .watchQuery<{ product: Product }>({
         query: GET_PRODUCT,
         errorPolicy: 'all',
         variables: {

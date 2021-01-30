@@ -37,7 +37,7 @@
             </ng-template>
           </p>
           <star-rating [starType]="'svg'" [rating]="product.rating" [step]="0.5" [numOfStars]="5" [readOnly]="true"
-            [showHalfStars]="true" [disabled]="product.rating === 0 ? true : false" staticColor="ok"></star-rating>
+            [showHalfStars]="true" [disabled]="product.rating === '0' ? true : false" staticColor="ok"></star-rating>
         </div>
       </a>
 

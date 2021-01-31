@@ -1,62 +1,170 @@
-<div class="uk-overflow-auto">
-  <table class="uk-table uk-table-middle uk-table-divider uk-table-large uk-table-striped uk-table-hover">
-    <thead>
-      <tr>
-        <th>Field</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Avatar</td>
-        <td>
-          <img class="uk-border-rounded" [src]="user?.avatar" width="48" height="48" [alt]="user?.username" />
-        </td>
-      </tr>
-      <tr>
-        <td>ID</td>
-        <td>{{ user?.id ? user?.id : 'Unknown' }}</td>
-      </tr>
-      <tr>
-        <td>Username</td>
-        <td>{{ user?.username ? user?.username : 'Unknown' }}</td>
-      </tr>
-      <tr>
-        <td>Roles</td>
-        <td>{{ user?.roles ? user?.roles : 'Unknown' }}</td>
-      </tr>
-      <tr>
-        <td>Name</td>
-        <td>{{ user?.name ? user?.name : 'Unknown' }}</td>
-      </tr>
-      <tr>
-        <td>Surname</td>
-        <td>{{ user?.surname ? user?.surname : 'Unknown' }}</td>
-      </tr>
-      <tr>
-        <td>Full name</td>
-        <td>{{ user?.fullName ? user?.fullName : 'Unknown' }}</td>
-      </tr>
-      <tr>
-        <td>Date of birth</td>
-        <td>{{ user?.dateOfBirth ? (user?.dateOfBirth | date: 'MMMM d, y') : 'Unknown' }}</td>
-      </tr>
-      <tr>
-        <td>Email</td>
-        <td>{{ user?.email ? user?.email : 'Unknown' }}</td>
-      </tr>
-      <tr>
-        <td>Phone</td>
-        <td>{{ user?.phone ? user?.phone : 'Unknown' }}</td>
-      </tr>
-      <tr>
-        <td>Created at</td>
-        <td>{{ user?.createdAt ? (user?.createdAt | date: 'MMMM d, y, h:mm:ss a') : 'Unknown' }}</td>
-      </tr>
-      <tr>
-        <td>Updated at</td>
-        <td>{{ user?.updatedAt ? (user?.updatedAt | date: 'MMMM d, y, h:mm:ss a') : 'Unknown' }}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<ul uk-tab>
+  <li>
+    <a href="#">
+      <span uk-icon="thumbnails"></span> Data
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <span uk-icon="pencil"></span> Edit data
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <span uk-icon="user"></span> Edit avatar
+    </a>
+  </li>
+</ul>
+
+<ul class="uk-switcher uk-margin">
+  <li>
+    <div class="uk-overflow-auto">
+      <table class="uk-table uk-table-middle uk-table-divider uk-table-large uk-table-striped uk-table-hover">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Avatar</td>
+            <td>
+              <img class="uk-border-rounded" [src]="user?.avatar" width="48" height="48" [alt]="user?.username" />
+            </td>
+          </tr>
+          <tr>
+            <td>ID</td>
+            <td>{{ user?.id ? user?.id : 'Unknown' }}</td>
+          </tr>
+          <tr>
+            <td>Username</td>
+            <td>{{ user?.username ? user?.username : 'Unknown' }}</td>
+          </tr>
+          <tr>
+            <td>Roles</td>
+            <td>{{ user?.roles ? user?.roles : 'Unknown' }}</td>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>{{ user?.name ? user?.name : 'Unknown' }}</td>
+          </tr>
+          <tr>
+            <td>Surname</td>
+            <td>{{ user?.surname ? user?.surname : 'Unknown' }}</td>
+          </tr>
+          <tr>
+            <td>Full name</td>
+            <td>{{ user?.fullName ? user?.fullName : 'Unknown' }}</td>
+          </tr>
+          <tr>
+            <td>Date of birth</td>
+            <td>{{ user?.dateOfBirth ? (user?.dateOfBirth | date: 'MMMM d, y') : 'Unknown' }}</td>
+          </tr>
+          <tr>
+            <td>Email</td>
+            <td>{{ user?.email ? user?.email : 'Unknown' }}</td>
+          </tr>
+          <tr>
+            <td>Phone</td>
+            <td>{{ user?.phone ? user?.phone : 'Unknown' }}</td>
+          </tr>
+          <tr>
+            <td>Created at</td>
+            <td>{{ user?.createdAt ? (user?.createdAt | date: 'MMMM d, y, h:mm:ss a') : 'Unknown' }}</td>
+          </tr>
+          <tr>
+            <td>Updated at</td>
+            <td>{{ user?.updatedAt ? (user?.updatedAt | date: 'MMMM d, y, h:mm:ss a') : 'Unknown' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </li>
+  <li>
+    <div class="uk-section uk-flex uk-flex-middle" uk-height-match>
+      <div class="uk-width-1-1">
+        <div class="uk-container">
+          <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+            <div class="uk-width-1-1@m">
+              <div
+                class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+                <h3 class="uk-card-title uk-text-center">Join the community!</h3>
+                <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" ngNativeValidate>
+
+                  <div class="uk-margin">
+                    <label class="uk-form-label">
+                      Password <span class="uk-text-danger uk-text-bold">*</span>
+                    </label>
+                    <div class="uk-inline uk-width-1-1">
+                      <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                      <input formControlName="password" class="uk-input uk-form-large" type="password"
+                        placeholder="Password" required autocomplete="off" autocapitalize="none" spellcheck="false"
+                        minlength="8" maxlength="64" />
+                    </div>
+                  </div>
+
+                  <div class="uk-margin">
+                    <label class="uk-form-label">Name</label>
+                    <div class="uk-inline uk-width-1-1">
+                      <span class="uk-form-icon" uk-icon="pencil"></span>
+                      <input formControlName="name" class="uk-input uk-form-large" type="text" placeholder="Name"
+                        autocomplete="off" autocapitalize="on" spellcheck="false" minlength="1" maxlength="64" />
+                    </div>
+                  </div>
+
+                  <div class="uk-margin">
+                    <label class="uk-form-label">Surname</label>
+                    <div class="uk-inline uk-width-1-1">
+                      <span class="uk-form-icon" uk-icon="pencil"></span>
+                      <input formControlName="surname" class="uk-input uk-form-large" type="text" placeholder="Surname"
+                        autocomplete="off" autocapitalize="on" spellcheck="false" minlength="1" maxlength="64" />
+                    </div>
+                  </div>
+
+                  <div class="uk-margin">
+                    <label class="uk-form-label">Gender</label>
+                    <div class="uk-inline uk-width-1-1">
+                      <select formControlName="gender" class="uk-select uk-form-large">
+                        <option *ngFor="let gender of userGenders" [ngValue]="gender[0]">
+                          {{ gender[1] }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="uk-margin">
+                    <label class="uk-form-label">Date of birth</label>
+                    <div class="uk-inline uk-width-1-1">
+                      <span class="uk-form-icon" uk-icon="calendar"></span>
+                      <input formControlName="dateOfBirth" class="uk-input uk-form-large" type="date"
+                        placeholder="Date of birth" max="{{ today | date: 'yyyy-MM-dd' }}" />
+                    </div>
+                  </div>
+
+                  <div class="uk-text-small uk-text-meta">
+                    <span class="uk-text-danger uk-text-bold">*</span> required field
+                  </div>
+
+                  <div class="uk-margin">
+                    <button type="submit" class="uk-button uk-button-secondary uk-button-large uk-width-1-1">
+                      <span uk-icon="plus"></span>
+                      Sign Up
+                    </button>
+                  </div>
+
+                  <div class="uk-text-small uk-text-center">
+                    Already registered? <a routerLink="/signin">Sign In</a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </li>
+  <li>
+
+  </li>
+</ul>

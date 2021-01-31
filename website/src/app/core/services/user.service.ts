@@ -10,10 +10,18 @@ export interface SignUpValues {
   password: string;
   name?: string;
   surname?: string;
-  gender: UserGenders;
-  dateOfBirth: string;
+  gender?: UserGenders;
+  dateOfBirth?: string;
   email: string;
   phone: string;
+}
+
+export interface updateValues {
+  password?: string;
+  name?: string;
+  surname?: string;
+  gender?: UserGenders;
+  dateOfBirth?: string;
 }
 
 const QUERY_ME = gql`
@@ -25,6 +33,7 @@ const QUERY_ME = gql`
       name
       surname
       dateOfBirth
+      gender
       fullName
       email
       phone
@@ -99,6 +108,60 @@ const MUTATION_REVERIFY = gql`
   }
 `;
 
+const MUTATION_UPDATE = gql`
+  mutation UpdateMe(
+    $password: NonEmptyString
+    $name: NonEmptyString
+    $surname: NonEmptyString
+    $gender: UserGenders
+    $dateOfBirth: Date
+  ) {
+    user: updateMe(
+      data: {
+        password: $password
+        name: $name
+        surname: $surname
+        gender: $gender
+        dateOfBirth: $dateOfBirth
+      }
+    ) {
+      id
+      username
+      roles
+      name
+      surname
+      dateOfBirth
+      gender
+      fullName
+      email
+      phone
+      avatar
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const MUTATION_UPDATE_AVATAR = gql`
+  mutation UpdateAvatar($avatar: Upload!) {
+    user: updateAvatar(file: $avatar) {
+      id
+      username
+      roles
+      name
+      surname
+      dateOfBirth
+      gender
+      fullName
+      email
+      phone
+      avatar
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 @Injectable()
 export class UserService {
   public static readonly TOKEN_KEY: string = 'AUTH_TOKEN';
@@ -141,6 +204,10 @@ export class UserService {
 
     if (user) this.userSubject.next(user);
     else this.populate();
+  }
+
+  public updateAuthUser(user: User): void {
+    this.userSubject.next(user);
   }
 
   public removeAuthUser(): void {
@@ -208,6 +275,25 @@ export class UserService {
       mutation: MUTATION_REVERIFY,
       errorPolicy: 'all',
       variables: { userId },
+    });
+  }
+
+  public update(data: updateValues) {
+    return this.apollo.mutate<{ user: User }>({
+      mutation: MUTATION_UPDATE,
+      errorPolicy: 'all',
+      variables: data,
+    });
+  }
+
+  public updateAvatar(avatar: File) {
+    return this.apollo.mutate<{ user: User }>({
+      mutation: MUTATION_UPDATE_AVATAR,
+      errorPolicy: 'all',
+      context: {
+        useMultipart: true,
+      },
+      variables: { avatar },
     });
   }
 }

@@ -87,6 +87,7 @@ export interface User {
   surname?: string;
   dateOfBirth?: string;
   fullName?: string;
+  gender?: UserGenders;
   avatar: string;
   createdAt: Date;
   updatedAt: Date;

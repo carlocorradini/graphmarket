@@ -9,11 +9,6 @@
       <span uk-icon="pencil"></span> Edit data
     </a>
   </li>
-  <li>
-    <a href="#">
-      <span uk-icon="user"></span> Edit avatar
-    </a>
-  </li>
 </ul>
 
 <ul class="uk-switcher uk-margin">
@@ -58,6 +53,10 @@
             <td>{{ user?.fullName ? user?.fullName : 'Unknown' }}</td>
           </tr>
           <tr>
+            <td>Gender</td>
+            <td>{{ user?.gender ? user?.gender : 'Unknown' }}</td>
+          </tr>
+          <tr>
             <td>Date of birth</td>
             <td>{{ user?.dateOfBirth ? (user?.dateOfBirth | date: 'MMMM d, y') : 'Unknown' }}</td>
           </tr>
@@ -90,17 +89,20 @@
               <div
                 class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
                 <h3 class="uk-card-title uk-text-center">Join the community!</h3>
-                <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" ngNativeValidate>
+                <form [formGroup]="updateForm" (ngSubmit)="onSubmit()" ngNativeValidate>
+
+                  <div class="js-upload" uk-form-custom>
+                    <input type="file" (change)="handleFileInput($event)">
+                    <button class="uk-button uk-button-default" type="button" tabindex="-1">Select</button>
+                  </div>
 
                   <div class="uk-margin">
-                    <label class="uk-form-label">
-                      Password <span class="uk-text-danger uk-text-bold">*</span>
-                    </label>
+                    <label class="uk-form-label">Password</label>
                     <div class="uk-inline uk-width-1-1">
-                      <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                      <span class="uk-form-icon" uk-icon="lock"></span>
                       <input formControlName="password" class="uk-input uk-form-large" type="password"
-                        placeholder="Password" required autocomplete="off" autocapitalize="none" spellcheck="false"
-                        minlength="8" maxlength="64" />
+                        placeholder="Password" autocomplete="off" autocapitalize="none" spellcheck="false" minlength="8"
+                        maxlength="64" />
                     </div>
                   </div>
 
@@ -109,7 +111,8 @@
                     <div class="uk-inline uk-width-1-1">
                       <span class="uk-form-icon" uk-icon="pencil"></span>
                       <input formControlName="name" class="uk-input uk-form-large" type="text" placeholder="Name"
-                        autocomplete="off" autocapitalize="on" spellcheck="false" minlength="1" maxlength="64" />
+                        [ngModel]="user?.name" autocomplete="off" autocapitalize="on" spellcheck="false" minlength="1"
+                        maxlength="64" />
                     </div>
                   </div>
 
@@ -118,7 +121,8 @@
                     <div class="uk-inline uk-width-1-1">
                       <span class="uk-form-icon" uk-icon="pencil"></span>
                       <input formControlName="surname" class="uk-input uk-form-large" type="text" placeholder="Surname"
-                        autocomplete="off" autocapitalize="on" spellcheck="false" minlength="1" maxlength="64" />
+                        [ngModel]="user?.surname" autocomplete="off" autocapitalize="on" spellcheck="false"
+                        minlength="1" maxlength="64" />
                     </div>
                   </div>
 
@@ -138,23 +142,16 @@
                     <div class="uk-inline uk-width-1-1">
                       <span class="uk-form-icon" uk-icon="calendar"></span>
                       <input formControlName="dateOfBirth" class="uk-input uk-form-large" type="date"
-                        placeholder="Date of birth" max="{{ today | date: 'yyyy-MM-dd' }}" />
+                        placeholder="Date of birth" [ngModel]="user?.dateOfBirth | date: 'yyyy-MM-dd'"
+                        max="{{ today | date: 'yyyy-MM-dd' }}" />
                     </div>
                   </div>
 
-                  <div class="uk-text-small uk-text-meta">
-                    <span class="uk-text-danger uk-text-bold">*</span> required field
-                  </div>
-
                   <div class="uk-margin">
-                    <button type="submit" class="uk-button uk-button-secondary uk-button-large uk-width-1-1">
+                    <button type="submit" class="uk-button uk-button-primary uk-button-large uk-width-1-1">
                       <span uk-icon="plus"></span>
-                      Sign Up
+                      Update
                     </button>
-                  </div>
-
-                  <div class="uk-text-small uk-text-center">
-                    Already registered? <a routerLink="/signin">Sign In</a>
                   </div>
                 </form>
               </div>
@@ -163,8 +160,5 @@
         </div>
       </div>
     </div>
-  </li>
-  <li>
-
   </li>
 </ul>

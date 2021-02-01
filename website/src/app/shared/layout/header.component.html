@@ -6,6 +6,16 @@
         </a>
     </div>
 
+    <div class="uk-navbar-item uk-width-expand">
+        <form [formGroup]="searchProductForm" class="uk-width-expand" ngNativeValidate (ngSubmit)="searchProduct()">
+            <div class="uk-display-inline-block uk-position-relative uk-width-expand">
+                <button type="submit" class="uk-form-icon" href="#" uk-icon="search"></button>
+                <input class="uk-input" type="text" formControlName="productName" placeholder="Search product" required
+                    autocomplete="off" autocapitalize="none" spellcheck="false" minlength="1" />
+            </div>
+        </form>
+    </div>
+
     <div class="uk-navbar-right">
         <div class="uk-navbar-item">
             <a routerLink="/products" class="uk-button uk-button-default">

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql, QueryRef } from 'apollo-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Product } from '../core';
 
 const QUERY_PRODUCTS = gql`
-  query Products($skip: NonNegativeInt, $take: PositiveInt) {
-    products(skip: $skip, take: $take) {
+  query Products($skip: NonNegativeInt, $take: PositiveInt, $name: NonEmptyString) {
+    products(skip: $skip, take: $take, name: $name) {
       id
       cover
       name
@@ -32,14 +33,26 @@ export class ProductsComponent implements OnInit {
 
   private queryProducts!: QueryRef<{ products: Product[] }>;
 
-  public constructor(private readonly apollo: Apollo, private readonly spinner: NgxSpinnerService) {
+  public constructor(
+    private readonly route: ActivatedRoute,
+    private readonly apollo: Apollo,
+    private readonly spinner: NgxSpinnerService,
+  ) {
     this.products = [];
     this.loading = true;
     this.error = false;
   }
 
   public ngOnInit(): void {
+    this.route.queryParams.subscribe(() => {
+      this.initializeState();
+    });
+  }
+
+  private initializeState(): void {
     this.spinner.show();
+
+    const name: string | null = this.route.snapshot.queryParamMap.get('name');
 
     this.queryProducts = this.apollo.watchQuery<{ products: Product[] }>({
       query: QUERY_PRODUCTS,
@@ -48,10 +61,11 @@ export class ProductsComponent implements OnInit {
       variables: {
         skip: 0,
         take: ProductsComponent.DEFAULT_TAKE,
+        ...(name && { name }),
       },
     });
-
-    this.products = this.queryProducts.valueChanges.subscribe({
+    this.products = [];
+    this.products = (this.queryProducts.valueChanges.subscribe({
       next: ({ data, loading }) => {
         this.spinner.hide();
         this.loading = loading;
@@ -61,7 +75,7 @@ export class ProductsComponent implements OnInit {
         this.error = true;
         this.spinner.hide();
       },
-    }) as unknown as Product[];
+    }) as unknown) as Product[];
   }
 
   public fetchMore() {

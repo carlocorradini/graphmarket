@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService, User } from 'src/app/core';
 
@@ -13,6 +14,10 @@ export class HeaderComponent implements OnInit {
   public user?: User;
 
   public isAuth: boolean;
+
+  public searchProductForm = new FormGroup({
+    productName: new FormControl(),
+  });
 
   public constructor(private readonly router: Router, private readonly userService: UserService) {
     this.user = undefined;
@@ -31,5 +36,10 @@ export class HeaderComponent implements OnInit {
   public signOut(): void {
     this.userService.signOut();
     this.router.navigateByUrl('/');
+  }
+
+  public searchProduct() {
+    const productName = this.searchProductForm.value['productName'];
+    this.router.navigate(['/products'], { queryParams: { name: productName } });
   }
 }

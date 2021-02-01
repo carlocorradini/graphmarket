@@ -10,10 +10,10 @@ import {
 } from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { UserRoles, Product } from '@graphmarket/entities';
-import { PaginationArgs } from '@graphmarket/graphql-args';
 import { GraphQLURL, GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { ProductCreateInput, ProductUpdateInput } from '@app/inputs';
 import { ProductService } from '@app/services';
+import { FindProductsArgs } from '@app/args';
 
 /**
  * Product resolver.
@@ -75,8 +75,8 @@ export default class ProductResolver {
    * @returns All available products
    */
   @Query(() => [Product], { description: `Return all products` })
-  products(@Args() { skip, take }: PaginationArgs): Promise<Product[]> {
-    return this.productService.read({ skip, take });
+  products(@Args() args: FindProductsArgs): Promise<Product[]> {
+    return this.productService.read(args);
   }
 
   /**

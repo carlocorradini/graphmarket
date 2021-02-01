@@ -52,7 +52,7 @@ const MUTATION_CREATE_REVIEW = gql`
   templateUrl: './reviews.component.html',
 })
 export class ReviewsComponent implements OnInit {
-  public static readonly DEFAULT_TAKE: number = 1;
+  public static readonly DEFAULT_TAKE: number = 8;
 
   public reviews: Review[];
 

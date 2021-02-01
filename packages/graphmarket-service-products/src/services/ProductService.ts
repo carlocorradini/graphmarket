@@ -1,9 +1,9 @@
 /* eslint-disable class-methods-use-this */
 import { Service } from 'typedi';
-import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
+import { EntityManager, Transaction, TransactionManager } from 'typeorm';
 import { Product } from '@graphmarket/entities';
-import { PaginationArgs } from '@graphmarket/graphql-args';
 import logger from '@graphmarket/logger';
+import { FindProductsArgs } from '@app/args';
 
 /**
  * Product service.
@@ -106,7 +106,7 @@ export default class ProductService {
 
   /**
    * Read the product of the review identified by the reviewId.
-   * 
+   *
    * @param reviewId - Review id
    * @param manager - Transaction manager
    * @returns Product of the review
@@ -132,13 +132,15 @@ export default class ProductService {
    */
   @Transaction()
   public read(
-    options: Pick<FindManyOptions, 'skip' | 'take'> = {
-      skip: PaginationArgs.DEFAULT_SKIP,
-      take: PaginationArgs.DEFAULT_TAKE,
-    },
+    { skip, take, name }: FindProductsArgs,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product[]> {
-    return manager!.find(Product, { ...options, cache: true });
+    const query = manager!.createQueryBuilder(Product, 'product');
+
+    if (name)
+      query.where('LOWER(product.name) LIKE :name', { name: `%${name.toLocaleLowerCase()}%` });
+
+    return query.skip(skip).take(take).cache(true).getMany();
   }
 
   /**

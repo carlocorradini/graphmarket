@@ -103,6 +103,13 @@
             <span uk-icon="cart"></span>
             BUY
           </button>
+
+          <button *ngIf="!reviewIdOfAuthUser" [routerLink]="['/dashboard/reviews']"
+            [queryParams]="{ productId: product.id }"
+            class="uk-button uk-button-secondary uk-button-large uk-margin uk-align-center uk-width-1-1 uk-text-bold">
+            <span uk-icon="comment"></span>
+            CREATE A REVIEW
+          </button>
         </ng-template>
       </ng-template>
 
@@ -138,6 +145,10 @@
                 <span *ngIf="review.verified" class="uk-label uk-label-success uk-margin-left">
                   <span uk-icon="check"></span>
                   Verified
+                </span>
+                <span *ngIf="review.id === reviewIdOfAuthUser" class="uk-label uk-label-warning uk-margin-small-left">
+                  <span uk-icon="code"></span>
+                  Yours
                 </span>
               </h4>
               <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">

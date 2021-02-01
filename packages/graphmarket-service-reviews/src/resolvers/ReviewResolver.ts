@@ -6,6 +6,7 @@ import { GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import { ReviewService } from '@app/services';
 import { ReviewCreateInput, ReviewUpdateInput } from '@app/inputs';
+import { FindReviewsArgs } from '@app/args';
 
 /**
  * Review resolver.
@@ -54,12 +55,12 @@ export default class ReviewResolver {
   /**
    * Resolves all available reviews.
    *
-   * @param param0 - Pagination arguments
+   * @param param0 - Find reviews arguments
    * @returns All available reviews
    */
   @Query(() => [Review], { description: `Return all reviews` })
-  reviews(@Args() { skip, take }: PaginationArgs): Promise<Review[]> {
-    return this.reviewService.read({ skip, take });
+  reviews(@Args() args: FindReviewsArgs): Promise<Review[]> {
+    return this.reviewService.read(args);
   }
 
   /**

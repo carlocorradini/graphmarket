@@ -4,7 +4,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
 import Swal from 'sweetalert2';
-import { Inventory, Product, PurchaseService, Review, UserService } from '../core';
+import { Inventory, Product, PurchaseService, Review, User, UserService } from '../core';
 
 const QUERY_PRODUCT = gql`
   query QueryProduct($id: UUID!) {
@@ -19,6 +19,7 @@ const QUERY_PRODUCT = gql`
       price
       rating
       reviews {
+        id
         title
         body
         rating
@@ -36,6 +37,14 @@ const QUERY_PRODUCT = gql`
         quantity
         condition
       }
+    }
+  }
+`;
+
+const QUERY_REVIEW_PRODUCT_AUTHOR = gql`
+  query ReviewProductAuthor($productId: UUID!, $authorId: UUID!) {
+    reviews(take: 1, productId: $productId, authorId: $authorId) {
+      id
     }
   }
 `;
@@ -75,6 +84,8 @@ export class ProductComponent implements OnInit {
   public error: boolean;
 
   public isAuth: boolean;
+
+  public reviewIdOfAuthUser: string | undefined;
 
   public constructor(
     private readonly route: ActivatedRoute,
@@ -121,6 +132,24 @@ export class ProductComponent implements OnInit {
           this.error = true;
         },
       });
+
+    this.userService.user.subscribe((user) => {
+      if (!user || (Object.keys(user).length === 0 && user.constructor === Object)) return;
+
+      this.apollo
+        .query<{ reviews: Review[] }>({
+          query: QUERY_REVIEW_PRODUCT_AUTHOR,
+          errorPolicy: 'all',
+          variables: {
+            productId,
+            authorId: user.id,
+          },
+        })
+        .subscribe(({ data }) => {
+          if (!data || data.reviews.length !== 1) return;
+          this.reviewIdOfAuthUser = data.reviews[0].id;
+        });
+    });
   }
 
   private showProductNotFound(productId: string | null): void {

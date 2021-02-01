@@ -65,15 +65,32 @@ export class ProfileComponent {
         }),
       )
       .subscribe(([user, userAvatar]) => {
-        let errors = user.errors;
-        if (!errors && userAvatar.errors) errors = userAvatar.errors;
+        let errors = user && user.errors ? user.errors : undefined;
+        if (!errors && userAvatar && userAvatar.errors) errors = userAvatar.errors;
 
         if (errors) Swal.fire({ icon: 'warning', title: 'Oops...', text: errors[0].message });
-        else if (!user.data || !userAvatar.data)
+        else if (user && !user.data && userAvatar && !userAvatar.data)
           Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Unknown error' });
         else {
-          this.userService.updateAuthUser(userAvatar.data?.user);
-          Swal.fire({ icon: 'success', title: 'Success', text: 'Updated successfully' });
+          if (userAvatar && userAvatar.data?.user)
+            this.userService.updateAuthUser(userAvatar.data.user);
+          if ('password' in inputs) {
+            this.updateForm.get('password')?.reset();
+            this.userService.removeAuthUser();
+          }
+          Swal.fire({ icon: 'success', title: 'Success', text: 'Updated successfully' }).then(
+            () => {
+              if ('password' in inputs) {
+                Swal.fire({
+                  icon: 'info',
+                  title: 'Info',
+                  text: 'Since you have changed the password you must re-authenticate',
+                }).then(() => {
+                  location.reload();
+                });
+              }
+            },
+          );
         }
       });
   }

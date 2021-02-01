@@ -91,10 +91,18 @@
                 <h3 class="uk-card-title uk-text-center">Join the community!</h3>
                 <form [formGroup]="updateForm" (ngSubmit)="onSubmit()" ngNativeValidate>
 
-                  <div class="js-upload" uk-form-custom>
-                    <input type="file" (change)="handleFileInput($event)">
-                    <button class="uk-button uk-button-default" type="button" tabindex="-1">Select</button>
+                  <div class="uk-margin">
+                    <label class="uk-form-label">Avatar</label>
+                    <div class="js-upload uk-display-block" uk-form-custom>
+                      <input type="file" accept="image/*" multiple="false" (change)="handleFileInput($event)">
+                      <button class="uk-button uk-button-default uk-width-1-1" type="button" tabindex="-1">
+                        <span uk-icon="cloud-upload"></span>
+                        &nbsp;
+                        Upload avatar
+                      </button>
+                    </div>
                   </div>
+
 
                   <div class="uk-margin">
                     <label class="uk-form-label">Password</label>
@@ -149,7 +157,7 @@
 
                   <div class="uk-margin">
                     <button type="submit" class="uk-button uk-button-primary uk-button-large uk-width-1-1">
-                      <span uk-icon="plus"></span>
+                      <span uk-icon="future"></span>
                       Update
                     </button>
                   </div>

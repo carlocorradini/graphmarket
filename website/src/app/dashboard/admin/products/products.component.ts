@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo, gql, QueryRef } from 'apollo-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { forkJoin } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { concat, forkJoin } from 'rxjs';
+import { concatMap, finalize } from 'rxjs/operators';
 import { Product, ProductCategories } from 'src/app/core';
 import Swal from 'sweetalert2';
 declare var UIkit: any;
@@ -185,7 +185,7 @@ export class ProductsComponent implements OnInit {
             html: `Product<br/>
             ${data.product.id}<br/>F
             created successfully`,
-          }).then(() => window.location.reload());
+          });
         }
       });
   }
@@ -240,37 +240,39 @@ export class ProductsComponent implements OnInit {
       .filter((k) => this.updateProductForm.value[k] !== null)
       .reduce((a, k) => ({ ...a, [k]: this.updateProductForm.value[k] }), {});
 
-    forkJoin([
-      this.apollo.mutate<{ product: { id: string } }>({
+    this.apollo
+      .mutate<{ product: { id: string } }>({
         mutation: MUTATION_UPDATE_PRODUCT,
         errorPolicy: 'all',
         variables: inputs,
-      }),
-      ...this.photos.map((photo) => {
-        return this.apollo.mutate<{ product: { id: string } }>({
-          mutation: MUTATION_UPDATE_PRODUCT_PHOTO,
-          errorPolicy: 'all',
-          variables: {
-            productId: this.updateProductForm.get('productId')?.value,
-            photo,
-          },
-          context: {
-            useMultipart: true,
-          },
-        });
-      }),
-    ])
+      })
+      .pipe(
+        concatMap(() =>
+          concat(
+            ...this.photos.map((photo) =>
+              this.apollo.mutate<{ product: { id: string } }>({
+                mutation: MUTATION_UPDATE_PRODUCT_PHOTO,
+                errorPolicy: 'all',
+                variables: {
+                  productId: this.updateProductForm.get('productId')?.value,
+                  photo,
+                },
+                context: {
+                  useMultipart: true,
+                },
+              }),
+            ),
+          ),
+        ),
+      )
       .pipe(
         finalize(() => {
           this.spinner.hide();
+          Swal.fire({ icon: 'success', title: 'Success', text: 'Updated successfully' });
         }),
       )
       .subscribe(
-        () => {
-          Swal.fire({ icon: 'success', title: 'Success', text: 'Updated successfully' }).then(() =>
-            window.location.reload(),
-          );
-        },
+        () => {},
         (error) => {
           Swal.fire({
             icon: 'warning',

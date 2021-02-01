@@ -55,6 +55,7 @@
                         </a>
                         <div class="uk-navbar-dropdown" uk-dropdown="mode: click">
                             <ul class="uk-nav uk-navbar-dropdown-nav">
+                                <li class="uk-nav-header">Menu</li>
                                 <li>
                                     <a routerLink="/dashboard">
                                         <span uk-icon="settings"></span>
@@ -83,6 +84,18 @@
                                         Reviews
                                     </a>
                                 </li>
+                                <ng-template [ngIf]="hasRole(userRoles.ADMINISTRATOR)">
+                                    <li class="uk-nav-header">
+                                        Administrator
+                                    </li>
+                                    <li>
+                                        <a routerLink="/dashboard/admin/products">
+                                            <span uk-icon="thumbnails"></span>
+                                            &nbsp;
+                                            Products
+                                        </a>
+                                    </li>
+                                </ng-template>
                                 <li class="uk-nav-divider"></li>
                                 <li>
                                     <button class="uk-button uk-button-danger" (click)="signOut()">

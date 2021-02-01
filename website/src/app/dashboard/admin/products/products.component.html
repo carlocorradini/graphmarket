@@ -1,0 +1,231 @@
+<ng-template [ngIf]="!loading && !error">
+  <ul uk-tab id="products-tab">
+    <li>
+      <a href="#">
+        <span uk-icon="commenting"></span> Products
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span uk-icon="plus-circle"></span> Add
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span uk-icon="pencil"></span> Edit
+      </a>
+    </li>
+  </ul>
+
+  <ul class="uk-switcher uk-margin">
+    <li>
+      <ng-template [ngIf]="products.length !== 0" [ngIfElse]="noProducts">
+        <div class="uk-overflow-auto">
+          <table class="uk-table uk-table-middle uk-table-divider uk-table-large uk-table-striped uk-table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Cover</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Crated at</th>
+                <th>Updated at</th>
+                <th>Edit ?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of products">
+                <td>{{ product.id }}</td>
+                <td>{{ product.category }}</td>
+                <td>
+                  <img class="uk-border-rounded"
+                    [src]="product?.cover ? product.cover : 'https://res.cloudinary.com/dxiqa0xwa/image/upload/v1609604389/graphmarket/product/photo/product.png'"
+                    width="64" height="64" [alt]="product.name" />
+                </td>
+                <td>{{ product.name }}</td>
+                <td>{{ product?.description ? product.description : '-' }}</td>
+                <td>{{ product.createdAt | date: 'MMMM d, y, h:mm:ss a' }}</td>
+                <td>{{ product.updatedAt | date: 'MMMM d, y, h:mm:ss a' }}</td>
+                <td>
+                  <button class="uk-button uk-button-danger" (click)="editProduct(product.id)">
+                    <span uk-icon="pencil"></span>&nbsp;Edit
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <button class="uk-button uk-button-primary uk-button-large uk-margin uk-align-center" (click)="fetchMore()">
+          <span uk-icon="plus"></span>
+          LOAD MORE
+        </button>
+      </ng-template>
+      <ng-template #noProducts>
+        <div class="uk-alert-primary" uk-alert>
+          <p>
+            <span uk-icon="info"></span>
+            No products found
+          </p>
+        </div>
+      </ng-template>
+    </li>
+    <li>
+      <div class="uk-section uk-flex uk-flex-middle" uk-height-match>
+        <div class="uk-width-1-1">
+          <div class="uk-container">
+            <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+              <div class="uk-width-1-1@m">
+                <div
+                  class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+                  <h3 class="uk-card-title uk-text-center">Add a product!</h3>
+                  <form [formGroup]="createProductForm" (ngSubmit)="onCreateProductSubmit()" ngNativeValidate>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Category <span class="uk-text-danger uk-text-bold">*</span>
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <select formControlName="category" class="uk-select uk-form-large">
+                          <option *ngFor="let category of productCategories" [ngValue]="category[0]">
+                            {{ category[1] }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Name <span class="uk-text-danger uk-text-bold">*</span>
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="search"></span>
+                        <input formControlName="name" class="uk-input uk-form-large" type="text" required
+                          placeholder="Name" autocomplete="off" autocapitalize="on" spellcheck="true" minlength="1"
+                          maxlength="128" />
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Description
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="bookmark"></span>
+                        <input formControlName="description" class="uk-input uk-form-large" type="text"
+                          placeholder="Description" autocomplete="off" autocapitalize="on" spellcheck="true"
+                          minlength="1" maxlength="256" />
+                      </div>
+                    </div>
+
+                    <div class="uk-text-small uk-text-meta">
+                      <span class="uk-text-danger uk-text-bold">*</span> required field
+                    </div>
+
+                    <div class="uk-margin">
+                      <button type="submit" class="uk-button uk-button-primary uk-button-large uk-width-1-1">
+                        <span uk-icon="plus-circle"></span>
+                        Add
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="uk-section uk-flex uk-flex-middle" uk-height-match>
+        <div class="uk-width-1-1">
+          <div class="uk-container">
+            <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+              <div class="uk-width-1-1@m">
+                <div
+                  class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+                  <h3 class="uk-card-title uk-text-center">Edit a product!</h3>
+                  <form [formGroup]="updateProductForm" (ngSubmit)="onUpdateProductSubmit()" ngNativeValidate>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Product ID <span class="uk-text-danger uk-text-bold">*</span>
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="hashtag"></span>
+                        <input formControlName="productId" class="uk-input uk-form-large" type="text"
+                          placeholder="Product ID" required autocomplete="off" autocapitalize="none" spellcheck="false"
+                          minlength="36" maxlength="36" />
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">Photo(s)</label>
+                      <div class="js-upload uk-display-block" uk-form-custom>
+                        <input type="file" accept="image/*" multiple="false" (change)="handleFileInput($event)">
+                        <button class="uk-button uk-button-default uk-width-1-1" type="button" tabindex="-1">
+                          <span uk-icon="cloud-upload"></span>
+                          &nbsp;
+                          Upload photo(s)
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Category
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <select formControlName="category" class="uk-select uk-form-large">
+                          <option *ngFor="let category of productCategories" [ngValue]="category[0]">
+                            {{ category[1] }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Name
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="search"></span>
+                        <input formControlName="name" class="uk-input uk-form-large" type="text" required
+                          placeholder="Name" autocomplete="off" autocapitalize="on" spellcheck="true" minlength="1"
+                          maxlength="128" />
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Description
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="bookmark"></span>
+                        <input formControlName="description" class="uk-input uk-form-large" type="text"
+                          placeholder="Description" autocomplete="off" autocapitalize="on" spellcheck="true"
+                          minlength="1" maxlength="256" />
+                      </div>
+                    </div>
+
+                    <div class="uk-text-small uk-text-meta">
+                      <span class="uk-text-danger uk-text-bold">*</span> required field
+                    </div>
+
+                    <div class="uk-margin">
+                      <button type="submit" class="uk-button uk-button-primary uk-button-large uk-width-1-1">
+                        <span uk-icon="check"></span>
+                        Update
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</ng-template>

@@ -39,6 +39,7 @@ export class ProfileComponent {
   public ngOnInit() {
     this.userService.user.subscribe((user) => {
       this.user = user;
+      this.updateForm.get('gender')?.setValue(user?.gender);
     });
   }
 
@@ -86,8 +87,10 @@ export class ProfileComponent {
                   title: 'Info',
                   text: 'Since you have changed the password you must re-authenticate',
                 }).then(() => {
-                  location.reload();
+                  window.location.reload();
                 });
+              } else {
+                window.location.reload();
               }
             },
           );

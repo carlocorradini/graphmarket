@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged, finalize } from 'rxjs/operators';
-import { User, UserGenders } from '../models';
+import { User, UserGenders, UserRoles } from '../models';
 import { TokenService } from './token.service';
 
 export interface SignUpValues {
@@ -166,7 +166,7 @@ const MUTATION_UPDATE_AVATAR = gql`
 export class UserService {
   public static readonly TOKEN_KEY: string = 'AUTH_TOKEN';
 
-  private userSubject = new BehaviorSubject<User>({} as User);
+  private userSubject = new BehaviorSubject<User | undefined>(undefined);
 
   public user = this.userSubject.asObservable().pipe(distinctUntilChanged());
 
@@ -184,9 +184,7 @@ export class UserService {
 
     if (token) {
       this.me().subscribe(
-        ({ data }) => {
-          this.setAuthUser(token, data.user);
-        },
+        ({ data }) => this.setAuthUser(token, data.user),
         () => this.removeAuthUser(),
       );
     } else {
@@ -194,7 +192,7 @@ export class UserService {
     }
   }
 
-  public getAuthUser(): User {
+  public getAuthUser(): User | undefined {
     return this.userSubject.value;
   }
 
@@ -212,8 +210,14 @@ export class UserService {
 
   public removeAuthUser(): void {
     this.tokenService.removeToken();
-    this.userSubject.next({} as User);
+    this.userSubject.next(undefined);
     this.isAuthSubject.next(false);
+  }
+
+  public authUserhasRole(role: UserRoles): boolean {
+    const authUser = this.getAuthUser();
+    if (!authUser) return false;
+    return authUser.roles.some((r) => role === r);
   }
 
   public me() {
@@ -250,12 +254,11 @@ export class UserService {
   public signOut(): void {
     this.apollo
       .mutate<void>({ mutation: MUTATION_SIGN_OUT, errorPolicy: 'all' })
-      .pipe(
-        finalize(() => {
-          this.removeAuthUser();
-        }),
-      )
-      .subscribe();
+      .subscribe(
+        () => this.removeAuthUser(),
+        () => this.removeAuthUser(),
+        () => this.removeAuthUser(),
+      );
   }
 
   public verify(userId: string, phoneCode: string, emailCode: string) {

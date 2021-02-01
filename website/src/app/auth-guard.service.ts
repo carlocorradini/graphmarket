@@ -29,7 +29,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     );
   }
 
-  canActivateChild(
+  public canActivateChild(
     childRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): Observable<boolean> {
@@ -37,7 +37,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       take(1),
       map((isAuth) => {
         if (isAuth) return true;
-        
+
         this.router.navigateByUrl('/signin');
         return true;
       }),

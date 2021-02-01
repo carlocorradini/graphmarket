@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserService, User } from 'src/app/core';
+import { UserService, User, UserRoles } from 'src/app/core';
 
 /**
  * Header component.
@@ -18,6 +18,8 @@ export class HeaderComponent implements OnInit {
   public searchProductForm = new FormGroup({
     productName: new FormControl(),
   });
+
+  public userRoles = UserRoles;
 
   public constructor(private readonly router: Router, private readonly userService: UserService) {
     this.user = undefined;
@@ -41,5 +43,9 @@ export class HeaderComponent implements OnInit {
   public searchProduct() {
     const productName = this.searchProductForm.value['productName'];
     this.router.navigate(['/products'], { queryParams: { name: productName } });
+  }
+
+  public hasRole(role: UserRoles): boolean {
+    return this.userService.authUserhasRole(role);
   }
 }

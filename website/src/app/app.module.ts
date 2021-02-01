@@ -19,7 +19,6 @@ import { AuthGuard } from './auth-guard.service';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { VerifyComponent } from './verify/verify.component';
 import { CommonModule } from '@angular/common';
-import { DashboardModule } from './dashboard/dashboard.module';
 
 @NgModule({
   declarations: [

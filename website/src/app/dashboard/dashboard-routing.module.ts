@@ -4,6 +4,7 @@ import { DashboardComponent } from './dashboard.component';
 import { ProfileComponent } from './profile/profile.component';
 import { PurchasesComponent } from './purchases/purchases.component';
 import { ReviewsComponent } from './reviews/reviews.component';
+import { AdminAuthGuard } from './admin/admin-auth-guard.service';
 
 const routes: Routes = [
   {
@@ -21,6 +22,11 @@ const routes: Routes = [
   {
     path: 'reviews',
     component: ReviewsComponent,
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule),
+    canActivate: [AdminAuthGuard],
   },
 ];
 

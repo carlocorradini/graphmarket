@@ -1,5 +1,5 @@
 <ng-template [ngIf]="!loading && !error">
-  <ul uk-tab>
+  <ul uk-tab id="reviews-tab">
     <li>
       <a href="#">
         <span uk-icon="commenting"></span> Your reviews
@@ -47,7 +47,7 @@
                 </td>
                 <td>
                   <button class="uk-button uk-button-danger" (click)="deleteReview(review.id)">
-                    <span uk-icon="trash"></span>
+                    <span uk-icon="trash"></span>&nbsp;Delete
                   </button>
                 </td>
               </tr>

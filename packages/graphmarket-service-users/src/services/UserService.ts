@@ -202,7 +202,7 @@ export default class UserService {
    * @param avatar - Avatar file
    * @param manager - Transaction manager
    * @returns Updated user
-   * @see UploadService
+   * @see UploadAdapter
    */
   @Transaction()
   public async updateAvatar(
@@ -218,7 +218,7 @@ export default class UserService {
       .secure_url;
 
     // Update avatar url
-    manager!.update(User, id, manager!.create(User, { avatar: url }));
+    await manager!.update(User, id, manager!.create(User, { avatar: url }));
 
     return manager!.findOneOrFail(User, id);
   }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo, gql, QueryRef } from 'apollo-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { Product, ProductCategories } from 'src/app/core';
 import Swal from 'sweetalert2';
@@ -51,7 +52,7 @@ const MUTATION_UPDATE_PRODUCT = gql`
     $name: NonEmptyString
     $description: NonEmptyString
   ) {
-    updateProduct(
+    product: updateProduct(
       id: $productId
       data: { category: $category, name: $name, description: $description }
     ) {
@@ -60,9 +61,19 @@ const MUTATION_UPDATE_PRODUCT = gql`
   }
 `;
 
+const MUTATION_UPDATE_PRODUCT_PHOTO = gql`
+  mutation UpdateProductPhoto($productId: UUID!, $photo: Upload!) {
+    product: updateProductPhoto(id: $productId, file: $photo) {
+      id
+    }
+  }
+`;
+
 @Component({ templateUrl: './products.component.html' })
 export class ProductsComponent implements OnInit {
   public static readonly DEFAULT_TAKE: number = 8;
+
+  public static readonly MAX_UPLOAD_FILES: number = 8;
 
   public products: Product[];
 
@@ -77,6 +88,8 @@ export class ProductsComponent implements OnInit {
     name: new FormControl(),
     description: new FormControl(),
   });
+
+  private photos: File[] = [];
 
   public updateProductForm = new FormGroup({
     productId: new FormControl(),
@@ -204,36 +217,67 @@ export class ProductsComponent implements OnInit {
       });
   }
 
+  public handleFileInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    if (input.files.length > ProductsComponent.MAX_UPLOAD_FILES) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        html: `You are allowed to upload a maximum of ${ProductsComponent.MAX_UPLOAD_FILES}`,
+      });
+      return;
+    }
+
+    this.photos = Array.from(input.files);
+  }
+
   public onUpdateProductSubmit() {
     this.spinner.show();
 
-    const inputs = Object.keys(this.createProductForm.value)
-      .filter((k) => this.createProductForm.value[k] !== null)
-      .reduce((a, k) => ({ ...a, [k]: this.createProductForm.value[k] }), {});
+    const inputs = Object.keys(this.updateProductForm.value)
+      .filter((k) => this.updateProductForm.value[k] !== null)
+      .reduce((a, k) => ({ ...a, [k]: this.updateProductForm.value[k] }), {});
 
-    this.apollo
-      .mutate<{ product: { id: string } }>({
+    forkJoin([
+      this.apollo.mutate<{ product: { id: string } }>({
         mutation: MUTATION_UPDATE_PRODUCT,
         errorPolicy: 'all',
         variables: inputs,
-      })
+      }),
+      ...this.photos.map((photo) => {
+        return this.apollo.mutate<{ product: { id: string } }>({
+          mutation: MUTATION_UPDATE_PRODUCT_PHOTO,
+          errorPolicy: 'all',
+          variables: {
+            productId: this.updateProductForm.get('productId')?.value,
+            photo,
+          },
+          context: {
+            useMultipart: true,
+          },
+        });
+      }),
+    ])
       .pipe(
         finalize(() => {
           this.spinner.hide();
         }),
       )
-      .subscribe(({ data, errors }) => {
-        if (errors) Swal.fire({ icon: 'warning', title: 'Oops...', text: errors[0].message });
-        else if (!data) Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Unknown error' });
-        else {
+      .subscribe(
+        () => {
+          Swal.fire({ icon: 'success', title: 'Success', text: 'Updated successfully' }).then(() =>
+            window.location.reload(),
+          );
+        },
+        (error) => {
           Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            html: `Product<br/>
-            ${data.product.id}<br/>F
-            updated successfully`,
-          }).then(() => window.location.reload());
-        }
-      });
+            icon: 'warning',
+            title: 'Oops...',
+            text: Array.isArray(error) ? error[0].message : error.message,
+          });
+        },
+      );
   }
 }

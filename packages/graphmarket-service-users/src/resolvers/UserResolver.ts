@@ -116,11 +116,11 @@ export default class UserResolver {
    */
   @Mutation(() => User, { description: `Update avatar of the current authenticated user` })
   @Authorized()
-  updateAvatar(
+  async updateAvatar(
     @Arg('file', () => GraphQLUpload) file: FileUpload,
     @Ctx() ctx: IGraphQLContext,
   ): Promise<User> {
-    return this.userService.updateAvatar(ctx.user!.id, file.createReadStream());
+    return this.userService.updateAvatar(ctx.user!.id, await file.createReadStream());
   }
 
   /**

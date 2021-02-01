@@ -29,6 +29,7 @@ export const resourcesOptions: Record<Resources, cloudinary.UploadApiOptions> = 
  */
 export enum ResourceTypes {
   USER_AVATAR,
+  PRODUCT_PHOTO,
 }
 
 export interface IResourceTypeDescriptor {
@@ -45,6 +46,11 @@ export const resourceTypesDescriptor: Record<ResourceTypes, IResourceTypeDescrip
   [ResourceTypes.USER_AVATAR]: {
     resource: Resources.IMAGE,
     folder: 'user/avatar',
+    options: { width: 512, height: 512, crop: 'fill', quality: 'auto:best' },
+  },
+  [ResourceTypes.PRODUCT_PHOTO]: {
+    resource: Resources.IMAGE,
+    folder: 'product/photo',
     options: { width: 512, height: 512, crop: 'fill', quality: 'auto:best' },
   },
   // Videos

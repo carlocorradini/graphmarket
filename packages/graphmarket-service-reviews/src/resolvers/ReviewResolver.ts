@@ -1,7 +1,6 @@
 import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { Review } from '@graphmarket/entities';
-import { PaginationArgs } from '@graphmarket/graphql-args';
 import { GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import { ReviewService } from '@app/services';

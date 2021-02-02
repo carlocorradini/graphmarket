@@ -33,7 +33,7 @@
     "@graphmarket/logger": "^1.1.0",
     "@graphmarket/utils": "^1.1.0",
     "class-validator": "^0.13.1",
-    "envalid": "^6.0.2",
+    "envalid": "^7.0.0",
     "ioredis": "^4.19.4",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",

@@ -17,7 +17,6 @@ const env = buildEnv(
       PORT: port({ devDefault: 8080 }),
       GRAPHQL_PATH: str({ default: '/graphql' }),
       REDIS_URL: url(),
-      REDIS_TOKEN_BLACKLIST: str({ default: 'TOKEN_BLACKLIST' }),
       TOKEN_SECRET: str({ devDefault: 'password' }),
       TOKEN_ALGORITHM: str({ default: 'HS256' }),
       SERVICES_AUTHENTICATIONS_URL: url({ devDefault: 'http://localhost:8081/graphql' }),

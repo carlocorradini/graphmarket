@@ -41,7 +41,7 @@ const config: IConfigGateway = {
     },
     REVIEWS: {
       URL: env.SERVICES_REVIEWS_URL,
-    }
+    },
   },
 };
 

@@ -1,6 +1,6 @@
 {
   "name": "@graphmarket/helpers",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Graph Market helpers",
   "license": "MIT",
   "main": "build/index.js",
@@ -26,9 +26,9 @@
   },
   "dependencies": {
     "@apollo/federation": "^0.21.0",
-    "@graphmarket/interfaces": "^1.1.0",
-    "@graphmarket/middlewares": "^1.1.0",
-    "@graphmarket/utils": "^1.1.0",
+    "@graphmarket/interfaces": "^1.1.1",
+    "@graphmarket/middlewares": "^1.1.1",
+    "@graphmarket/utils": "^1.1.1",
     "apollo-graphql": "^0.6.0",
     "apollo-server-core": "^2.19.1",
     "apollo-server-express": "^2.19.1",

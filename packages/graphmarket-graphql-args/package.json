@@ -1,6 +1,6 @@
 {
   "name": "@graphmarket/graphql-args",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Graph Market GraphQL arguments",
   "license": "MIT",
   "main": "build/index.js",
@@ -25,7 +25,7 @@
     "coverage": "npm run test -- --coverage"
   },
   "dependencies": {
-    "@graphmarket/graphql-scalars": "^1.1.0",
+    "@graphmarket/graphql-scalars": "^1.1.1",
     "class-validator": "^0.13.1",
     "type-graphql": "^1.1.1"
   },

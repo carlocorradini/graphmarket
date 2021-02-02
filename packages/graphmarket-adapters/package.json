@@ -1,6 +1,6 @@
 {
   "name": "@graphmarket/adapters",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Graph Market adapters",
   "license": "MIT",
   "main": "build/index.js",
@@ -25,8 +25,8 @@
     "coverage": "npm run test -- --coverage"
   },
   "dependencies": {
-    "@graphmarket/interfaces": "^1.1.0",
-    "@graphmarket/utils": "^1.1.0",
+    "@graphmarket/interfaces": "^1.1.1",
+    "@graphmarket/utils": "^1.1.1",
     "@sendgrid/mail": "^7.4.0",
     "cloudinary": "^1.23.0",
     "express-jwt-blacklist": "git+https://github.com/carlocorradini/express-jwt-blacklist.git",

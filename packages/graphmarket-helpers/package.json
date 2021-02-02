@@ -1,6 +1,6 @@
 {
   "name": "@graphmarket/helpers",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Graph Market helpers",
   "license": "MIT",
   "main": "build/index.js",
@@ -25,15 +25,15 @@
     "coverage": "npm run test -- --coverage"
   },
   "dependencies": {
-    "@apollo/federation": "^0.20.7",
-    "@graphmarket/interfaces": "^1.1.0",
-    "@graphmarket/middlewares": "^1.1.0",
-    "@graphmarket/utils": "^1.1.0",
+    "@apollo/federation": "^0.21.0",
+    "@graphmarket/interfaces": "^1.1.1",
+    "@graphmarket/middlewares": "^1.1.1",
+    "@graphmarket/utils": "^1.1.1",
     "apollo-graphql": "^0.6.0",
     "apollo-server-core": "^2.19.1",
     "apollo-server-express": "^2.19.1",
     "compression": "^1.7.4",
-    "envalid": "^6.0.2",
+    "envalid": "^7.0.0",
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
     "express-jwt-blacklist": "git+https://github.com/carlocorradini/express-jwt-blacklist.git",

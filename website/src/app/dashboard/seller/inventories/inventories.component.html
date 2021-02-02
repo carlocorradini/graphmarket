@@ -1,0 +1,220 @@
+<ng-template [ngIf]="!loading && !error">
+  <ul uk-tab id="inventories-tab">
+    <li>
+      <a href="#">
+        <span uk-icon="album"></span> Inventories
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span uk-icon="plus-circle"></span> Add
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span uk-icon="pencil"></span> Edit
+      </a>
+    </li>
+  </ul>
+
+  <ul class="uk-switcher uk-margin">
+    <li>
+      <ng-template [ngIf]="inventories.length !== 0" [ngIfElse]="noInventories">
+        <div class="uk-overflow-auto">
+          <table class="uk-table uk-table-middle uk-table-divider uk-table-large uk-table-striped uk-table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Condition</th>
+                <th>Crated at</th>
+                <th>Updated at</th>
+                <th>Edit ?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let inventory of inventories">
+                <td>{{ inventory.id }}</td>
+                <td>
+                  <a [routerLink]="['/products', inventory.product.id]">
+                    <img class="uk-border-rounded"
+                      [src]="inventory.product?.cover ? inventory.product.cover : 'https://res.cloudinary.com/dxiqa0xwa/image/upload/v1609604389/graphmarket/product/photo/product.png'"
+                      width="64" height="64" [alt]="inventory.product.name" />
+                    &nbsp;
+                    {{ inventory.product.name}}
+                  </a>
+                </td>
+                <td>
+                  {{ inventory.quantity }}
+                </td>
+                <td>{{ inventory.price }} $</td>
+                <td>{{ inventory.condition }}</td>
+                <td>{{ inventory.createdAt | date: 'MMMM d, y, h:mm:ss a' }}</td>
+                <td>{{ inventory.updatedAt | date: 'MMMM d, y, h:mm:ss a' }}</td>
+                <td>
+                  <button class="uk-button uk-button-danger" (click)="editInventory(inventory.id)">
+                    <span uk-icon="pencil"></span>&nbsp;Edit
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <button class="uk-button uk-button-primary uk-button-large uk-margin uk-align-center" (click)="fetchMore()">
+          <span uk-icon="plus"></span>
+          LOAD MORE
+        </button>
+      </ng-template>
+      <ng-template #noInventories>
+        <div class="uk-alert-primary" uk-alert>
+          <p>
+            <span uk-icon="info"></span>
+            No Inventories found
+          </p>
+        </div>
+      </ng-template>
+    </li>
+    <li>
+      <div class="uk-section uk-flex uk-flex-middle" uk-height-match>
+        <div class="uk-width-1-1">
+          <div class="uk-container">
+            <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+              <div class="uk-width-1-1@m">
+                <div
+                  class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+                  <h3 class="uk-card-title uk-text-center">Add an inventory!</h3>
+                  <form [formGroup]="createInventoryForm" (ngSubmit)="onCreateInventorySubmit()" ngNativeValidate>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Product ID <span class="uk-text-danger uk-text-bold">*</span>
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="hashtag"></span>
+                        <input formControlName="productId" class="uk-input uk-form-large" type="text"
+                          placeholder="Product ID" required autocomplete="off" autocapitalize="none" spellcheck="false"
+                          minlength="36" maxlength="36" />
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Price (in cents) <span class="uk-text-danger uk-text-bold">*</span>
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="bolt"></span>
+                        <input formControlName="price" class="uk-input uk-form-large" type="number"
+                          placeholder="Price in cents" required min="1" step="1" />
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Quantity <span class="uk-text-danger uk-text-bold">*</span>
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="move"></span>
+                        <input formControlName="quantity" class="uk-input uk-form-large" type="number"
+                          placeholder="Quantity" required min="0" step="1" />
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Condition <span class="uk-text-danger uk-text-bold">*</span>
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <select formControlName="condition" class="uk-select uk-form-large" required>
+                          <option *ngFor="let condition of productConditions" [ngValue]="condition[0]">
+                            {{ condition[1] }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="uk-text-small uk-text-meta">
+                      <span class="uk-text-danger uk-text-bold">*</span> required field
+                    </div>
+
+                    <div class="uk-margin">
+                      <button type="submit" class="uk-button uk-button-primary uk-button-large uk-width-1-1">
+                        <span uk-icon="plus-circle"></span>
+                        Add
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="uk-section uk-flex uk-flex-middle" uk-height-match>
+        <div class="uk-width-1-1">
+          <div class="uk-container">
+            <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+              <div class="uk-width-1-1@m">
+                <div
+                  class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+                  <h3 class="uk-card-title uk-text-center">Edit an inventory!</h3>
+                  <form [formGroup]="updateInventoryForm" (ngSubmit)="onUpdateInventorySubmit()" ngNativeValidate>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Inventory ID <span class="uk-text-danger uk-text-bold">*</span>
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="hashtag"></span>
+                        <input formControlName="inventoryId" class="uk-input uk-form-large" type="text"
+                          placeholder="Inventory ID" required autocomplete="off" autocapitalize="none"
+                          spellcheck="false" minlength="36" maxlength="36" />
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Price (in cents)
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="bolt"></span>
+                        <input formControlName="price" class="uk-input uk-form-large" type="number"
+                          placeholder="Price in cents" min="1" step="1" />
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Quantity
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="move"></span>
+                        <input formControlName="quantity" class="uk-input uk-form-large" type="number"
+                          placeholder="Quantity" min="0" step="1" />
+                      </div>
+                    </div>
+
+                    <div class="uk-text-small uk-text-meta">
+                      <span class="uk-text-danger uk-text-bold">*</span> required field
+                    </div>
+
+                    <div class="uk-margin">
+                      <button type="submit" class="uk-button uk-button-primary uk-button-large uk-width-1-1">
+                        <span uk-icon="check"></span>
+                        Update
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</ng-template>

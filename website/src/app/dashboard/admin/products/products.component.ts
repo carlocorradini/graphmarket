@@ -75,6 +75,8 @@ export class ProductsComponent implements OnInit {
 
   public static readonly MAX_UPLOAD_FILES: number = 8;
 
+  public static readonly MAX_UPLOAD_FILE_SIZE: number = 4194304;
+
   public products: Product[];
 
   public loading: boolean;
@@ -183,7 +185,7 @@ export class ProductsComponent implements OnInit {
             icon: 'success',
             title: 'Success',
             html: `Product<br/>
-            ${data.product.id}<br/>F
+            ${data.product.id}<br/>
             created successfully`,
           });
         }
@@ -225,9 +227,20 @@ export class ProductsComponent implements OnInit {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        html: `You are allowed to upload a maximum of ${ProductsComponent.MAX_UPLOAD_FILES}`,
+        html: `You are allowed to upload a maximum of ${ProductsComponent.MAX_UPLOAD_FILES} files`,
       });
       return;
+    }
+
+    for (let i = 0; i < input.files.length; i += 1) {
+      if (input.files[i].size > ProductsComponent.MAX_UPLOAD_FILE_SIZE) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          html: `You are allowed to upload a maximum file size of ${ProductsComponent.MAX_UPLOAD_FILE_SIZE}`,
+        });
+        return;
+      }
     }
 
     this.photos = Array.from(input.files);

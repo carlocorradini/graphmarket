@@ -24,6 +24,10 @@ const routes: Routes = [
     component: ReviewsComponent,
   },
   {
+    path: 'seller',
+    loadChildren: () => import('./seller/seller.module').then((m) => m.SellerModule),
+  },
+  {
     path: 'admin',
     loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule),
     canActivate: [AdminAuthGuard],

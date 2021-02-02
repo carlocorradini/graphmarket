@@ -84,6 +84,18 @@
                                         Reviews
                                     </a>
                                 </li>
+                                <ng-template [ngIf]="hasRole(userRoles.SELLER)">
+                                    <li class="uk-nav-header">
+                                        Seller
+                                    </li>
+                                    <li>
+                                        <a routerLink="/dashboard/seller/inventories">
+                                            <span uk-icon="album"></span>
+                                            &nbsp;
+                                            Inventories
+                                        </a>
+                                    </li>
+                                </ng-template>
                                 <ng-template [ngIf]="hasRole(userRoles.ADMINISTRATOR)">
                                     <li class="uk-nav-header">
                                         Administrator

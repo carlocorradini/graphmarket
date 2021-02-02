@@ -9,14 +9,14 @@ import {
 import { UserRoles, UserService } from 'src/app/core';
 
 @Injectable()
-export class AdminAuthGuard implements CanActivate, CanActivateChild {
+export class SellerAuthGuard implements CanActivate, CanActivateChild {
   public constructor(private readonly router: Router, private readonly userService: UserService) {}
 
   public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return this.userService.authUserhasRole(UserRoles.ADMINISTRATOR);
+    return this.userService.authUserhasRole(UserRoles.SELLER);
   }
 
   public canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return this.userService.authUserhasRole(UserRoles.ADMINISTRATOR);
+    return this.userService.authUserhasRole(UserRoles.SELLER);
   }
 }

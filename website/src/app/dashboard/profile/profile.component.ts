@@ -11,6 +11,9 @@ import Swal from 'sweetalert2';
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent {
+
+  public static readonly MAX_UPLOAD_FILE_SIZE: number = 4194304;
+
   public user?: User;
 
   public readonly userGenders = Object.entries(UserGenders)
@@ -46,6 +49,15 @@ export class ProfileComponent {
   public handleFileInput(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
+    if (input.files[0].size > ProfileComponent.MAX_UPLOAD_FILE_SIZE) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        html: `You are allowed to upload a maximum file size of ${ProfileComponent.MAX_UPLOAD_FILE_SIZE}`,
+      });
+      return;
+    }
+
     this.avatar = input.files[0];
   }
 

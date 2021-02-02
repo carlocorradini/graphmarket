@@ -39,9 +39,13 @@
                 <td>{{ product.id }}</td>
                 <td>{{ product.category }}</td>
                 <td>
-                  <img class="uk-border-rounded"
-                    [src]="product?.cover ? product.cover : 'https://res.cloudinary.com/dxiqa0xwa/image/upload/v1609604389/graphmarket/product/photo/product.png'"
-                    width="64" height="64" [alt]="product.name" />
+                  <a [routerLink]="['/products', product.id]">
+                    <img class="uk-border-rounded"
+                      [src]="product?.cover ? product.cover : 'https://res.cloudinary.com/dxiqa0xwa/image/upload/v1609604389/graphmarket/product/photo/product.png'"
+                      width="64" height="64" [alt]="product.name" />
+                    &nbsp;
+                    {{ product.name}}
+                  </a>
                 </td>
                 <td>{{ product.name }}</td>
                 <td>{{ product?.description ? product.description : '-' }}</td>

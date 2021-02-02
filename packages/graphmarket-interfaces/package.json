@@ -1,6 +1,6 @@
 {
   "name": "@graphmarket/interfaces",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Graph Market interfaces",
   "license": "MIT",
   "main": "build/index.js",
@@ -25,7 +25,7 @@
     "coverage": "npm run test -- --coverage"
   },
   "dependencies": {
-    "@graphmarket/entities": "^1.0.1"
+    "@graphmarket/entities": "^1.1.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",

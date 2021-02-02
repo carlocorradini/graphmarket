@@ -1,3 +1,5 @@
+import path from 'path';
+import dotenv from 'dotenv';
 /**
  * Environment utility.
  */
@@ -28,28 +30,27 @@ export default class EnvUtil {
   }
 
   /**
-   * Return the path to the file that is parsed by dotenv.
-   * Null skip dotenv processing entirely and only load from process.env.
-   * '.env' load .env file used in development environment.
-   * '.env.test' load .env.test file used in test environment.
-   *
-   * @returns Path to the file that is parsed by dotenv
+   * Load the '.env' file based on the current environment.
+   * .env file used in development environment.
+   * .env.test file used in test environment.
+   * Otherwise it does not load any '.emv' file.
    */
-  public static getDotEnvPath(): string | null {
+  public static loadDotEnvFile(): void {
+    let dotEnvPath: string;
+
     switch (EnvUtil.getCurrentEnv()) {
-      case EnvUtil.ENV_PRODUCTION: {
-        return null;
-      }
-      case EnvUtil.ENV_DEVELOPMENT: {
-        return '.env';
-      }
-      case EnvUtil.ENV_TEST: {
-        return '.env.test';
-      }
-      default: {
-        return null;
-      }
+      case EnvUtil.ENV_DEVELOPMENT:
+        dotEnvPath = '.env';
+        break;
+      case EnvUtil.ENV_TEST:
+        dotEnvPath = '.env.test';
+        break;
+      default:
+        // Skip .env file loading
+        return;
     }
+
+    dotenv.config({ path: path.resolve(process.cwd(), dotEnvPath) });
   }
 
   /**

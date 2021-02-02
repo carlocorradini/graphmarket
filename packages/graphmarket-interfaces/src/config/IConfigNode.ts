@@ -2,6 +2,6 @@
  * Node configuration.
  */
 export default interface IConfigNode {
-  readonly ENV: 'production' | 'development' | 'test';
+  readonly ENV: string;
   readonly PORT: number;
 }

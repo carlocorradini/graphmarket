@@ -25,7 +25,8 @@
     "coverage": "npm run test -- --coverage"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3"
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^8.2.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

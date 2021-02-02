@@ -35,13 +35,14 @@
     "@graphmarket/utils": "^1.1.0",
     "class-validator": "^0.13.1",
     "convert-units": "^2.3.4",
+    "dotenv": "^8.2.0",
     "envalid": "^7.0.0",
     "graphql-upload": "^11.0.0",
     "ioredis": "^4.19.4",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
-    "typedi": "^0.8.0",
+    "typedi": "^0.10.0",
     "typeorm": "^0.2.29"
   },
   "devDependencies": {

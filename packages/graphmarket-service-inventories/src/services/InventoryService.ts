@@ -27,7 +27,7 @@ export default class InventoryService {
    * @returns Find operator for the stock
    */
   private stockToQuantity(stock: InventoryStock | undefined): FindOperator<number> | undefined {
-    let quantity: FindOperator<number> | undefined = undefined;
+    let quantity: FindOperator<number> | undefined;
 
     switch (stock) {
       case InventoryStock.IN_STOCK:
@@ -35,6 +35,9 @@ export default class InventoryService {
         break;
       case InventoryStock.OUT_OF_STOCK:
         quantity = LessThanOrEqual(0);
+        break;
+      default:
+        quantity = undefined;
         break;
     }
 

@@ -1,9 +1,9 @@
 import { Args, FieldResolver, Resolver, Root } from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { Inventory, ProductExternal } from '@graphmarket/entities';
-import { PaginationArgs } from '@graphmarket/graphql-args';
 import { InventoryService } from '@app/services';
 import { GraphQLBoolean, GraphQLNonNegativeInt, GraphQLPrice } from '@graphmarket/graphql-scalars';
+import { FindInventoryArgs } from '@app/args';
 
 /**
  * Product inventory resolver.
@@ -29,9 +29,9 @@ export default class ProductInventoryResolver {
   @FieldResolver(() => [Inventory], { description: `Product's inventories` })
   inventories(
     @Root() product: ProductExternal,
-    @Args() { skip, take }: PaginationArgs,
+    @Args() args: FindInventoryArgs,
   ): Promise<Inventory[]> {
-    return this.inventoryService.readByProduct(product.id, { skip, take });
+    return this.inventoryService.readByProduct(product.id, args);
   }
 
   /**

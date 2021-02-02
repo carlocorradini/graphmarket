@@ -1,11 +1,11 @@
 import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { Inventory, UserRoles } from '@graphmarket/entities';
-import { PaginationArgs } from '@graphmarket/graphql-args';
 import { GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import { InventoryService } from '@app/services';
 import { InventoryCreateInput, InventoryUpdateInput } from '@app/inputs';
+import { FindInventoryArgs } from '@app/args';
 
 /**
  * Inventory resolver.
@@ -61,8 +61,8 @@ export default class InventoryResolver {
    * @returns All available inventories
    */
   @Query(() => [Inventory], { description: `Return all inventories` })
-  inventories(@Args() { skip, take }: PaginationArgs): Promise<Inventory[]> {
-    return this.inventoryService.read({ skip, take });
+  inventories(@Args() args: FindInventoryArgs): Promise<Inventory[]> {
+    return this.inventoryService.read(args);
   }
 
   /**

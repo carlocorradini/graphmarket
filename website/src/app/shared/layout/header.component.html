@@ -6,6 +6,16 @@
         </a>
     </div>
 
+    <div class="uk-navbar-item uk-width-expand">
+        <form [formGroup]="searchProductForm" class="uk-width-expand" ngNativeValidate (ngSubmit)="searchProduct()">
+            <div class="uk-display-inline-block uk-position-relative uk-width-expand">
+                <button type="submit" class="uk-form-icon" href="#" uk-icon="search"></button>
+                <input class="uk-input" type="text" formControlName="productName" placeholder="Search product" required
+                    autocomplete="off" autocapitalize="none" spellcheck="false" minlength="1" />
+            </div>
+        </form>
+    </div>
+
     <div class="uk-navbar-right">
         <div class="uk-navbar-item">
             <a routerLink="/products" class="uk-button uk-button-default">
@@ -15,7 +25,7 @@
         </div>
 
         <!-- Not authenticated -->
-        <ng-template [appShowAuth]="false">
+        <ng-template [ngIf]="!isAuth">
             <div class="uk-navbar-item">
                 <div class="uk-button-group">
                     <a routerLink="/signin" class="uk-button uk-button-primary">
@@ -31,7 +41,7 @@
         </ng-template>
 
         <!-- Authenticated -->
-        <ng-template [appShowAuth]="true">
+        <ng-template [ngIf]="isAuth">
             <hr class="uk-divider-vertical">
             <div class="uk-navbar-item">
                 <ul class="uk-navbar-nav">
@@ -40,9 +50,12 @@
                             <img class="uk-border-rounded" [src]="user?.avatar" width="38" height="38"
                                 [alt]="user?.username">&nbsp;&nbsp;
                             <span class="uk-text-middle uk-text-bold">{{ user?.username }}</span>
+                            &nbsp;
+                            <span uk-icon="triangle-down"></span>
                         </a>
                         <div class="uk-navbar-dropdown" uk-dropdown="mode: click">
                             <ul class="uk-nav uk-navbar-dropdown-nav">
+                                <li class="uk-nav-header">Menu</li>
                                 <li>
                                     <a routerLink="/dashboard">
                                         <span uk-icon="settings"></span>
@@ -57,6 +70,44 @@
                                         <span class="uk-text-middle">Profile</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a routerLink="/dashboard/purchases">
+                                        <span uk-icon="cart"></span>
+                                        &nbsp;
+                                        Purchases
+                                    </a>
+                                </li>
+                                <li>
+                                    <a routerLink="/dashboard/reviews">
+                                        <span uk-icon="commenting"></span>
+                                        &nbsp;
+                                        Reviews
+                                    </a>
+                                </li>
+                                <ng-template [ngIf]="hasRole(userRoles.SELLER)">
+                                    <li class="uk-nav-header">
+                                        Seller
+                                    </li>
+                                    <li>
+                                        <a routerLink="/dashboard/seller/inventories">
+                                            <span uk-icon="album"></span>
+                                            &nbsp;
+                                            Inventories
+                                        </a>
+                                    </li>
+                                </ng-template>
+                                <ng-template [ngIf]="hasRole(userRoles.ADMINISTRATOR)">
+                                    <li class="uk-nav-header">
+                                        Administrator
+                                    </li>
+                                    <li>
+                                        <a routerLink="/dashboard/admin/products">
+                                            <span uk-icon="thumbnails"></span>
+                                            &nbsp;
+                                            Products
+                                        </a>
+                                    </li>
+                                </ng-template>
                                 <li class="uk-nav-divider"></li>
                                 <li>
                                     <button class="uk-button uk-button-danger" (click)="signOut()">

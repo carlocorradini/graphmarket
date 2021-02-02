@@ -5,6 +5,7 @@ import { Review } from '@graphmarket/entities';
 import { PaginationArgs } from '@graphmarket/graphql-args';
 import { EntityAlreadyExistsError } from '@graphmarket/errors';
 import logger from '@graphmarket/logger';
+import { FindReviewsArgs } from '@app/args';
 
 /**
  * Review service.
@@ -85,13 +86,19 @@ export default class ReviewService {
    */
   @Transaction()
   public read(
-    options: Pick<FindManyOptions, 'skip' | 'take'> = {
-      skip: PaginationArgs.DEFAULT_SKIP,
-      take: PaginationArgs.DEFAULT_TAKE,
-    },
+    { skip, take, authorId, productId }: FindReviewsArgs,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review[]> {
-    return manager!.find(Review, { ...options, order: { createdAt: 'DESC' }, cache: true });
+    return manager!.find(Review, {
+      where: {
+        ...(authorId && { author: { id: authorId } }),
+        ...(productId && { product: { id: productId } }),
+      },
+      skip,
+      take,
+      order: { createdAt: 'DESC' },
+      cache: true,
+    });
   }
 
   /**

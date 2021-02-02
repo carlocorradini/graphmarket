@@ -11,7 +11,7 @@ import {
 } from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { Purchase } from '@graphmarket/entities';
-import { GraphQLPositiveInt, GraphQLUUID } from '@graphmarket/graphql-scalars';
+import { GraphQLPrice, GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import { PaginationArgs } from '@graphmarket/graphql-args';
 import { PurchaseCreateInput } from '@app/inputs';
@@ -38,7 +38,7 @@ export default class PurchaseResolver {
    * @param purchase - Purchase
    * @returns Total price
    */
-  @FieldResolver(() => GraphQLPositiveInt, { description: `Purchase's total amount` })
+  @FieldResolver(() => GraphQLPrice, { description: `Purchase's total amount` })
   @Authorized()
   // eslint-disable-next-line class-methods-use-this
   async amount(@Root() purchase: Purchase): Promise<number> {

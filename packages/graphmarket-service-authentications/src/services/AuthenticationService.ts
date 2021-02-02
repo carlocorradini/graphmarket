@@ -71,6 +71,8 @@ export default class AuthenticationService {
 
     await manager!.update(User, id, { verified: true });
 
+    logger.info(`User ${id} has been verified`);
+
     return this.tokenAdapter.sign({ id: user.id, roles: user.roles }, config.TOKEN.SECRET, {
       expiresIn: config.TOKEN.EXPIRATION_TIME,
     });

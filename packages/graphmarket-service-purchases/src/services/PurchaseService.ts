@@ -107,7 +107,7 @@ export default class PurchaseService {
     },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Purchase[]> {
-    return manager!.find(Purchase, { ...options, cache: true });
+    return manager!.find(Purchase, { ...options, order: { createdAt: 'DESC' }, cache: true });
   }
 
   /**
@@ -133,6 +133,7 @@ export default class PurchaseService {
       .where('user.id = :userId', { userId })
       .offset(options.skip)
       .limit(options.take)
+      .orderBy('purchase.createdAt', 'DESC')
       .getMany();
   }
 

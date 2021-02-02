@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged, finalize } from 'rxjs/operators';
-import { User, UserGenders } from '../models';
+import { User, UserGenders, UserRoles } from '../models';
 import { TokenService } from './token.service';
 
 export interface SignUpValues {
@@ -10,10 +10,18 @@ export interface SignUpValues {
   password: string;
   name?: string;
   surname?: string;
-  gender: UserGenders;
-  dateOfBirth: string;
+  gender?: UserGenders;
+  dateOfBirth?: string;
   email: string;
   phone: string;
+}
+
+export interface updateValues {
+  password?: string;
+  name?: string;
+  surname?: string;
+  gender?: UserGenders;
+  dateOfBirth?: string;
 }
 
 const QUERY_ME = gql`
@@ -25,6 +33,7 @@ const QUERY_ME = gql`
       name
       surname
       dateOfBirth
+      gender
       fullName
       email
       phone
@@ -99,11 +108,65 @@ const MUTATION_REVERIFY = gql`
   }
 `;
 
+const MUTATION_UPDATE = gql`
+  mutation UpdateMe(
+    $password: NonEmptyString
+    $name: NonEmptyString
+    $surname: NonEmptyString
+    $gender: UserGenders
+    $dateOfBirth: Date
+  ) {
+    user: updateMe(
+      data: {
+        password: $password
+        name: $name
+        surname: $surname
+        gender: $gender
+        dateOfBirth: $dateOfBirth
+      }
+    ) {
+      id
+      username
+      roles
+      name
+      surname
+      dateOfBirth
+      gender
+      fullName
+      email
+      phone
+      avatar
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const MUTATION_UPDATE_AVATAR = gql`
+  mutation UpdateAvatar($avatar: Upload!) {
+    user: updateAvatar(file: $avatar) {
+      id
+      username
+      roles
+      name
+      surname
+      dateOfBirth
+      gender
+      fullName
+      email
+      phone
+      avatar
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 @Injectable()
 export class UserService {
   public static readonly TOKEN_KEY: string = 'AUTH_TOKEN';
 
-  private userSubject = new BehaviorSubject<User>({} as User);
+  private userSubject = new BehaviorSubject<User | undefined>(undefined);
 
   public user = this.userSubject.asObservable().pipe(distinctUntilChanged());
 
@@ -121,9 +184,7 @@ export class UserService {
 
     if (token) {
       this.me().subscribe(
-        ({ data }) => {
-          this.setAuthUser(token, data.user);
-        },
+        ({ data }) => this.setAuthUser(token, data.user),
         () => this.removeAuthUser(),
       );
     } else {
@@ -131,7 +192,7 @@ export class UserService {
     }
   }
 
-  public getAuthUser(): User {
+  public getAuthUser(): User | undefined {
     return this.userSubject.value;
   }
 
@@ -143,10 +204,20 @@ export class UserService {
     else this.populate();
   }
 
+  public updateAuthUser(user: User): void {
+    this.userSubject.next(user);
+  }
+
   public removeAuthUser(): void {
     this.tokenService.removeToken();
-    this.userSubject.next({} as User);
+    this.userSubject.next(undefined);
     this.isAuthSubject.next(false);
+  }
+
+  public authUserhasRole(role: UserRoles): boolean {
+    const authUser = this.getAuthUser();
+    if (!authUser) return false;
+    return authUser.roles.some((r) => role === r);
   }
 
   public me() {
@@ -183,12 +254,11 @@ export class UserService {
   public signOut(): void {
     this.apollo
       .mutate<void>({ mutation: MUTATION_SIGN_OUT, errorPolicy: 'all' })
-      .pipe(
-        finalize(() => {
-          this.removeAuthUser();
-        }),
-      )
-      .subscribe();
+      .subscribe(
+        () => this.removeAuthUser(),
+        () => this.removeAuthUser(),
+        () => this.removeAuthUser(),
+      );
   }
 
   public verify(userId: string, phoneCode: string, emailCode: string) {
@@ -208,6 +278,25 @@ export class UserService {
       mutation: MUTATION_REVERIFY,
       errorPolicy: 'all',
       variables: { userId },
+    });
+  }
+
+  public update(data: updateValues) {
+    return this.apollo.mutate<{ user: User }>({
+      mutation: MUTATION_UPDATE,
+      errorPolicy: 'all',
+      variables: data,
+    });
+  }
+
+  public updateAvatar(avatar: File) {
+    return this.apollo.mutate<{ user: User }>({
+      mutation: MUTATION_UPDATE_AVATAR,
+      errorPolicy: 'all',
+      context: {
+        useMultipart: true,
+      },
+      variables: { avatar },
     });
   }
 }

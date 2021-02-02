@@ -1,51 +1,61 @@
 <ng-template [ngIf]="!loading && !error">
-  <div class="uk-grid-column-small uk-grid-match uk-child-width-1-3@s" uk-grid>
-    <div *ngFor="let product of products">
+  <ng-template [ngIf]="products.length !== 0" [ngIfElse]="noProducts">
+    <div class="uk-grid-column-small uk-grid-match uk-child-width-1-3@s" uk-grid>
+      <div *ngFor="let product of products">
 
-      <a [routerLink]="['/products', product.id]"
-        class="uk-card uk-card-default uk-card-hover uk-text-center uk-inline uk-link-reset"
-        [ngClass]="product.available ? '' : 'uk-disabled'">
+        <a [routerLink]="['/products', product.id]"
+          class="uk-card uk-card-default uk-card-hover uk-text-center uk-inline uk-link-reset"
+          [ngClass]="product.available ? '' : 'uk-disabled'">
 
-        <div *ngIf="!product.available" class="uk-overlay-default uk-position-cover uk-text-danger">
-          <div class="uk-position-center">
-            <span uk-icon="icon: close; ratio: 3"></span>
-            <p class="uk-text-large">Sold Out</p>
+          <div *ngIf="!product.available" class="uk-overlay-default uk-position-cover uk-text-danger">
+            <div class="uk-position-center">
+              <span uk-icon="icon: close; ratio: 3"></span>
+              <p class="uk-text-large">Sold Out</p>
+            </div>
           </div>
-        </div>
 
-        <div class="uk-card-media-top">
-          <img
-            src="{{ product.cover ? product.cover : 'https://res.cloudinary.com/dxiqa0xwa/image/upload/v1609604389/graphmarket/product/photo/product.png' }}"
-            alt="{{ product.name }}" width="512" height="512" loading="lazy" />
-          <div *ngIf="product.available" class="uk-card-badge uk-label"
-            [ngClass]="product.available ? '' : 'uk-label-danger'">
-            {{ product.quantity }}
+          <div class="uk-card-media-top">
+            <img
+              src="{{ product.cover ? product.cover : 'https://res.cloudinary.com/dxiqa0xwa/image/upload/v1609604389/graphmarket/product/photo/product.png' }}"
+              alt="{{ product.name }}" width="512" height="512" loading="lazy" />
+            <div *ngIf="product.available" class="uk-card-badge uk-label"
+              [ngClass]="product.available ? '' : 'uk-label-danger'">
+              {{ product.quantity }}
+            </div>
           </div>
-        </div>
 
-        <div class="uk-card-body">
-          <h3 class="uk-card-title">{{ product.name }}</h3>
-        </div>
+          <div class="uk-card-body">
+            <h3 class="uk-card-title">{{ product.name }}</h3>
+          </div>
 
-        <div class="uk-card-footer">
-          <p class="uk-text-normal uk-margin-remove-top">
-            <ng-template [ngIf]="product.available" [ngIfElse]="productNotAvailable">
-              {{ product.price }} $
-            </ng-template>
-            <ng-template #productNotAvailable>
-              -
-            </ng-template>
-          </p>
-          <star-rating [starType]="'svg'" [rating]="product.rating" [step]="0.5" [numOfStars]="5" [readOnly]="true"
-            [showHalfStars]="true" [disabled]="product.rating === 0 ? true : false" staticColor="ok"></star-rating>
-        </div>
-      </a>
+          <div class="uk-card-footer">
+            <p class="uk-text-normal uk-margin-remove-top">
+              <ng-template [ngIf]="product.available" [ngIfElse]="productNotAvailable">
+                {{ product.price }} $
+              </ng-template>
+              <ng-template #productNotAvailable>
+                -
+              </ng-template>
+            </p>
+            <star-rating [starType]="'svg'" [rating]="product.rating" [step]="0.5" [numOfStars]="5" [readOnly]="true"
+              [showHalfStars]="true" [disabled]="product.rating === '0' ? true : false" staticColor="ok"></star-rating>
+          </div>
+        </a>
 
+      </div>
     </div>
-  </div>
 
-  <button class="uk-button uk-button-primary uk-button-large uk-margin uk-align-center" (click)="fetchMore()">
-    <span uk-icon="plus"></span>
-    LOAD MORE
-  </button>
+    <button class="uk-button uk-button-primary uk-button-large uk-margin uk-align-center" (click)="fetchMore()">
+      <span uk-icon="plus"></span>
+      LOAD MORE
+    </button>
+  </ng-template>
+  <ng-template #noProducts>
+    <div class="uk-alert-primary" uk-alert>
+      <p>
+        <span uk-icon="info"></span>
+        No products found
+      </p>
+    </div>
+  </ng-template>
 </ng-template>

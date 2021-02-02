@@ -10,10 +10,11 @@ import {
 } from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { UserRoles, Product } from '@graphmarket/entities';
-import { PaginationArgs } from '@graphmarket/graphql-args';
 import { GraphQLURL, GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { ProductCreateInput, ProductUpdateInput } from '@app/inputs';
 import { ProductService } from '@app/services';
+import { FindProductsArgs } from '@app/args';
+import { FileUpload, GraphQLUpload } from 'graphql-upload';
 
 /**
  * Product resolver.
@@ -75,8 +76,8 @@ export default class ProductResolver {
    * @returns All available products
    */
   @Query(() => [Product], { description: `Return all products` })
-  products(@Args() { skip, take }: PaginationArgs): Promise<Product[]> {
-    return this.productService.read({ skip, take });
+  products(@Args() args: FindProductsArgs): Promise<Product[]> {
+    return this.productService.read(args);
   }
 
   /**
@@ -93,6 +94,22 @@ export default class ProductResolver {
     @Arg('data', () => ProductUpdateInput) data: ProductUpdateInput,
   ): Promise<Product> {
     return this.productService.update(id, data);
+  }
+
+  /**
+   * Update photo of the product identified by id.
+   *
+   * @param id - Product id
+   * @param file - Photo file
+   * @returns Updated product
+   */
+  @Mutation(() => Product, { description: `Update photo of the product.` })
+  @Authorized(UserRoles.ADMINISTRATOR)
+  async updateProductPhoto(
+    @Arg('id', () => GraphQLUUID) id: string,
+    @Arg('file', () => GraphQLUpload) file: FileUpload,
+  ): Promise<Product> {
+    return this.productService.updatePhoto(id, await file.createReadStream());
   }
 
   /**

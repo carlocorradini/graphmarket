@@ -1,0 +1,147 @@
+<ng-template [ngIf]="!loading && !error">
+  <ul uk-tab id="reviews-tab">
+    <li>
+      <a href="#">
+        <span uk-icon="commenting"></span> Your reviews
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span uk-icon="plus-circle"></span> Write review
+      </a>
+    </li>
+  </ul>
+
+  <ul class="uk-switcher uk-margin">
+    <li>
+      <ng-template [ngIf]="reviews.length !== 0" [ngIfElse]="noReviews">
+        <div class="uk-overflow-auto">
+          <table class="uk-table uk-table-middle uk-table-divider uk-table-large uk-table-striped uk-table-hover">
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Product</th>
+                <th>Title</th>
+                <th>Body</th>
+                <th>Rating</th>
+                <th>Delete ?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let review of reviews">
+                <td>{{ review.createdAt | date: 'MMMM d, y, h:mm:ss a' }}</td>
+                <td>
+                  <a [routerLink]="['/products', review.product.id]">
+                    <img class="uk-border-rounded"
+                      [src]="review.product?.cover ? review.product?.cover : 'https://res.cloudinary.com/dxiqa0xwa/image/upload/v1609604389/graphmarket/product/photo/product.png'"
+                      width="64" height="64" [alt]="review.product.name" />
+                    &nbsp;
+                    {{ review.product.name}}
+                  </a>
+                </td>
+                <td>{{ review.title ? review.title : '-' }}</td>
+                <td>{{ review.body ? review.body : '-' }}</td>
+                <td>
+                  <star-rating class="uk-display-inline-block" [starType]="'svg'" [rating]="review.rating"
+                    [numOfStars]="5" [readOnly]="true" staticColor="ok"></star-rating>
+                </td>
+                <td>
+                  <button class="uk-button uk-button-danger" (click)="deleteReview(review.id)">
+                    <span uk-icon="trash"></span>&nbsp;Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <button class="uk-button uk-button-primary uk-button-large uk-margin uk-align-center" (click)="fetchMore()">
+          <span uk-icon="plus"></span>
+          LOAD MORE
+        </button>
+      </ng-template>
+      <ng-template #noReviews>
+        <div class="uk-alert-primary" uk-alert>
+          <p>
+            <span uk-icon="info"></span>
+            No reviews made
+          </p>
+        </div>
+      </ng-template>
+    </li>
+    <li>
+      <div class="uk-section uk-flex uk-flex-middle" uk-height-match>
+        <div class="uk-width-1-1">
+          <div class="uk-container">
+            <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+              <div class="uk-width-1-1@m">
+                <div
+                  class="uk-margin uk-width-2xlarge uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+                  <h3 class="uk-card-title uk-text-center">Create a review!</h3>
+                  <form [formGroup]="createReviewForm" (ngSubmit)="onCreateReviewSubmit()" ngNativeValidate>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Product ID <span class="uk-text-danger uk-text-bold">*</span>
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="hashtag"></span>
+                        <input formControlName="productId" class="uk-input uk-form-large" type="text"
+                          placeholder="Product ID" required autocomplete="off" autocapitalize="none" spellcheck="false"
+                          minlength="36" maxlength="36" />
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Title
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="code"></span>
+                        <input formControlName="title" class="uk-input uk-form-large" type="text" placeholder="Title"
+                          autocomplete="off" autocapitalize="on" spellcheck="true" minlength="1" maxlength="64" />
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Body
+                      </label>
+                      <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="table"></span>
+                        <input formControlName="body" class="uk-input uk-form-large" type="text" placeholder="Body"
+                          autocomplete="off" autocapitalize="on" spellcheck="true" minlength="1" maxlength="256" />
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">
+                        Rating <span class="uk-text-danger uk-text-bold">*</span>
+                      </label>
+                      <div class="uk-inline uk-width-1-1 uk-margin-small">
+                        <star-rating-control formControlName="rating" class="uk-display-inline-block" [starType]="'svg'"
+                          [numOfStars]="5" staticColor="ok">
+                        </star-rating-control>
+                      </div>
+                    </div>
+
+                    <div class="uk-text-small uk-text-meta">
+                      <span class="uk-text-danger uk-text-bold">*</span> required field
+                    </div>
+
+                    <div class="uk-margin">
+                      <button type="submit" class="uk-button uk-button-primary uk-button-large uk-width-1-1">
+                        <span uk-icon="plus-circle"></span>
+                        Write
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</ng-template>

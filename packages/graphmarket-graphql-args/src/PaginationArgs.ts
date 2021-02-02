@@ -22,7 +22,10 @@ export default class PaginationArgs {
    *
    * @see PaginationArgs.DEFAULT_SKIP
    */
-  @Field(() => GraphQLNonNegativeInt)
+  @Field(() => GraphQLNonNegativeInt, {
+    defaultValue: PaginationArgs.DEFAULT_SKIP,
+    description: `Number of items that should be skipped`,
+  })
   @Min(PaginationArgs.DEFAULT_SKIP)
   skip: number = PaginationArgs.DEFAULT_SKIP;
 
@@ -31,7 +34,10 @@ export default class PaginationArgs {
    *
    * @see PaginationArgs.DEFAULT_TAKE
    */
-  @Field(() => GraphQLPositiveInt)
+  @Field(() => GraphQLPositiveInt, {
+    defaultValue: PaginationArgs.DEFAULT_TAKE,
+    description: `Number of items that should be taken`,
+  })
   @Max(PaginationArgs.DEFAULT_TAKE)
   take: number = PaginationArgs.DEFAULT_TAKE;
 }

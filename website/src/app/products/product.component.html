@@ -32,24 +32,108 @@
     <div>
       <h1 class="uk-heading-bullet uk-heading-medium">{{ product.name }}</h1>
       <h3 class="uk-text-light">{{ product.description }}</h3>
-      <p class="uk-text-bold uk-text-large">{{ product.price }} $</p>
       <div class="uk-display-block">
         <star-rating class="uk-display-inline-block" [starType]="'svg'" [rating]="product.rating" [step]="0.5"
-          [numOfStars]="5" [readOnly]="true" [showHalfStars]="true" [disabled]="product.rating === 0 ? true : false"
+          [numOfStars]="5" [readOnly]="true" [showHalfStars]="true" [disabled]="product.rating === '0' ? true : false"
           staticColor="ok"></star-rating>
       </div>
+
+      <ng-template [ngIf]="product.available">
+        <div class="uk-button-group uk-margin-top uk-width-1-1">
+          <button class="uk-button uk-button-default uk-disabled uk-text-left uk-text-bold uk-text-large uk-width-1-1">
+            {{ inventory?.price }} $
+            &nbsp;
+            <span class="uk-label uk-label-primary">
+              {{ inventory?.condition }}
+            </span>
+          </button>
+          <div class="uk-inline">
+            <button class="uk-button uk-button-default" type="button">
+              <span uk-icon="icon: triangle-down; ratio: 2"></span>
+            </button>
+            <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
+              <div class="uk-overflow-auto">
+                <table class="uk-table uk-table-middle uk-table-divider uk-table-large uk-table-striped uk-table-hover">
+                  <thead>
+                    <tr>
+                      <th>Price</th>
+                      <th>Condition</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let inventory of product.inventories" style="cursor: pointer;"
+                      (click)="changeInventory(inventory.id)">
+                      <td class="uk-text-bold">{{ inventory.price }}</td>
+                      <td>{{ inventory.condition }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template [ngIf]="!product.available">
+        <div class="uk-alert-danger" uk-alert>
+          <a class="uk-alert-close" uk-close></a>
+          <p>
+            <span uk-icon="info"></span>
+            This product is out of stock
+          </p>
+        </div>
+      </ng-template>
+
+      <ng-template [ngIf]="product.available">
+        <div uk-alert
+          [class]="inventory?.quantity === 1 ? 'uk-alert-danger' : ((inventory?.quantity! < 3 || inventory?.quantity! === 3) ? 'uk-alert-warning' : '')">
+          <span uk-icon="info"></span>
+          &nbsp;
+          <span *ngIf="inventory!.quantity <= 3">Only</span>
+          {{ inventory?.quantity }}
+          <span *ngIf="inventory!.quantity === 1">item</span>
+          <span *ngIf="inventory!.quantity > 1">items</span>
+          left from this seller
+        </div>
+
+        <ng-template [ngIf]="isAuth">
+          <button
+            class="uk-button uk-button-primary uk-button-large uk-margin uk-align-center uk-width-1-1 uk-text-bold"
+            (click)="buy()">
+            <span uk-icon="cart"></span>
+            BUY
+          </button>
+
+          <button *ngIf="!reviewIdOfAuthUser" [routerLink]="['/dashboard/reviews']"
+            [queryParams]="{ productId: product.id }"
+            class="uk-button uk-button-secondary uk-button-large uk-margin uk-align-center uk-width-1-1 uk-text-bold">
+            <span uk-icon="comment"></span>
+            WRITE A REVIEW
+          </button>
+        </ng-template>
+      </ng-template>
+
+      <ng-template [ngIf]="!isAuth">
+        <div class="uk-alert-primary" uk-alert>
+          <a class="uk-alert-close" uk-close></a>
+          <p>
+            <span uk-icon="info"></span>
+            You must be authenticated to buy a product
+          </p>
+        </div>
+      </ng-template>
     </div>
   </div>
 
   <h1 class="uk-heading-line"><span><span uk-icon="icon: commenting; ratio: 2"></span> Reviews</span></h1>
   <ng-template [ngIf]="product.reviews.length !== 0" [ngIfElse]="productNoReviews">
-    <div *ngFor="let review of product.reviews; let i = index">
+    <div *ngFor="let review of product.reviews">
       <article class="uk-comment uk-margin-small-bottom">
         <header class="uk-comment-header uk-margin-small-bottom">
           <div class="uk-grid-medium uk-flex-middle" uk-grid>
             <div class="uk-width-auto">
               <a [routerLink]="['/user', review.author.id]">
-                <img class="uk-comment-avatar" [src]="review.author.avatar" width="45" height="45"
+                <img class="uk-comment-avatar uk-border-rounded" [src]="review.author.avatar" width="45" height="45"
                   alt="review.author.fullName">
               </a>
             </div>
@@ -59,8 +143,12 @@
                   {{ review.author.username }}
                 </a>
                 <span *ngIf="review.verified" class="uk-label uk-label-success uk-margin-left">
-                  <span uk-icon="icon: check"></span>
+                  <span uk-icon="check"></span>
                   Verified
+                </span>
+                <span *ngIf="review.id === reviewIdOfAuthUser" class="uk-label uk-label-warning uk-margin-small-left">
+                  <span uk-icon="code"></span>
+                  Yours
                 </span>
               </h4>
               <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
@@ -85,8 +173,12 @@
         </div>
       </article>
 
-      <hr *ngIf="i !== product.reviews.length - 1" class="uk-divider-small">
+      <hr class="uk-divider-small" />
     </div>
+    <button class="uk-button uk-button-primary uk-button-large uk-margin uk-align-left" (click)="fetchMoreReviews()">
+      <span uk-icon="plus"></span>
+      LOAD MORE
+    </button>
   </ng-template>
   <ng-template #productNoReviews>
     <div class="uk-alert-primary" uk-alert>

@@ -1,9 +1,12 @@
 /* eslint-disable class-methods-use-this */
-import { Service } from 'typedi';
-import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
+import { ReadStream } from 'fs';
+import { Inject, Service } from 'typedi';
+import { EntityManager, Transaction, TransactionManager } from 'typeorm';
 import { Product } from '@graphmarket/entities';
-import { PaginationArgs } from '@graphmarket/graphql-args';
+import { UploadAdapter } from '@graphmarket/adapters';
 import logger from '@graphmarket/logger';
+import { FindProductsArgs } from '@app/args';
+import config from '@app/config';
 
 /**
  * Product service.
@@ -12,6 +15,12 @@ import logger from '@graphmarket/logger';
  */
 @Service()
 export default class ProductService {
+  /**
+   * Upload adapter instance.
+   */
+  @Inject()
+  private readonly uploadAdapter!: UploadAdapter;
+
   /**
    * Create a new product.
    *
@@ -106,7 +115,7 @@ export default class ProductService {
 
   /**
    * Read the product of the review identified by the reviewId.
-   * 
+   *
    * @param reviewId - Review id
    * @param manager - Transaction manager
    * @returns Product of the review
@@ -132,13 +141,15 @@ export default class ProductService {
    */
   @Transaction()
   public read(
-    options: Pick<FindManyOptions, 'skip' | 'take'> = {
-      skip: PaginationArgs.DEFAULT_SKIP,
-      take: PaginationArgs.DEFAULT_TAKE,
-    },
+    { skip, take, name }: FindProductsArgs,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product[]> {
-    return manager!.find(Product, { ...options, cache: true });
+    const query = manager!.createQueryBuilder(Product, 'product');
+
+    if (name)
+      query.where('LOWER(product.name) LIKE :name', { name: `%${name.toLocaleLowerCase()}%` });
+
+    return query.skip(skip).take(take).cache(true).getMany();
   }
 
   /**
@@ -159,6 +170,41 @@ export default class ProductService {
     await manager!.findOneOrFail(Product, id);
 
     await manager!.update(Product, id, manager!.create(Product, product));
+
+    logger.info(`Updated product ${id}`);
+
+    return manager!.findOneOrFail(Product, id);
+  }
+
+  /**
+   * Update the photos of the product identified by the id.
+   *
+   * @param id - Product id
+   * @param photo - Photo stream
+   * @param manager - Transaction manager
+   * @returns Updated product
+   * @see UploadAdapter
+   */
+  @Transaction()
+  public async updatePhoto(
+    id: string,
+    photo: ReadStream,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<Product> {
+    // Check if product exists
+    const product: Product = await manager!.findOneOrFail(Product, id, { select: ['photos'] });
+
+    // Upload photos and extract generated url
+    const url: string = (
+      await this.uploadAdapter.upload({ resource: photo, type: 'PRODUCT_PHOTO' })
+    ).secure_url;
+
+    // Rotate
+    product.photos = [url, ...product.photos];
+    product.photos.slice(0, config.ADAPTERS.UPLOAD.MAX_FILES);
+
+    // Update product photos
+    await manager!.update(Product, id, { photos: product.photos });
 
     logger.info(`Updated product ${id}`);
 

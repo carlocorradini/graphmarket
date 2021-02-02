@@ -10,12 +10,12 @@ export default class InventoryUpdateInput implements Partial<Inventory> {
   /**
    * Product's price in cents.
    */
-  @Field(() => GraphQLPositiveInt, { description: `Product's price in cents` })
-  price!: number;
+  @Field(() => GraphQLPositiveInt, { nullable: true, description: `Product's price in cents` })
+  price?: number;
 
   /**
    * Product's quantity.
    */
-  @Field(() => GraphQLNonNegativeInt, { description: `Product's quantity` })
-  quantity!: number;
+  @Field(() => GraphQLNonNegativeInt, { nullable: true, description: `Product's quantity` })
+  quantity?: number;
 }

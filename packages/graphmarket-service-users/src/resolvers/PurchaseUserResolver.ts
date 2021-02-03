@@ -25,6 +25,6 @@ export default class PurchaseUserResolver {
    */
   @FieldResolver(() => User, { description: `Purchase's seller` })
   seller(@Root() purchase: PurchaseExternal): Promise<User | undefined> {
-    return this.userService.readOnebyPurchase(purchase.id);
+    return this.userService.readOnebyPurchaseId(purchase.id);
   }
 }

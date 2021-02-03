@@ -25,6 +25,6 @@ export default class ReviewUserResolver {
    */
   @FieldResolver(() => User, { description: `Review's author` })
   author(@Root() review: ReviewExternal): Promise<User | undefined> {
-    return this.userService.readOneByReview(review.id);
+    return this.userService.readOneByReviewId(review.id);
   }
 }

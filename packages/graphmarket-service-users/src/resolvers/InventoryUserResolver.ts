@@ -25,6 +25,6 @@ export default class InventoryUserResolver {
    */
   @FieldResolver(() => User, { description: `Inventory's seller` })
   seller(@Root() inventory: InventoryExternal): Promise<User | undefined> {
-    return this.userService.readOnebyInventory(inventory.id);
+    return this.userService.readOnebyInventoryId(inventory.id);
   }
 }

@@ -24,7 +24,7 @@ export default class InventoryProductResolver {
    * @returns Product of the inventory
    */
   @FieldResolver(() => Product, { description: `Inventory's product` })
-  product(@Root() inventory: InventoryExternal): Promise<Product> {
-    return this.productService.readOneByInventory(inventory.id);
+  product(@Root() inventory: InventoryExternal): Promise<Product | undefined> {
+    return this.productService.readOneByInventoryId(inventory.id);
   }
 }

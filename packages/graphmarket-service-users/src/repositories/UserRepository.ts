@@ -41,7 +41,7 @@ export default class UserRepository extends AbstractRepository<User> {
    * @param inventoryId - Inventory id
    * @returns Seller of the inventory, undefined otherwise
    */
-  public readOnebyInventory(inventoryId: string): Promise<User | undefined> {
+  public readOnebyInventoryId(inventoryId: string): Promise<User | undefined> {
     return this.manager
       .createQueryBuilder(User, 'user')
       .innerJoin('user.inventories', 'inventory')
@@ -56,7 +56,7 @@ export default class UserRepository extends AbstractRepository<User> {
    * @param purchaseId - Purchase id
    * @returns User of the purchase, undefined otherwise
    */
-  public readOnebyPurchase(purchaseId: string): Promise<User | undefined> {
+  public readOnebyPurchaseId(purchaseId: string): Promise<User | undefined> {
     return this.manager
       .createQueryBuilder(User, 'user')
       .innerJoin('user.purchases', 'purchase')
@@ -71,7 +71,7 @@ export default class UserRepository extends AbstractRepository<User> {
    * @param reviewId - Review id
    * @returns Author of the review, undefined otherwise
    */
-  public readOneByReview(reviewId: string): Promise<User | undefined> {
+  public readOneByReviewId(reviewId: string): Promise<User | undefined> {
     return this.manager
       .createQueryBuilder(User, 'user')
       .innerJoin('user.reviews', 'review')

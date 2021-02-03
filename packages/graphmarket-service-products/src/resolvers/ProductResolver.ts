@@ -66,7 +66,7 @@ export default class ProductResolver {
    */
   @Query(() => Product, { nullable: true, description: `Return the product that matches the id` })
   product(@Arg('id', () => GraphQLUUID) id: string): Promise<Product | undefined> {
-    return this.productService.readOne(id);
+    return this.productService.readOneById(id);
   }
 
   /**

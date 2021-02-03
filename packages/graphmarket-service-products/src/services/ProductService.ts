@@ -7,11 +7,14 @@ import { UploadAdapter } from '@graphmarket/adapters';
 import logger from '@graphmarket/logger';
 import { FindProductsArgs } from '@app/args';
 import config from '@app/config';
+import { ProductRepository } from '@app/repositories';
+import { ProductCreateInput, ProductUpdateInput } from '@app/inputs';
 
 /**
  * Product service.
  *
  * @see Product
+ * @see ProductRepository
  */
 @Service()
 export default class ProductService {
@@ -30,13 +33,12 @@ export default class ProductService {
    */
   @Transaction()
   public async create(
-    product: Product,
+    product: ProductCreateInput,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product> {
-    const newProduct: Product = await manager!.save(
-      Product,
-      manager!.create(Product, { ...product }),
-    );
+    const productRepository: ProductRepository = manager!.getCustomRepository(ProductRepository);
+
+    const newProduct: Product = await productRepository.create(product);
 
     logger.info(`Created product ${newProduct.id}`);
 
@@ -46,90 +48,69 @@ export default class ProductService {
   /**
    * Read a product that matches the id.
    *
-   * @param id - Product's id
+   * @param id - Product id
    * @param manager - Transaction manager
    * @returns Product found, undefined otherwise
    */
   @Transaction()
-  public readOne(
+  public readOneById(
     id: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product | undefined> {
-    return manager!.findOne(Product, id, { cache: true });
+    const productRepository: ProductRepository = manager!.getCustomRepository(ProductRepository);
+
+    return productRepository.readOneById(id);
   }
 
   /**
-   * Read a product that matches the id.
-   * If no product exists rejects.
-   *
-   * @param id - Product's id
-   * @param manager - Transaction manager
-   * @returns Product found
-   */
-  @Transaction()
-  public readOneOrFail(
-    id: string,
-    @TransactionManager() manager?: EntityManager,
-  ): Promise<Product> {
-    return manager!.findOneOrFail(Product, id, { cache: true });
-  }
-
-  /**
-   * Read the product of the inventory identified by the inventoryId.
+   * Read the product of the inventory.
    *
    * @param inventoryId - Inventory id
    * @param manager - Transaction manager
-   * @returns Product of the inventory
+   * @returns Product of the inventory, undefined otherwise
    */
   @Transaction()
-  public readOneByInventory(
+  public readOneByInventoryId(
     inventoryId: string,
     @TransactionManager() manager?: EntityManager,
-  ): Promise<Product> {
-    return manager!
-      .createQueryBuilder(Product, 'product')
-      .innerJoin('product.inventories', 'inventory')
-      .where('inventory.id = :inventoryId', { inventoryId })
-      .getOneOrFail();
+  ): Promise<Product | undefined> {
+    const productRepository: ProductRepository = manager!.getCustomRepository(ProductRepository);
+
+    return productRepository.readOneByInventoryId(inventoryId);
   }
 
   /**
-   * Read the product of the purchase identified by the purchaseId.
+   * Read the product of the purchase.
    *
    * @param purchaseId - Purchase id
    * @param manager - Transaction manager
-   * @returns Product of the purchase
+   * @returns Product of the purchase, undefined otherwise
    */
   @Transaction()
-  public readOneByPurchase(
+  public readOneByPurchaseId(
     purchaseId: string,
     @TransactionManager() manager?: EntityManager,
-  ): Promise<Product> {
-    return manager!
-      .createQueryBuilder(Product, 'product')
-      .innerJoin('product.inventories', 'inventory')
-      .innerJoin('inventory.purchases', 'purchase')
-      .where('purchase.id = :purchaseId', { purchaseId })
-      .getOneOrFail();
+  ): Promise<Product | undefined> {
+    const productRepository: ProductRepository = manager!.getCustomRepository(ProductRepository);
+
+    return productRepository.readOneByPurchaseId(purchaseId);
   }
 
   /**
-   * Read the product of the review identified by the reviewId.
+   * Read the product of the review.
    *
    * @param reviewId - Review id
    * @param manager - Transaction manager
-   * @returns Product of the review
+   * @returns Product of the review, undefined otherwise
    */
   @Transaction()
-  public readOneByReview(
+  public readOneByReviewId(
     reviewId: string,
     @TransactionManager() manager?: EntityManager,
-  ): Promise<Product> {
-    return manager!
-      .createQueryBuilder(Product, 'product')
-      .innerJoin('product.reviews', 'review')
-      .where('review.id = :reviewId', { reviewId })
-      .getOneOrFail();
+  ): Promise<Product | undefined> {
+    const productRepository: ProductRepository = manager!.getCustomRepository(ProductRepository);
+
+    return productRepository.readOneByReviewId(reviewId);
   }
 
   /**
@@ -141,21 +122,18 @@ export default class ProductService {
    */
   @Transaction()
   public read(
-    { skip, take, name }: FindProductsArgs,
+    options: FindProductsArgs,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product[]> {
-    const query = manager!.createQueryBuilder(Product, 'product');
+    const productRepository: ProductRepository = manager!.getCustomRepository(ProductRepository);
 
-    if (name)
-      query.where('LOWER(product.name) LIKE :name', { name: `%${name.toLocaleLowerCase()}%` });
-
-    return query.skip(skip).take(take).cache(true).getMany();
+    return productRepository.read(options);
   }
 
   /**
-   * Update the product identified by the id.
+   * Update the product.
    *
-   * @param id - Product's id
+   * @param id - Product id
    * @param product - Product update properties
    * @param manager - Transaction manager
    * @returns Updated product
@@ -163,21 +141,21 @@ export default class ProductService {
   @Transaction()
   public async update(
     id: string,
-    product: Partial<Omit<Product, 'id' | 'seller' | 'sellerId'>>,
+    product: ProductUpdateInput,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product> {
-    // Check if product exists
-    await manager!.findOneOrFail(Product, id);
+    const productRepository: ProductRepository = manager!.getCustomRepository(ProductRepository);
 
-    await manager!.update(Product, id, manager!.create(Product, product));
+    // Update product
+    const productUpdated: Product = await productRepository.update(id, product);
 
     logger.info(`Updated product ${id}`);
 
-    return manager!.findOneOrFail(Product, id);
+    return productUpdated;
   }
 
   /**
-   * Update the photos of the product identified by the id.
+   * Update the photos of the product.
    *
    * @param id - Product id
    * @param photo - Photo stream
@@ -191,39 +169,41 @@ export default class ProductService {
     photo: ReadStream,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Product> {
-    // Check if product exists
-    const product: Product = await manager!.findOneOrFail(Product, id, { select: ['photos'] });
+    const productRepository: ProductRepository = manager!.getCustomRepository(ProductRepository);
 
-    // Upload photos and extract generated url
-    const url: string = (
+    // Obtain product's photos
+    let photos: string[] = (await productRepository.readOneById(id))?.photos || [];
+
+    // Upload photo and extract generated url
+    const photoUrl: string = (
       await this.uploadAdapter.upload({ resource: photo, type: 'PRODUCT_PHOTO' })
     ).secure_url;
 
     // Rotate
-    product.photos = [url, ...product.photos];
-    product.photos.slice(0, config.ADAPTERS.UPLOAD.MAX_FILES);
+    photos = [photoUrl, ...photos];
+    photos.slice(0, config.ADAPTERS.UPLOAD.MAX_FILES);
 
-    // Update product photos
-    await manager!.update(Product, id, { photos: product.photos });
+    // Update photos
+    const product: Product = await productRepository.update(id, { photos });
 
     logger.info(`Updated product ${id}`);
 
-    return manager!.findOneOrFail(Product, id);
+    return product;
   }
 
   /**
-   * Delete the product identified by the id.
+   * Delete the product.
    *
-   * @param id - Product's id
+   * @param id - Product id
    * @param manager - Transaction manager
    * @returns Deleted product
    */
   @Transaction()
   public async delete(id: string, @TransactionManager() manager?: EntityManager): Promise<Product> {
-    // Check if product exists
-    const product: Product = await manager!.findOneOrFail(Product, id);
+    const productRepository: ProductRepository = manager!.getCustomRepository(ProductRepository);
 
-    await manager!.delete(Product, id);
+    // Delete product
+    const product: Product = await productRepository.delete(id);
 
     logger.info(`Deleted product ${id}`);
 

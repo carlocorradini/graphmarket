@@ -15,7 +15,8 @@ const productService: ProductService = Container.get(ProductService);
  * @param reference - Product reference identifier
  * @returns Product that match the reference identifier, undefined otherwise
  */
-const resolveProductReference = (reference: Pick<Product, 'id'>): Promise<Product | undefined> =>
-  productService.readOne(reference.id);
-
-export default resolveProductReference;
+export default function resolveProductReference(
+  reference: Pick<Product, 'id'>,
+): Promise<Product | undefined> {
+  return productService.readOneById(reference.id);
+}

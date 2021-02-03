@@ -61,9 +61,11 @@ export default class UserService {
 
     // Send verification message
     await this.phoneAdapter.sendVerification(user.phone);
+    logger.info(`Phone OTP sended for user ${newUser.id}`);
 
     // Send verification email
     await this.emailAdapter.sendVerification(user.email, { user: { username: user.username } });
+    logger.info(`Email OTP sended for user ${newUser.id}`);
 
     logger.info(`Created user ${newUser.id}`);
 
@@ -95,13 +97,13 @@ export default class UserService {
    * @returns Seller of the inventory
    */
   @Transaction()
-  public readOnebyInventory(
+  public readOnebyInventoryId(
     inventoryId: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User | undefined> {
     const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
 
-    return userRepository.readOnebyInventory(inventoryId);
+    return userRepository.readOnebyInventoryId(inventoryId);
   }
 
   /**
@@ -112,13 +114,13 @@ export default class UserService {
    * @returns Seller of the purchase
    */
   @Transaction()
-  public readOnebyPurchase(
+  public readOnebyPurchaseId(
     purchaseId: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User | undefined> {
     const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
 
-    return userRepository.readOnebyPurchase(purchaseId);
+    return userRepository.readOnebyPurchaseId(purchaseId);
   }
 
   /**
@@ -129,13 +131,13 @@ export default class UserService {
    * @returns Author of the review
    */
   @Transaction()
-  public readOneByReview(
+  public readOneByReviewId(
     reviewId: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User | undefined> {
     const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
 
-    return userRepository.readOneByReview(reviewId);
+    return userRepository.readOneByReviewId(reviewId);
   }
 
   /**

@@ -63,7 +63,7 @@ export default class PurchaseService {
       },
       purchase: {
         quantity: emailPurchase.quantity,
-        amount: (emailPurchase.price * emailPurchase.quantity) / 100,
+        amount: ((emailPurchase.price * emailPurchase.quantity) / 100).toFixed(2),
       },
     });
     logger.info(`Purchase ${newPurchase.id} confirmation email sended`);

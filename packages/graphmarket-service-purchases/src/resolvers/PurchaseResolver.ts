@@ -77,6 +77,6 @@ export default class PurchaseResolver {
     @Args() { skip, take }: PaginationArgs,
     @Ctx() ctx: IGraphQLContext,
   ): Promise<Purchase[]> {
-    return this.purchaseService.readByUser(ctx.user!.id, { skip, take });
+    return this.purchaseService.read({ skip, take, userId: ctx!.user?.id });
   }
 }

@@ -6,12 +6,13 @@ import logger from '@graphmarket/logger';
 import { AuthorizationError } from '@graphmarket/errors';
 import { FindReviewsArgs } from '@app/args';
 import { ReviewRepository } from '@app/repositories';
-import { ReviewUpdateInput } from '@app/inputs';
+import { ReviewCreateInput, ReviewUpdateInput } from '@app/inputs';
 
 /**
  * Review service.
  *
  * @see Review
+ * @see ReviewRepository
  */
 @Service()
 export default class ReviewService {
@@ -28,12 +29,12 @@ export default class ReviewService {
   public async create(
     productId: string,
     authorId: string,
-    review: Exclude<Review, 'author' | 'authorId' | 'product' | 'productId'>,
+    review: ReviewCreateInput,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review> {
     const reviewRepository: ReviewRepository = manager!.getCustomRepository(ReviewRepository);
 
-    const newReview = await reviewRepository.create(productId, authorId, review);
+    const newReview: Review = await reviewRepository.create(productId, authorId, review);
 
     logger.info(`Created review ${newReview.id}`);
 
@@ -142,12 +143,12 @@ export default class ReviewService {
    * @returns Average rating of the product
    */
   @Transaction()
-  public averageRatingByProduct(
+  public productAverageRating(
     productId: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<number> {
     const reviewRepository: ReviewRepository = manager!.getCustomRepository(ReviewRepository);
 
-    return reviewRepository.averageRatingByProduct(productId);
+    return reviewRepository.productAverageRating(productId);
   }
 }

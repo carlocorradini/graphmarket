@@ -29,6 +29,6 @@ export default class ReviewPurchaseResolver {
     description: `Check if the review is verified. A review is verified if the author has bought the product at least one time`,
   })
   verified(@Root() review: ReviewExternal): Promise<boolean> {
-    return this.purchaseService.verifiedByReview(review.id);
+    return this.purchaseService.isReviewVerified(review.id);
   }
 }

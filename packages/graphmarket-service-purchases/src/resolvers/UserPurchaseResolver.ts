@@ -30,6 +30,6 @@ export default class UserPurchaseResolver {
     @Root() user: UserExternal,
     @Args() { skip, take }: PaginationArgs,
   ): Promise<Purchase[]> {
-    return this.purchaseService.readByUser(user.id, { skip, take });
+    return this.purchaseService.read({ skip, take, userId: user.id });
   }
 }

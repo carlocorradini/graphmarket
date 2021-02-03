@@ -15,7 +15,8 @@ const purchaseService: PurchaseService = Container.get(PurchaseService);
  * @param reference - Purchase reference identifier
  * @returns Purchase that match the reference identifier, undefined otherwise
  */
-const resolvePurchaseReference = (reference: Pick<Purchase, 'id'>): Promise<Purchase | undefined> =>
-  purchaseService.readOne(reference.id);
-
-export default resolvePurchaseReference;
+export default function resolvePurchaseReference(
+  reference: Pick<Purchase, 'id'>,
+): Promise<Purchase | undefined> {
+  return purchaseService.readOneById(reference.id);
+}

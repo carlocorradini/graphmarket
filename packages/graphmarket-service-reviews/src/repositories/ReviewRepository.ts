@@ -37,6 +37,7 @@ export default class ReviewRepository extends AbstractRepository<Review> {
     // If count is not 0 a review for the product made by the author already exists
     if (count !== 0) throw new EntityAlreadyExistsError();
 
+    // Save review
     return this.manager.save(
       Review,
       this.manager.create(Review, {
@@ -117,7 +118,7 @@ export default class ReviewRepository extends AbstractRepository<Review> {
    * @param productId - Product id
    * @returns Average rating of the product
    */
-  public async averageRatingByProduct(productId: string): Promise<number> {
+  public async productAverageRating(productId: string): Promise<number> {
     const { rating }: { rating: number } = await this.manager
       .createQueryBuilder(Review, 'review')
       .select('ROUND(COALESCE(AVG(review.rating), 0) * 2, 0) / 2', 'rating')

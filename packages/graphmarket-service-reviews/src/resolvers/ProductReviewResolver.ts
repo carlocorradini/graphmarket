@@ -42,6 +42,6 @@ export default class ProductReviewResolver {
    */
   @FieldResolver(() => GraphQLProductRating, { description: `Product's average rating` })
   rating(@Root() product: ProductExternal): Promise<number> {
-    return this.reviewService.averageRatingByProduct(product.id);
+    return this.reviewService.productAverageRating(product.id);
   }
 }

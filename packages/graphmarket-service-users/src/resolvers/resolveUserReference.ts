@@ -15,7 +15,8 @@ const userService: UserService = Container.get(UserService);
  * @param reference - User reference identifier
  * @returns User that match the reference identifier, undefined otherwise
  */
-const resolveUserReference = (reference: Pick<User, 'id'>): Promise<User | undefined> =>
-  userService.readOne(reference.id);
-
-export default resolveUserReference;
+export default function resolveUserReference(
+  reference: Pick<User, 'id'>,
+): Promise<User | undefined> {
+  return userService.readOne(reference.id);
+}

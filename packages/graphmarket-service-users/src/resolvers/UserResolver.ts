@@ -53,7 +53,7 @@ export default class UserResolver {
    */
   @Mutation(() => User, { description: `Create a new user` })
   createUser(@Arg('data', () => UserCreateInput) data: UserCreateInput): Promise<User> {
-    return this.userService.create(data as User);
+    return this.userService.create(data);
   }
 
   /**
@@ -64,8 +64,8 @@ export default class UserResolver {
    */
   @Query(() => User, { description: `Return the current authenticated user` })
   @Authorized()
-  me(@Ctx() ctx: IGraphQLContext): Promise<User> {
-    return this.userService.readOneOrFail(ctx.user!.id);
+  me(@Ctx() ctx: IGraphQLContext): Promise<User | undefined> {
+    return this.userService.readOne(ctx.user!.id);
   }
 
   /**

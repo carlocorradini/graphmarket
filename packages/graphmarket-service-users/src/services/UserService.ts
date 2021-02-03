@@ -1,12 +1,14 @@
 /* eslint-disable class-methods-use-this */
 import { ReadStream } from 'fs';
 import { Inject, Service } from 'typedi';
-import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
+import { EntityManager, Transaction, TransactionManager } from 'typeorm';
 import { User } from '@graphmarket/entities';
 import logger from '@graphmarket/logger';
 import { PhoneAdapter, EmailAdapter, UploadAdapter, TokenAdapter } from '@graphmarket/adapters';
 import { IToken } from '@graphmarket/interfaces';
 import { PaginationArgs } from '@graphmarket/graphql-args';
+import { UserRepository } from '@app/repositories';
+import { UserCreateInput, UserUpdateInput } from '@app/inputs';
 
 /**
  * User service.
@@ -47,8 +49,14 @@ export default class UserService {
    * @returns Created user
    */
   @Transaction()
-  public async create(user: User, @TransactionManager() manager?: EntityManager): Promise<User> {
-    const newUser: User = await manager!.save(User, manager!.create(User, user));
+  public async create(
+    user: UserCreateInput,
+    @TransactionManager() manager?: EntityManager,
+  ): Promise<User> {
+    const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
+
+    // Create user
+    const newUser: User = await userRepository.create(user);
 
     // Send verification message
     await this.phoneAdapter.sendVerification(user.phone);
@@ -73,11 +81,13 @@ export default class UserService {
     id: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User | undefined> {
-    return manager!.findOne(User, id, { cache: true });
+    const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
+
+    return userRepository.readOneById(id);
   }
 
   /**
-   * Read the seller of the inventory identified by inventoryId.
+   * Read the seller of the inventory.
    *
    * @param inventoryId - Inventory id
    * @param manager - Transaction manager
@@ -87,16 +97,14 @@ export default class UserService {
   public readOnebyInventory(
     inventoryId: string,
     @TransactionManager() manager?: EntityManager,
-  ): Promise<User> {
-    return manager!
-      .createQueryBuilder(User, 'user')
-      .innerJoin('user.inventories', 'inventory')
-      .where('inventory.id = :inventoryId', { inventoryId })
-      .getOneOrFail();
+  ): Promise<User | undefined> {
+    const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
+
+    return userRepository.readOnebyInventory(inventoryId);
   }
 
   /**
-   * Read the seller of the purchase identified by purchaseId.
+   * Read the seller of the purchase.
    *
    * @param purchaseId - Purchase id
    * @param manager - Transaction manager
@@ -106,16 +114,14 @@ export default class UserService {
   public readOnebyPurchase(
     purchaseId: string,
     @TransactionManager() manager?: EntityManager,
-  ): Promise<User> {
-    return manager!
-      .createQueryBuilder(User, 'user')
-      .innerJoin('user.purchases', 'purchase')
-      .where('purchase.id = :purchaseId', { purchaseId })
-      .getOneOrFail();
+  ): Promise<User | undefined> {
+    const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
+
+    return userRepository.readOnebyPurchase(purchaseId);
   }
 
   /**
-   * Read the author of the review identified by reviewId.
+   * Read the author of the review.
    *
    * @param reviewId - Review id
    * @param manager - Transaction manager
@@ -125,25 +131,10 @@ export default class UserService {
   public readOneByReview(
     reviewId: string,
     @TransactionManager() manager?: EntityManager,
-  ): Promise<User> {
-    return manager!
-      .createQueryBuilder(User, 'user')
-      .innerJoin('user.reviews', 'review')
-      .where('review.id = :reviewId', { reviewId })
-      .getOneOrFail();
-  }
+  ): Promise<User | undefined> {
+    const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
 
-  /**
-   * Read a user that matches the id.
-   * If no user exists rejects.
-   *
-   * @param id - User's id
-   * @param manager - Transaction manager
-   * @returns User found
-   */
-  @Transaction()
-  public readOneOrFail(id: string, @TransactionManager() manager?: EntityManager): Promise<User> {
-    return manager!.findOneOrFail(User, id, { cache: true });
+    return userRepository.readOneByReview(reviewId);
   }
 
   /**
@@ -155,22 +146,21 @@ export default class UserService {
    */
   @Transaction()
   public read(
-    options: Pick<FindManyOptions, 'skip' | 'take'> = {
-      skip: PaginationArgs.DEFAULT_SKIP,
-      take: PaginationArgs.DEFAULT_TAKE,
-    },
+    options: PaginationArgs,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User[]> {
-    return manager!.find(User, { ...options, cache: true });
+    const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
+
+    return userRepository.read(options);
   }
 
   /**
-   * Update a user that matches the id with the given data.
+   * Update the user.
    * If the password is updated the tokens are purged.
    *
-   * @param id - User's id
+   * @param id - User id
    * @param user - User update properties
-   * @param token - User's token
+   * @param token - User token
    * @param manager - Transaction manager
    * @returns Updated user
    * @see TokenService
@@ -178,27 +168,27 @@ export default class UserService {
   @Transaction()
   public async update(
     id: string,
-    user: Partial<Omit<User, 'id'>>,
+    user: UserUpdateInput,
     token: Pick<IToken, 'sub' | 'iat'>,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User> {
-    // Check if user exists
-    await manager!.findOneOrFail(User, id);
+    const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
 
-    await manager!.update(User, id, manager!.create(User, user));
+    // Update user
+    const userUpdated: User = await userRepository.update(id, user);
 
     // Purge tokens if password is updated
     if (user.password) await this.tokenAdapter.purge(token);
 
     logger.info(`Updated user ${id}`);
 
-    return manager!.findOneOrFail(User, id);
+    return userUpdated;
   }
 
   /**
-   * Update avatar for the user identified by the id.
+   * Update avatar of the user.
    *
-   * @param id - User's id
+   * @param id - User id
    * @param avatar - Avatar file
    * @param manager - Transaction manager
    * @returns Updated user
@@ -210,25 +200,27 @@ export default class UserService {
     avatar: ReadStream,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User> {
-    // Check if user exists
-    await manager!.findOneOrFail(User, id);
+    const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
 
     // Upload avatar and extract generated url
-    const url: string = (await this.uploadAdapter.upload({ resource: avatar, type: 'USER_AVATAR' }))
-      .secure_url;
+    const avatarUrl: string = (
+      await this.uploadAdapter.upload({ resource: avatar, type: 'USER_AVATAR' })
+    ).secure_url;
 
-    // Update avatar url
-    await manager!.update(User, id, manager!.create(User, { avatar: url }));
+    // Update avatar
+    const user: User = await userRepository.update(id, { avatar: avatarUrl });
 
-    return manager!.findOneOrFail(User, id);
+    logger.info(`Updated user ${id} avatar`);
+
+    return user;
   }
 
   /**
-   * Delete a user that matches the id.
-   * All user's tokens are purged.
+   * Delete the user.
+   * All user tokens are purged.
    *
-   * @param id - User's id
-   * @param token - User's token
+   * @param id - User id
+   * @param token - User token
    * @param manager - Transaction manager
    * @returns Deleted user
    * @see TokenService
@@ -239,10 +231,10 @@ export default class UserService {
     token: Pick<IToken, 'sub' | 'iat'>,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User> {
-    // Check if user exists and save it temporarily
-    const user: User = await manager!.findOneOrFail(User, id);
+    const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
 
-    await manager!.delete(User, id);
+    // Delete user
+    const user: User = await userRepository.delete(id);
 
     // Purge jwt tokens
     await this.tokenAdapter.purge(token);

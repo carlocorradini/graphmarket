@@ -3,16 +3,18 @@ import { Inject, Service } from 'typedi';
 import { EntityManager, Transaction, TransactionManager } from 'typeorm';
 import { IToken } from '@graphmarket/interfaces';
 import { User } from '@graphmarket/entities';
-import { AuthenticationError, VerificationError } from '@graphmarket/errors';
+import { AuthenticationError, AuthorizationError, VerificationError } from '@graphmarket/errors';
 import { CryptUtil } from '@graphmarket/utils';
 import logger from '@graphmarket/logger';
 import { PhoneAdapter, EmailAdapter, TokenAdapter } from '@graphmarket/adapters';
 import config from '@app/config';
+import { UserRepository } from '@app/repositories';
 
 /**
  * Authentication service.
  *
- * @see AuthenticationService
+ * @see User
+ * @see UserRepository
  */
 @Service()
 export default class AuthenticationService {
@@ -35,9 +37,21 @@ export default class AuthenticationService {
   private readonly emailAdapter!: EmailAdapter;
 
   /**
-   * Verify a user identified by id with email and phone codes.
+   * Create a new authentication token for the user.
    *
-   * @param id - User's id
+   * @param user - User data
+   * @returns Authentication token
+   */
+  private createToken(user: Pick<User, 'id' | 'roles'>) {
+    return this.tokenAdapter.sign({ id: user.id, roles: user.roles }, config.TOKEN.SECRET, {
+      expiresIn: config.TOKEN.EXPIRATION_TIME,
+    });
+  }
+
+  /**
+   * Verify a user identified by email and phone codes.
+   *
+   * @param id - User id
    * @param emailCode - Email code
    * @param phoneCode - Phone code
    * @param manager - Transaction manager
@@ -52,37 +66,40 @@ export default class AuthenticationService {
     phoneCode: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<string> {
+    const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
     let user: User | undefined;
 
     try {
       // Obtain user
-      user = await manager!.findOneOrFail(User, id);
+      user = await userRepository.readOneById(id);
+      if (!user) throw new AuthorizationError();
 
       // Check email verification
       await this.emailAdapter.checkVerification(user.email, emailCode);
+      logger.info(`User ${user.id} email code verified`);
 
       // Check phone verification
       await this.phoneAdapter.checkVerification(user.phone, phoneCode);
+      logger.info(`User ${user.id} phone code verified`);
     } catch (error) {
       logger.error(`Verification failed for user ${id}`);
-
       throw new VerificationError({ message: 'Verification failed' });
     }
 
-    await manager!.update(User, id, { verified: true });
+    // Update verified status
+    await userRepository.updateVerifiedStatus(id, true);
 
     logger.info(`User ${id} has been verified`);
 
-    return this.tokenAdapter.sign({ id: user.id, roles: user.roles }, config.TOKEN.SECRET, {
-      expiresIn: config.TOKEN.EXPIRATION_TIME,
-    });
+    // Create authentication token
+    return this.createToken(user);
   }
 
   /**
    * Sign in procedure.
    *
-   * @param username - User's username
-   * @param password - User's password
+   * @param username - User username
+   * @param password - User password
    * @param manager - Transaction manager
    * @returns Encoded authentication token
    * @see TokenService
@@ -93,11 +110,10 @@ export default class AuthenticationService {
     password: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<string> {
-    const user: User | undefined = await manager!.findOne(
-      User,
-      { username },
-      { select: ['id', 'password', 'roles', 'verified'] },
-    );
+    const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
+
+    // Read user
+    const user: User | undefined = await userRepository.readOneForSignIn(username);
 
     // Check if user exists and password is valid
     if (!user || !(await CryptUtil.compare(password, user.password!))) {
@@ -115,9 +131,7 @@ export default class AuthenticationService {
 
     logger.info(`Sign in procedure succeeded for user ${user.id}`);
 
-    return this.tokenAdapter.sign({ id: user.id, roles: user.roles }, config.TOKEN.SECRET, {
-      expiresIn: config.TOKEN.EXPIRATION_TIME,
-    });
+    return this.createToken(user);
   }
 
   /**
@@ -134,30 +148,34 @@ export default class AuthenticationService {
   }
 
   /**
-   * Resend the verification codes to the user identified by userId.
+   * Resend the verification codes to the user.
    *
    * @param userId - User id
-   * @param manager - transaction manager
+   * @param manager - Transaction manager
    */
   @Transaction()
   public async resend(
     userId: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<void> {
-    // Obtain user
-    const user: User = await manager!.findOneOrFail(User, userId, {
-      select: ['verified', 'phone', 'email', 'username'],
-    });
+    const userRepository: UserRepository = manager!.getCustomRepository(UserRepository);
 
+    // Read user
+    const user: User | undefined = await userRepository.readOneForResend(userId);
+
+    // Check if user exists
+    if (!user) throw new AuthorizationError();
+
+    // Check if user is already verified
     if (user.verified)
       throw new VerificationError({ message: `User ${user.id} has been already verified` });
 
     // Send verification message
     await this.phoneAdapter.sendVerification(user.phone);
+    logger.info(`Phone OTP resended for user ${userId}`);
 
     // Send verification email
     await this.emailAdapter.sendVerification(user.email, { user: { username: user.username } });
-
-    logger.info(`New verification codes sended for user ${userId}`);
+    logger.info(`Email OTP resended for user ${userId}`);
   }
 }

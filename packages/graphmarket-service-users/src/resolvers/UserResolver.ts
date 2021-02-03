@@ -65,7 +65,7 @@ export default class UserResolver {
   @Query(() => User, { description: `Return the current authenticated user` })
   @Authorized()
   me(@Ctx() ctx: IGraphQLContext): Promise<User | undefined> {
-    return this.userService.readOne(ctx.user!.id);
+    return this.userService.readOneById(ctx.user!.id);
   }
 
   /**
@@ -76,7 +76,7 @@ export default class UserResolver {
    */
   @Query(() => User, { nullable: true, description: `Return the user that matches the id` })
   user(@Arg('id', () => GraphQLUUID) id: string): Promise<User | undefined> {
-    return this.userService.readOne(id);
+    return this.userService.readOneById(id);
   }
 
   /**

@@ -48,7 +48,7 @@ export default class ReviewResolver {
    */
   @Query(() => Review, { nullable: true, description: `Return the review that marches the id` })
   review(@Arg('id', () => GraphQLUUID) id: string): Promise<Review | undefined> {
-    return this.reviewService.readOne(id);
+    return this.reviewService.readOneById(id);
   }
 
   /**

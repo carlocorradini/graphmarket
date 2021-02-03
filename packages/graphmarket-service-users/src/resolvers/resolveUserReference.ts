@@ -18,5 +18,5 @@ const userService: UserService = Container.get(UserService);
 export default function resolveUserReference(
   reference: Pick<User, 'id'>,
 ): Promise<User | undefined> {
-  return userService.readOne(reference.id);
+  return userService.readOneById(reference.id);
 }

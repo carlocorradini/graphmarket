@@ -15,7 +15,8 @@ const reviewService: ReviewService = Container.get(ReviewService);
  * @param reference - Review reference identifier
  * @returns Review that match the reference identifier, undefined otherwise
  */
-const resolveReviewReference = (reference: Pick<Review, 'id'>): Promise<Review | undefined> =>
-  reviewService.readOne(reference.id);
-
-export default resolveReviewReference;
+export default function resolveReviewReference(
+  reference: Pick<Review, 'id'>,
+): Promise<Review | undefined> {
+  return reviewService.readOneById(reference.id);
+}

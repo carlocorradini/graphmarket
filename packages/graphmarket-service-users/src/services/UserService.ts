@@ -14,6 +14,7 @@ import { UserCreateInput, UserUpdateInput } from '@app/inputs';
  * User service.
  *
  * @see User
+ * @see UserRepository
  */
 @Service()
 export default class UserService {
@@ -77,7 +78,7 @@ export default class UserService {
    * @returns User found, undefined otherwise
    */
   @Transaction()
-  public readOne(
+  public readOneById(
     id: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<User | undefined> {

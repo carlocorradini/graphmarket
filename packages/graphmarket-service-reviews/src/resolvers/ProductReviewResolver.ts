@@ -31,7 +31,7 @@ export default class ProductReviewResolver {
     @Root() product: ProductExternal,
     @Args() { skip, take }: PaginationArgs,
   ): Promise<Review[]> {
-    return this.reviewService.readByProduct(product.id, { skip, take });
+    return this.reviewService.read({ skip, take, productId: product.id });
   }
 
   /**
@@ -42,6 +42,6 @@ export default class ProductReviewResolver {
    */
   @FieldResolver(() => GraphQLProductRating, { description: `Product's average rating` })
   rating(@Root() product: ProductExternal): Promise<number> {
-    return this.reviewService.ratingByProduct(product.id);
+    return this.reviewService.averageRatingByProduct(product.id);
   }
 }

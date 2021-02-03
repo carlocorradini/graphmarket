@@ -1,11 +1,12 @@
 /* eslint-disable class-methods-use-this */
 import { Service } from 'typedi';
-import { EntityManager, FindManyOptions, Transaction, TransactionManager } from 'typeorm';
+import { EntityManager, Transaction, TransactionManager } from 'typeorm';
 import { Review } from '@graphmarket/entities';
-import { PaginationArgs } from '@graphmarket/graphql-args';
-import { EntityAlreadyExistsError } from '@graphmarket/errors';
 import logger from '@graphmarket/logger';
+import { AuthorizationError } from '@graphmarket/errors';
 import { FindReviewsArgs } from '@app/args';
+import { ReviewRepository } from '@app/repositories';
+import { ReviewUpdateInput } from '@app/inputs';
 
 /**
  * Review service.
@@ -30,19 +31,9 @@ export default class ReviewService {
     review: Exclude<Review, 'author' | 'authorId' | 'product' | 'productId'>,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review> {
-    // Check if there is not already a review for the product made by the author
-    if (
-      (await manager!.count(Review, {
-        where: { author: { id: authorId }, product: { id: productId } },
-      })) !== 0
-    ) {
-      throw new EntityAlreadyExistsError();
-    }
+    const reviewRepository: ReviewRepository = manager!.getCustomRepository(ReviewRepository);
 
-    const newReview: Review = await manager!.save(
-      Review,
-      manager!.create(Review, { ...review, product: { id: productId }, author: { id: authorId } }),
-    );
+    const newReview = await reviewRepository.create(productId, authorId, review);
 
     logger.info(`Created review ${newReview.id}`);
 
@@ -52,29 +43,18 @@ export default class ReviewService {
   /**
    * Read a review that matches the id.
    *
-   * @param id - Review's id
+   * @param id - Review id
    * @param manager - Transaction manager
    * @returns Review found, undefined otherwise
    */
   @Transaction()
-  public readOne(
+  public readOneById(
     id: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review | undefined> {
-    return manager!.findOne(Review, id, { cache: true });
-  }
+    const reviewRepository: ReviewRepository = manager!.getCustomRepository(ReviewRepository);
 
-  /**
-   * Read a review that matches the id.
-   * If no review exists rejects.
-   *
-   * @param id - Review's id
-   * @param manager - Transaction manager
-   * @returns Review found
-   */
-  @Transaction()
-  public readOneOrFail(id: string, @TransactionManager() manager?: EntityManager): Promise<Review> {
-    return manager!.findOneOrFail(Review, id, { cache: true });
+    return reviewRepository.readOneById(id);
   }
 
   /**
@@ -86,73 +66,19 @@ export default class ReviewService {
    */
   @Transaction()
   public read(
-    { skip, take, authorId, productId }: FindReviewsArgs,
+    options: FindReviewsArgs,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review[]> {
-    return manager!.find(Review, {
-      where: {
-        ...(authorId && { author: { id: authorId } }),
-        ...(productId && { product: { id: productId } }),
-      },
-      skip,
-      take,
-      order: { createdAt: 'DESC' },
-      cache: true,
-    });
+    const reviewRepository: ReviewRepository = manager!.getCustomRepository(ReviewRepository);
+
+    return reviewRepository.read(options);
   }
 
   /**
-   * Read the available reviews of the product identified by the productId.
+   * Update the review.
+   * Only the author of the review can update it.
    *
-   * @param productId - Product's id
-   * @param manager - Transaction manager
-   * @returns Reviews found
-   */
-  @Transaction()
-  public readByProduct(
-    productId: string,
-    options: Pick<FindManyOptions, 'skip' | 'take'> = {
-      skip: PaginationArgs.DEFAULT_SKIP,
-      take: PaginationArgs.DEFAULT_TAKE,
-    },
-    @TransactionManager() manager?: EntityManager,
-  ): Promise<Review[]> {
-    return manager!.find(Review, {
-      ...options,
-      where: { product: { id: productId } },
-      order: { createdAt: 'DESC' },
-    });
-  }
-
-  /**
-   * Read the available reviews of the author identified by the authorId.
-   *
-   * @param authorId - Author's id
-   * @param options - Find options
-   * @param manager - Transaction manager
-   * @returns Reviews found
-   */
-  @Transaction()
-  public readByAuthor(
-    authorId: string,
-    options: Pick<FindManyOptions, 'skip' | 'take'> = {
-      skip: PaginationArgs.DEFAULT_SKIP,
-      take: PaginationArgs.DEFAULT_TAKE,
-    },
-    @TransactionManager() manager?: EntityManager,
-  ): Promise<Review[]> {
-    return manager!.find(Review, {
-      ...options,
-      where: { author: { id: authorId } },
-      order: { createdAt: 'DESC' },
-    });
-  }
-
-  /**
-   * Update the review identified by the id.
-   * Only the author (identified by authorId) of the review can update it.
-   *
-   * @param id - Review's id
+   * @param id - Review id
    * @param authorId - Author id
    * @param review - Review update properties
    * @param manager - Transaction manager
@@ -162,24 +88,28 @@ export default class ReviewService {
   public async update(
     id: string,
     authorId: string,
-    review: Partial<Omit<Review, 'id' | 'author' | 'authorId' | 'product' | 'productId'>>,
+    review: ReviewUpdateInput,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review> {
-    // Check if review exists and the author matches
-    await manager!.findOneOrFail(Review, id, { where: { author: { id: authorId } } });
+    const reviewRepository: ReviewRepository = manager!.getCustomRepository(ReviewRepository);
 
-    await manager!.update(Review, id, manager!.create(Review, review));
+    // Check if review's author matches
+    const reviewToCheck: Review | undefined = await reviewRepository.readOneById(id);
+    if (reviewToCheck?.authorId !== authorId) throw new AuthorizationError();
+
+    // Update review
+    const reviewUpdated: Review = await reviewRepository.update(id, review);
 
     logger.info(`Updated review ${id}`);
 
-    return manager!.findOneOrFail(Review, id);
+    return reviewUpdated;
   }
 
   /**
-   * Delete the review identified by the id.
-   * Only the author (identified by authorId) of the review can delete it.
+   * Delete the review.
+   * Only the author of the review can delete it.
    *
-   * @param id - Review's id
+   * @param id - Review id
    * @param authorId - Author id
    * @param manager - Transaction manager
    * @returns Deleted review
@@ -190,12 +120,14 @@ export default class ReviewService {
     authorId: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Review> {
-    // Check if review exists and the author matches
-    const review: Review = await manager!.findOneOrFail(Review, id, {
-      where: { author: { id: authorId } },
-    });
+    const reviewRepository: ReviewRepository = manager!.getCustomRepository(ReviewRepository);
 
-    await manager!.delete(Review, id);
+    // Check if review's author matches
+    const reviewToCheck: Review | undefined = await reviewRepository.readOneById(id);
+    if (reviewToCheck?.authorId !== authorId) throw new AuthorizationError();
+
+    // Delete review
+    const review = await reviewRepository.delete(id);
 
     logger.info(`Deleted review ${id}`);
 
@@ -203,23 +135,19 @@ export default class ReviewService {
   }
 
   /**
-   * Returns the average rating of the product identified by the productId.
+   * Returns the average rating of the product.
    *
    * @param productId - Product id
    * @param manager - Transaction manager
    * @returns Average rating of the product
    */
   @Transaction()
-  public async ratingByProduct(
+  public averageRatingByProduct(
     productId: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<number> {
-    const { rating }: { rating: number } = await manager!
-      .createQueryBuilder(Review, 'review')
-      .select('ROUND(COALESCE(AVG(review.rating), 0) * 2, 0) / 2', 'rating')
-      .where('review.product_id = :productId', { productId })
-      .getRawOne();
+    const reviewRepository: ReviewRepository = manager!.getCustomRepository(ReviewRepository);
 
-    return rating;
+    return reviewRepository.averageRatingByProduct(productId);
   }
 }

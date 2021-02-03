@@ -22,7 +22,7 @@ export default class UserRepository extends AbstractRepository<User> {
    * @returns Created user
    */
   public create(user: UserCreateInput): Promise<User> {
-    return this.manager.save(this.manager.create(User, user));
+    return this.manager.save(User, this.manager.create(User, user));
   }
 
   /**

@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { Service } from 'typedi';
 import sendgrid, { MailDataRequired } from '@sendgrid/mail';
-// import { EnvUtil } from '@graphmarket/utils';
+import { EnvUtil } from '@graphmarket/utils';
 
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
@@ -59,7 +59,7 @@ export default class EmailAdapter {
    */
   public async send(message: PartialBy<MailDataRequired, 'from'>): Promise<void> {
     // TODO Email adapter can be used only in production environment
-    // if (!EnvUtil.isProduction()) return;
+    if (!EnvUtil.isProduction()) return;
 
     const mailData: MailDataRequired = {
       ...message,

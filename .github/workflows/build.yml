@@ -12,16 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      DATABASE_URL: postgres://postgres:password@localhost:5432/graphmarket-test
-      REDIS_URL: redis://:@localhost:6379/1
-      SERVICE_PHONE_TWILIO_ACCOUNT_SID: ${{ secrets.SERVICE_PHONE_TWILIO_ACCOUNT_SID }}
-      SERVICE_PHONE_TWILIO_AUTH_TOKEN: ${{ secrets.SERVICE_PHONE_TWILIO_AUTH_TOKEN }}
-      SERVICE_PHONE_TWILIO_VERIFICATION_SID: ${{ secrets.SERVICE_PHONE_TWILIO_VERIFICATION_SID }}
-      SERVICE_EMAIL_SENDGRID_API_KEY: ${{ secrets.SERVICE_EMAIL_SENDGRID_API_KEY }}
-      SERVICE_UPLOAD_CLOUDINARY_CLOUD_NAME: ${ secrets.SERVICE_UPLOAD_CLOUDINARY_CLOUD_NAME }
-      SERVICE_UPLOAD_CLOUDINARY_API_KEY: ${ secrets.SERVICE_UPLOAD_CLOUDINARY_API_KEY }
-      SERVICE_UPLOAD_CLOUDINARY_API_SECRET: ${ secrets.SERVICE_UPLOAD_CLOUDINARY_API_SECRET }
     services:
       database:
         image: postgres
@@ -52,9 +42,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Bootstrap packages
-        run: npm run bootstrap
-      - name: Linting
-        run: npm run lint
+        run: npx lerna bootstrap
+      # Eslint memory overflow
+      # - name: Linting
+      #  run: npm run lint
       - name: Building
         run: npm run build
       - name: Testing

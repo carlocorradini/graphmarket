@@ -2,15 +2,14 @@
   "root": true,
   "env": {
     "es2020": true,
-    "node": true,
-    "jest/globals": true
+    "node": true
   },
   "plugins": [
-    "@typescript-eslint",
-    "eslint-plugin-tsdoc",
-    "prettier",
     "import",
-    "jest"
+    "jest",
+    "prettier",
+    "@typescript-eslint",
+    "eslint-plugin-tsdoc"
   ],
   "extends": [
     "airbnb-typescript/base",
@@ -28,6 +27,26 @@
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
+  "overrides": [
+    {
+      "files": [
+        "**/*.ts"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "plugins": [
+        "@typescript-eslint"
+      ]
+    },
+    {
+      "files": [
+        "packages/*/tests/**/*.{js,ts}"
+      ],
+      "env": {
+        "jest/globals": true
+      },
+      "extends": "plugin:jest/recommended"
+    }
+  ],
   "rules": {
     "prettier/prettier": "error",
     "tsdoc/syntax": "warn"

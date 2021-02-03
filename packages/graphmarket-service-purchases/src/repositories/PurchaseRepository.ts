@@ -1,5 +1,5 @@
 import { AbstractRepository, EntityRepository } from 'typeorm';
-import { Inventory, Product, Purchase, User } from '@graphmarket/entities';
+import { Inventory, Purchase } from '@graphmarket/entities';
 import { InsufficientQuantityError } from '@graphmarket/errors';
 import { PurchaseCreateInput } from '@app/inputs';
 import { FindPurchasesArgs } from '@app/args';

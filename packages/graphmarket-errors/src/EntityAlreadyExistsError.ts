@@ -9,12 +9,12 @@ export default class EntityAlreadyExistsError extends Error {
 
   /**
    * Constructs a new Entity already exists error.
-   * 
+   *
    * @param message - Error's message
    */
   constructor(message?: string) {
     super();
     Object.setPrototypeOf(this, EntityAlreadyExistsError.prototype);
-    this.message = message ? message : 'Entity already exists';
+    this.message = message || 'Entity already exists';
   }
 }

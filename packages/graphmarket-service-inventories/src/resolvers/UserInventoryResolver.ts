@@ -25,7 +25,7 @@ export default class UserInventoryResolver {
    * @param param1 - Pagination arguments
    * @returns Inventories of the seller
    */
-  @FieldResolver(() => [Inventory], {description: `Seller's inventories`})
+  @FieldResolver(() => [Inventory], { description: `Seller's inventories` })
   inventories(@Root() seller: UserExternal, @Args() args: FindInventoryArgs): Promise<Inventory[]> {
     return this.inventoryService.readBySeller(seller.id, args);
   }

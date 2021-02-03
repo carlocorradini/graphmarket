@@ -9,7 +9,7 @@ import {
   Purchase,
   User,
   UserExternal,
-  Review
+  Review,
 } from '@graphmarket/entities';
 import config from '@app/config';
 import {

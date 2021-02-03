@@ -6,7 +6,7 @@ export default class ThreadUtil {
    *  Causes the current thread to suspend execution for the specified period in milliseconds.
    *
    * @param ms - Time in milliseconds to sleep
-   * @throws RangeError If 'ms' is < 0
+   * @throws RangeError If 'ms' is less than 0
    */
   public static async sleep(ms: number): Promise<void> {
     if (ms < 0) throw new RangeError(`'ms' must be a positive number: ${ms}`);

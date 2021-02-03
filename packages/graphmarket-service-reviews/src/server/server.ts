@@ -2,7 +2,15 @@ import { AddressInfo } from 'net';
 import Container from 'typedi';
 import { Connection, createConnection, ConnectionOptions } from 'typeorm';
 import { buildFederatedSchema, buildService } from '@graphmarket/helpers';
-import { Review, Inventory, Product, Purchase, User, ProductExternal, UserExternal } from '@graphmarket/entities';
+import {
+  Review,
+  Inventory,
+  Product,
+  Purchase,
+  User,
+  ProductExternal,
+  UserExternal,
+} from '@graphmarket/entities';
 import config from '@app/config';
 import {
   ReviewResolver,

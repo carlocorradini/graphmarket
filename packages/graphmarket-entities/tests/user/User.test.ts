@@ -9,7 +9,12 @@ describe('User entity testing', () => {
   });
 
   test('it should assign all available properties with the correct type', () => {
-    const userTemplate: Required<User> = {
+    const userTemplate: Required<
+      Omit<
+        User,
+        'purchases' | 'purchasesIds' | 'reviews' | 'reviewsIds' | 'inventories' | 'inventoriesIds'
+      >
+    > = {
       id: faker.random.uuid(),
       username: faker.internet.userName(),
       password: faker.internet.password(),

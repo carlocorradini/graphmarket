@@ -1,6 +1,6 @@
-import { ArgsType, Field } from "type-graphql";
-import { PaginationArgs } from "@graphmarket/graphql-args";
-import { GraphQLUUID } from "@graphmarket/graphql-scalars";
+import { ArgsType, Field } from 'type-graphql';
+import { PaginationArgs } from '@graphmarket/graphql-args';
+import { GraphQLUUID } from '@graphmarket/graphql-scalars';
 
 /**
  * Find purchases arguments.

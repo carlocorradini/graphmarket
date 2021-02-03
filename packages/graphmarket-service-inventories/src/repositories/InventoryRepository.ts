@@ -29,7 +29,9 @@ export default class InventoryRepository extends AbstractRepository<Inventory> {
    * @param stock - The stock to convert
    * @returns Find operator for the stock
    */
-  private stockToQuantity(stock: InventoryStock | undefined): FindOperator<number> | undefined {
+  private static stockToQuantity(
+    stock: InventoryStock | undefined,
+  ): FindOperator<number> | undefined {
     let quantity: FindOperator<number> | undefined;
 
     switch (stock) {
@@ -107,7 +109,7 @@ export default class InventoryRepository extends AbstractRepository<Inventory> {
     productId,
     sellerId,
   }: FindInventoriesArgs & { productId?: string; sellerId?: string }): Promise<Inventory[]> {
-    const quantity = this.stockToQuantity(stock);
+    const quantity = InventoryRepository.stockToQuantity(stock);
 
     return this.manager.find(Inventory, {
       where: {
@@ -175,7 +177,7 @@ export default class InventoryRepository extends AbstractRepository<Inventory> {
 
   /**
    * Returns the best product's selling price in the inventories.
-   * 
+   *
    * @param productId - Product id
    * @returns Best product's selling price, undefined otherwise
    */

@@ -40,7 +40,7 @@ export default class UserRepository extends AbstractRepository<User> {
    * required data.
    *
    * @param id - User id
-   * @return User found, undefined otherwise
+   * @returns User found, undefined otherwise
    */
   public readOneForResend(id: string): Promise<User | undefined> {
     return this.manager.findOne(User, id, {

@@ -89,7 +89,7 @@ export default class PurchaseRepository extends AbstractRepository<Purchase> {
    * Check if the review is verified.
    * A review is verified if the author of the review has bought the product of the review at least one time.
    *
-   * @param reviewId Review id
+   * @param reviewId - Review id
    * @returns True if verified, false otherwise
    */
   public async isReviewVerified(reviewId: string): Promise<boolean> {

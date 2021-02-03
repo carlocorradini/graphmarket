@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@graphmarket/entities": "^1.1.1",
+    "@graphmarket/errors": "^1.1.1",
     "@graphmarket/graphql-args": "^1.1.1",
     "@graphmarket/graphql-scalars": "^1.1.1",
     "@graphmarket/helpers": "^1.1.1",

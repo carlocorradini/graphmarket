@@ -1,49 +1,21 @@
 /* eslint-disable class-methods-use-this */
 import { Service } from 'typedi';
-import {
-  EntityManager,
-  FindOperator,
-  LessThanOrEqual,
-  MoreThan,
-  Transaction,
-  TransactionManager,
-} from 'typeorm';
+import { EntityManager, Transaction, TransactionManager } from 'typeorm';
 import { Inventory } from '@graphmarket/entities';
 import logger from '@graphmarket/logger';
-import { FindInventoryArgs } from '@app/args';
-import { InventoryStock } from '@app/args/FindInventoriesArgs';
+import { AuthorizationError } from '@graphmarket/errors';
+import { FindInventoriesArgs } from '@app/args';
+import { InventoryCreateInput, InventoryUpdateInput } from '@app/inputs';
+import { InventoryRepository } from '@app/repositories';
 
 /**
  * Inventory service.
  *
  * @see Inventory
+ * @see InventoryRepository
  */
 @Service()
 export default class InventoryService {
-  /**
-   * Convert the stock enum into a find operator.
-   *
-   * @param stock - The stock to convert
-   * @returns Find operator for the stock
-   */
-  private stockToQuantity(stock: InventoryStock | undefined): FindOperator<number> | undefined {
-    let quantity: FindOperator<number> | undefined;
-
-    switch (stock) {
-      case InventoryStock.IN_STOCK:
-        quantity = MoreThan(0);
-        break;
-      case InventoryStock.OUT_OF_STOCK:
-        quantity = LessThanOrEqual(0);
-        break;
-      default:
-        quantity = undefined;
-        break;
-    }
-
-    return quantity;
-  }
-
   /**
    * Create a new inventory.
    *
@@ -57,16 +29,17 @@ export default class InventoryService {
   public async create(
     productId: string,
     sellerId: string,
-    inventory: Exclude<Inventory, 'product' | 'productId' | 'seller' | 'sellerId'>,
+    inventory: InventoryCreateInput,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Inventory> {
-    const newInventory: Inventory = await manager!.save(
-      Inventory,
-      manager!.create(Inventory, {
-        ...inventory,
-        product: { id: productId },
-        seller: { id: sellerId },
-      }),
+    const inventoryRepository: InventoryRepository = manager!.getCustomRepository(
+      InventoryRepository,
+    );
+
+    const newInventory: Inventory = await inventoryRepository.create(
+      productId,
+      sellerId,
+      inventory,
     );
 
     logger.info(`Created inventory ${newInventory.id}`);
@@ -77,32 +50,20 @@ export default class InventoryService {
   /**
    * Read an inventory that matches the id.
    *
-   * @param id - Inventory's id
+   * @param id - Inventory id
    * @param manager - Transaction manager
    * @returns Inventory found, undefined otherwise
    */
   @Transaction()
-  public readOne(
+  public readOneById(
     id: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Inventory | undefined> {
-    return manager!.findOne(Inventory, id, { cache: true });
-  }
+    const inventoryRepository: InventoryRepository = manager!.getCustomRepository(
+      InventoryRepository,
+    );
 
-  /**
-   * Read an inventory that matches the id.
-   * If no inventory exists rejects.
-   *
-   * @param id - Inventory's id
-   * @param manager - Transaction manager
-   * @returns Inventory found
-   */
-  @Transaction()
-  public readOneOrFail(
-    id: string,
-    @TransactionManager() manager?: EntityManager,
-  ): Promise<Inventory> {
-    return manager!.findOneOrFail(Inventory, id, { cache: true });
+    return inventoryRepository.readOneById(id);
   }
 
   /**
@@ -114,75 +75,21 @@ export default class InventoryService {
    */
   @Transaction()
   public read(
-    { skip, take, stock }: FindInventoryArgs,
+    options: FindInventoriesArgs & { productId?: string; sellerId?: string },
     @TransactionManager() manager?: EntityManager,
   ): Promise<Inventory[]> {
-    const quantity = this.stockToQuantity(stock);
+    const inventoryRepository: InventoryRepository = manager!.getCustomRepository(
+      InventoryRepository,
+    );
 
-    return manager!.find(Inventory, {
-      where: {
-        ...(quantity && { quantity }),
-      },
-      skip,
-      take,
-      order: { condition: 'ASC', price: 'ASC' },
-      cache: true,
-    });
+    return inventoryRepository.read(options);
   }
 
   /**
-   * Read the available inventories of the product identified by the productId.
+   * Update the inventory.
+   * Only the seller of the inventory can update it.
    *
-   * @param productId - Product's id
-   * @param options - Find options
-   * @param manager - Transaction manager
-   * @returns Inventories found
-   */
-  @Transaction()
-  public readByProduct(
-    productId: string,
-    { skip, take, stock }: FindInventoryArgs,
-    @TransactionManager() manager?: EntityManager,
-  ): Promise<Inventory[]> {
-    const quantity = this.stockToQuantity(stock);
-
-    return manager!.find(Inventory, {
-      where: { product: { id: productId }, ...(quantity && { quantity }) },
-      skip,
-      take,
-      order: { condition: 'ASC', price: 'ASC' },
-    });
-  }
-
-  /**
-   * Read the available inventories of the seller identified by the sellerId.
-   *
-   * @param sellerId - Seller's id
-   * @param options - Find options
-   * @param manager - Transaction manager
-   * @returns Inventories found
-   */
-  @Transaction()
-  public readBySeller(
-    sellerId: string,
-    { skip, take, stock }: FindInventoryArgs,
-    @TransactionManager() manager?: EntityManager,
-  ): Promise<Inventory[]> {
-    const quantity = this.stockToQuantity(stock);
-
-    return manager!.find(Inventory, {
-      where: { seller: { id: sellerId }, ...(quantity && { quantity }) },
-      skip,
-      take,
-      order: { condition: 'ASC', price: 'ASC' },
-    });
-  }
-
-  /**
-   * Update the inventory identified by the id.
-   * Only the seller (identified by sellerId) of the inventory can update it.
-   *
-   * @param id - Inventory's id
+   * @param id - Inventory id
    * @param sellerId - Seller id
    * @param inventory - Inventory update properties
    * @param manager - Transaction manager
@@ -192,24 +99,30 @@ export default class InventoryService {
   public async update(
     id: string,
     sellerId: string,
-    inventory: Partial<Omit<Inventory, 'id' | 'product' | 'productId' | 'seller' | 'sellerId'>>,
+    inventory: InventoryUpdateInput,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Inventory> {
-    // Check if inventory exists and the seller matches
-    await manager!.findOneOrFail(Inventory, id, { where: { seller: { id: sellerId } } });
+    const inventoryRepository: InventoryRepository = manager!.getCustomRepository(
+      InventoryRepository,
+    );
 
-    await manager!.update(Inventory, id, manager!.create(Inventory, inventory));
+    // Check if inventories's seller matches
+    const inventoryToCheck: Inventory | undefined = await inventoryRepository.readOneById(id);
+    if (inventoryToCheck?.sellerId !== sellerId) throw new AuthorizationError();
+
+    // Update inventory
+    const inventoryUpdated: Inventory = await inventoryRepository.update(id, inventory);
 
     logger.info(`Updated inventory ${id}`);
 
-    return manager!.findOneOrFail(Inventory, id);
+    return inventoryUpdated;
   }
 
   /**
-   * Delete the inventory identified by the id.
-   * Only the seller (identified by sellerId) of the inventory can delete it.
+   * Delete the inventory.
+   * Only the seller of the inventory can delete it.
    *
-   * @param id - Inventory's id
+   * @param id - Inventory id
    * @param sellerId - Seller id
    * @param manager - Transaction manager
    * @returns Deleted inventory
@@ -220,12 +133,16 @@ export default class InventoryService {
     sellerId: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<Inventory> {
-    // Check if inventory exists and the seller matches
-    const inventory: Inventory = await manager!.findOneOrFail(Inventory, id, {
-      where: { seller: { id: sellerId } },
-    });
+    const inventoryRepository: InventoryRepository = manager!.getCustomRepository(
+      InventoryRepository,
+    );
 
-    await manager!.delete(Inventory, id);
+    // Check if inventories's seller matches
+    const inventoryToCheck: Inventory | undefined = await inventoryRepository.readOneById(id);
+    if (inventoryToCheck?.sellerId !== sellerId) throw new AuthorizationError();
+
+    // Delete inventory
+    const inventory: Inventory = await inventoryRepository.delete(id);
 
     logger.info(`Deleted inventory ${id}`);
 
@@ -233,49 +150,40 @@ export default class InventoryService {
   }
 
   /**
-   * Returns the total quantity of the product.
+   * Returns the total quantity of the product in the inventories.
    *
    * @param productId - Product id
    * @param manager - Transaction manager
    * @returns Total quantity of the product
    */
   @Transaction()
-  public async quantityByProduct(
+  public async productTotalQuantity(
     productId: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<number> {
-    const { quantity }: { quantity: number } = await manager!
-      .createQueryBuilder(Inventory, 'inventory')
-      .select('COALESCE(SUM(inventory.quantity), 0)', 'quantity')
-      .where('inventory.product_id = :productId', { productId })
-      .getRawOne();
+    const inventoryRepository: InventoryRepository = manager!.getCustomRepository(
+      InventoryRepository,
+    );
 
-    return quantity;
+    return inventoryRepository.productTotalQuantity(productId);
   }
 
   /**
-   * Returns the best selling price of the product from the available inventories.
+   * Returns the best product's selling price in the inventories.
    *
-   * @param productId - Product's id
+   * @param productId - Product id
    * @param manager - Transaction manager
-   * @returns Best selling price of the product from the available inventories
+   * @returns Best product's selling price, undefined otherwise
    */
   @Transaction()
-  public async priceByProduct(
+  public async bestProductPrice(
     productId: string,
     @TransactionManager() manager?: EntityManager,
   ): Promise<number | undefined> {
-    const { price }: { price: number | undefined } = (await manager!
-      .createQueryBuilder(Inventory, 'inventory')
-      .addSelect('inventory.condition')
-      .select('MIN(inventory.price)', 'price')
-      .where('inventory.product_id = :productId', { productId })
-      .andWhere('inventory.quantity > 0')
-      .groupBy('inventory.condition')
-      .orderBy('inventory.condition')
-      .limit(1)
-      .getRawOne()) || { price: undefined };
+    const inventoryRepository: InventoryRepository = manager!.getCustomRepository(
+      InventoryRepository,
+    );
 
-    return price;
+    return inventoryRepository.bestProductPrice(productId);
   }
 }

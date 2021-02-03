@@ -23,6 +23,7 @@ export default class ReviewRepository extends AbstractRepository<Review> {
    * @param authorId - Author id
    * @param review - Create create properties
    * @returns Created review
+   * @throws EntityAlreadyExistsError If a review already exists
    */
   public async create(
     productId: string,
@@ -34,7 +35,7 @@ export default class ReviewRepository extends AbstractRepository<Review> {
       where: { author: { id: authorId }, product: { id: productId } },
     });
 
-    // If count is not 0 a review for the product made by the author already exists
+    // If count is not 0 a review already exists
     if (count !== 0) throw new EntityAlreadyExistsError();
 
     // Save review
@@ -49,7 +50,7 @@ export default class ReviewRepository extends AbstractRepository<Review> {
   }
 
   /**
-   * Read a review that marches the id.
+   * Read a review that matches the id.
    *
    * @param id - Review id
    * @returns Review found, undefined otherwise

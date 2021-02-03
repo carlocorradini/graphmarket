@@ -5,7 +5,7 @@ import { GraphQLUUID } from '@graphmarket/graphql-scalars';
 import { IGraphQLContext } from '@graphmarket/interfaces';
 import { InventoryService } from '@app/services';
 import { InventoryCreateInput, InventoryUpdateInput } from '@app/inputs';
-import { FindInventoryArgs } from '@app/args';
+import { FindInventoriesArgs } from '@app/args';
 
 /**
  * Inventory resolver.
@@ -51,7 +51,7 @@ export default class InventoryResolver {
     description: `Return the inventory that matches the id`,
   })
   inventory(@Arg('id', () => GraphQLUUID) id: string): Promise<Inventory | undefined> {
-    return this.inventoryService.readOne(id);
+    return this.inventoryService.readOneById(id);
   }
 
   /**
@@ -61,7 +61,7 @@ export default class InventoryResolver {
    * @returns All available inventories
    */
   @Query(() => [Inventory], { description: `Return all inventories` })
-  inventories(@Args() args: FindInventoryArgs): Promise<Inventory[]> {
+  inventories(@Args() args: FindInventoriesArgs): Promise<Inventory[]> {
     return this.inventoryService.read(args);
   }
 

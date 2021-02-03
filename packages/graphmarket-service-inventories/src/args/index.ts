@@ -1,2 +1,2 @@
 // eslint-disable-next-line import/prefer-default-export
-export { default as FindInventoryArgs } from './FindInventoriesArgs';
+export { default as FindInventoriesArgs } from './FindInventoriesArgs';

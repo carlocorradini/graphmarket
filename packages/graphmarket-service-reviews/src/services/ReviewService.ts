@@ -128,7 +128,7 @@ export default class ReviewService {
     if (reviewToCheck?.authorId !== authorId) throw new AuthorizationError();
 
     // Delete review
-    const review = await reviewRepository.delete(id);
+    const review: Review = await reviewRepository.delete(id);
 
     logger.info(`Deleted review ${id}`);
 

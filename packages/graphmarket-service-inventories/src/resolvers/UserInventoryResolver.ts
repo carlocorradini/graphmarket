@@ -2,7 +2,7 @@ import { Args, FieldResolver, Resolver, Root } from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { Inventory, UserExternal } from '@graphmarket/entities';
 import { InventoryService } from '@app/services';
-import { FindInventoryArgs } from '@app/args';
+import { FindInventoriesArgs } from '@app/args';
 
 /**
  * User inventory resolver.
@@ -26,7 +26,10 @@ export default class UserInventoryResolver {
    * @returns Inventories of the seller
    */
   @FieldResolver(() => [Inventory], { description: `Seller's inventories` })
-  inventories(@Root() seller: UserExternal, @Args() args: FindInventoryArgs): Promise<Inventory[]> {
-    return this.inventoryService.readBySeller(seller.id, args);
+  inventories(
+    @Root() seller: UserExternal,
+    @Args() { skip, take, stock }: FindInventoriesArgs,
+  ): Promise<Inventory[]> {
+    return this.inventoryService.read({ skip, take, stock, sellerId: seller.id });
   }
 }

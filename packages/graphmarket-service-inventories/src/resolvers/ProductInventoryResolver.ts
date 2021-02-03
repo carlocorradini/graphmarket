@@ -3,7 +3,7 @@ import { Inject, Service } from 'typedi';
 import { Inventory, ProductExternal } from '@graphmarket/entities';
 import { InventoryService } from '@app/services';
 import { GraphQLBoolean, GraphQLNonNegativeInt, GraphQLPrice } from '@graphmarket/graphql-scalars';
-import { FindInventoryArgs } from '@app/args';
+import { FindInventoriesArgs } from '@app/args';
 
 /**
  * Product inventory resolver.
@@ -29,9 +29,9 @@ export default class ProductInventoryResolver {
   @FieldResolver(() => [Inventory], { description: `Product's inventories` })
   inventories(
     @Root() product: ProductExternal,
-    @Args() args: FindInventoryArgs,
+    @Args() { skip, take, stock }: FindInventoriesArgs,
   ): Promise<Inventory[]> {
-    return this.inventoryService.readByProduct(product.id, args);
+    return this.inventoryService.read({ skip, take, stock, productId: product.id });
   }
 
   /**
@@ -44,7 +44,7 @@ export default class ProductInventoryResolver {
     description: `Boolean flag that checks if the product is available in at least one inventory. The quantity must be greater than 0`,
   })
   async available(@Root() product: ProductExternal): Promise<boolean> {
-    return (await this.inventoryService.quantityByProduct(product.id)) > 0;
+    return (await this.inventoryService.productTotalQuantity(product.id)) > 0;
   }
 
   /**
@@ -57,7 +57,7 @@ export default class ProductInventoryResolver {
     description: `Total quantity of the product available from the inventories`,
   })
   quantity(@Root() product: ProductExternal): Promise<number> {
-    return this.inventoryService.quantityByProduct(product.id);
+    return this.inventoryService.productTotalQuantity(product.id);
   }
 
   /**
@@ -71,6 +71,6 @@ export default class ProductInventoryResolver {
     description: `Best selling price of the product from the available inventories.`,
   })
   price(@Root() product: ProductExternal): Promise<number | undefined> {
-    return this.inventoryService.priceByProduct(product.id);
+    return this.inventoryService.bestProductPrice(product.id);
   }
 }

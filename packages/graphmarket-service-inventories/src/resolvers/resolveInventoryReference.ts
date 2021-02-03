@@ -15,8 +15,8 @@ const inventoryService: InventoryService = Container.get(InventoryService);
  * @param reference - Inventory reference identifier
  * @returns Inventory that match the reference identifier, undefined otherwise
  */
-const resolveInventoryReference = (
+export default function resolveInventoryReference(
   reference: Pick<Inventory, 'id'>,
-): Promise<Inventory | undefined> => inventoryService.readOne(reference.id);
-
-export default resolveInventoryReference;
+): Promise<Inventory | undefined> {
+  return inventoryService.readOneById(reference.id);
+}

@@ -21,6 +21,7 @@ const env = cleanEnv(process.env, {
   DATABASE_DROP_SCHEMA: bool({ default: false, devDefault: false }),
   DATABASE_LOGGING: bool({ default: false }),
   REDIS_URL: url(),
+  ADAPTER_EMAIL_API_KEY: str(),
 });
 
 export default env;

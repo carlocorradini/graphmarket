@@ -7,6 +7,10 @@ import server from '@app/server';
  * Bootstrap the purchases service.
  */
 const bootstrap = async () => {
+  logger.info('Initializing adapters...');
+  await server.initAdapters();
+  logger.info(`Adapters initialized`);
+
   logger.info('Connecting database...');
   await server.connectDatabase();
   logger.info(`Database connected`);

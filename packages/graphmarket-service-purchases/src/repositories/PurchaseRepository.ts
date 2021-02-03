@@ -1,5 +1,5 @@
 import { AbstractRepository, EntityRepository } from 'typeorm';
-import { Inventory, Purchase } from '@graphmarket/entities';
+import { Inventory, Product, Purchase, User } from '@graphmarket/entities';
 import { InsufficientQuantityError } from '@graphmarket/errors';
 import { PurchaseCreateInput } from '@app/inputs';
 import { FindPurchasesArgs } from '@app/args';
@@ -83,6 +83,22 @@ export default class PurchaseRepository extends AbstractRepository<Purchase> {
       order: { createdAt: 'DESC' },
       cache: PurchaseRepository.cache,
     });
+  }
+
+  /**
+   * Read all necessary data for sending the purchase email.
+   *
+   * @param purchaseId - Purchase id
+   * @returns Purchase with necessary data
+   */
+  public async readOneForPurchaseEmail(purchaseId: string): Promise<Purchase> {
+    return this.manager
+      .createQueryBuilder(Purchase, 'purchase')
+      .innerJoinAndSelect('purchase.inventory', 'inventory')
+      .innerJoinAndSelect('purchase.user', 'user')
+      .innerJoinAndSelect('inventory.product', 'product', 'product.id = inventory.product_id')
+      .where('purchase.id = :purchaseId', { purchaseId })
+      .getOneOrFail();
   }
 
   /**

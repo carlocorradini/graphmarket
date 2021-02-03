@@ -1,8 +1,9 @@
 /* eslint-disable class-methods-use-this */
-import { Service } from 'typedi';
+import { Inject, Service } from 'typedi';
 import { EntityManager, Transaction, TransactionManager } from 'typeorm';
 import { Purchase } from '@graphmarket/entities';
 import logger from '@graphmarket/logger';
+import { EmailAdapter } from '@graphmarket/adapters';
 import { PurchaseCreateInput } from '@app/inputs';
 import { PurchaseRepository } from '@app/repositories';
 import { FindPurchasesArgs } from '@app/args';
@@ -15,6 +16,12 @@ import { FindPurchasesArgs } from '@app/args';
  */
 @Service()
 export default class PurchaseService {
+  /**
+   * Email adapter instance.
+   */
+  @Inject()
+  private readonly emailAdapter!: EmailAdapter;
+
   /**
    * Create a new purchase.
    *
@@ -34,7 +41,32 @@ export default class PurchaseService {
   ): Promise<Purchase> {
     const purchaseRepository: PurchaseRepository = manager!.getCustomRepository(PurchaseRepository);
 
+    // Create purchase
     const newPurchase: Purchase = await purchaseRepository.create(userId, inventoryId, purchase);
+
+    // Obtain email info
+    const emailPurchase: Purchase = await purchaseRepository.readOneForPurchaseEmail(
+      newPurchase.id,
+    );
+
+    // Send email
+    await this.emailAdapter.sendPurchaseConfirmation(emailPurchase.user.email, {
+      user: {
+        username: emailPurchase.user.username,
+      },
+      product: {
+        name: emailPurchase.inventory.product.name,
+        cover:
+          emailPurchase.inventory.product.photos.length > 0
+            ? emailPurchase.inventory.product.photos[0]
+            : 'https://res.cloudinary.com/dxiqa0xwa/image/upload/v1609604389/graphmarket/product/photo/product.png',
+      },
+      purchase: {
+        quantity: emailPurchase.quantity,
+        amount: (emailPurchase.price * emailPurchase.quantity) / 100,
+      },
+    });
+    logger.info(`Purchase ${newPurchase.id} confirmation email sended`);
 
     logger.info(`Created purchase ${newPurchase.id}`);
 

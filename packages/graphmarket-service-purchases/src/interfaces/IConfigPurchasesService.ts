@@ -3,6 +3,7 @@ import {
   IConfigGraphQL,
   IConfigDatabase,
   IConfigRedis,
+  IConfigEmailAdapter,
 } from '@graphmarket/interfaces';
 
 /**
@@ -13,4 +14,7 @@ export default interface IConfigPurchasesService {
   readonly GRAPHQL: IConfigGraphQL;
   readonly DATABASE: IConfigDatabase;
   readonly REDIS: IConfigRedis;
+  readonly ADAPTERS: {
+    readonly EMAIL: IConfigEmailAdapter;
+  };
 }

@@ -19,6 +19,7 @@ import {
 } from '@app/resolvers';
 import config from '@app/config';
 import { URL } from 'url';
+import { EmailAdapter } from '@graphmarket/adapters';
 
 /**
  * Federated GraphQL schema.
@@ -91,4 +92,13 @@ const connectDatabase = (): Promise<Connection> => {
   });
 };
 
-export default { listen, connectDatabase };
+/**
+ * Initialize the adapters used in the service.
+ */
+const initAdapters = (): Promise<void> => {
+  Container.get(EmailAdapter).init(config.ADAPTERS.EMAIL.API_KEY);
+
+  return Promise.resolve();
+};
+
+export default { listen, connectDatabase, initAdapters };

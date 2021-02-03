@@ -27,6 +27,11 @@ const config: IConfigPurchasesService = {
   REDIS: {
     URL: env.REDIS_URL,
   },
+  ADAPTERS: {
+    EMAIL: {
+      API_KEY: env.ADAPTER_EMAIL_API_KEY,
+    },
+  },
 };
 
 logger.debug('Configuration object constructed');

@@ -26,6 +26,7 @@ $  npm ci
 ```
 
 2. Bootstrap packages
+
 ```console
 $  npm run bootstrap
 ```
@@ -33,68 +34,77 @@ $  npm run bootstrap
 3. Edit environments
 
 To properly configure a service you must define an environment.
-In every service folder (_packages/graphmarket-service-*_) copy and rename the *.env.example* file to *.env*.
-Edit the *.env* file with the required variables (database, redis, adapter, ...).
+In every service folder (_packages/graphmarket-service-\*_) copy and rename the _.env.example_ file to _.env_.
+Edit the _.env_ file with the required variables (database, redis, adapter, ...).
 
 The process described above must be applied to the gateway also (_packages/graphmarket-gateway_).
+
 ```console
 $  cp .env.example .env
 ```
 
 4. Start services
-    1. Development mode
-    ```console
-    $  npm run start:dev:services
-    ```
-    
-    2. Production mode
-    ```console
-    $  npm run start:services
-    ```
 
-    > Note that in production the *.env* file is ignored. You must inject or define globally each environment variable
-    
-> Each service can also be started individually running ```npm run start:dev``` (development) or ```npm run start``` (production) with context the service folder itself
+   1. Development mode
+
+   ```console
+   $  npm run start:dev:services
+   ```
+
+   2. Production mode
+
+   ```console
+   $  npm run start:services
+   ```
+
+   > Note that in production the _.env_ file is ignored. You must inject or define globally each environment variable
+
+> Each service can also be started individually running `npm run start:dev` (development) or `npm run start` (production) with context the service folder itself
 
 5. Start gateway
-    1. Development mode
-    ```console
-    $  npm run start:dev:gateway
-    ```
-    
-    2. Production mode
-    ```console
-    $  npm run start:gateway
-    ```
-    
-    > Note that in production the *.env* file is ignored. You must inject or define globally each environment variable
 
-> The gateway can also be started running ```npm run start:dev``` (development) or ```npm run start``` (production) with context the gateway folder itself
+   1. Development mode
+
+   ```console
+   $  npm run start:dev:gateway
+   ```
+
+   2. Production mode
+
+   ```console
+   $  npm run start:gateway
+   ```
+
+   > Note that in production the _.env_ file is ignored. You must inject or define globally each environment variable
+
+> The gateway can also be started running `npm run start:dev` (development) or `npm run start` (production) with context the gateway folder itself
 
 > The gateway can be started before the services thanks to a health check procedure in the bootstrap phase. After 3 failed attempts to establish the connection with the services the gateway raise an error and exit
 
 6. Start website
 
-    1. Change context
-    ```console
-    $  cd website
-    ```
+   1. Change context
 
-    2. Install dependencies
-    ```console
-    $  npm ci
-    ```
-    
-    3. Edit environment
-    
-    > Angular environment is under *src/environments*
-    
-    4. Builds and serve
-    
-    ```console
-    $  ng serve --open
-    ```
-    
+   ```console
+   $  cd website
+   ```
+
+   2. Install dependencies
+
+   ```console
+   $  npm ci
+   ```
+
+   3. Edit environment
+
+   > Angular environment is under _src/environments_
+
+   4. Builds and serve
+
+   ```console
+   $  ng serve --open
+   ```
+
 7. Run tests
 
 > Current context is the root folder (graphmarket)

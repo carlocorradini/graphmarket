@@ -19,7 +19,9 @@
 
 > Graph Market is based on GraphQL and designed to be a federated architecture exposing a single schema through the gateway.
 
-![Architecture](https://res.cloudinary.com/dxiqa0xwa/image/upload/v1612436348/graphmarket/architecture_luo6lq.png)
+![Architecture](./images/architecture_small.png)
+
+> Full quality image: [images/architecture.png](./images/architecture.png)
 
 ## Run
 

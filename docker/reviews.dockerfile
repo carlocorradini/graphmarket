@@ -10,6 +10,8 @@ COPY /packages/graphmarket-service-reviews/package.json .
 
 RUN npm install
 
-COPY /packages/graphmarket-service-reviews .
+COPY /packages/graphmarket-service-reviews/tsconfig.json .
 
-CMD ["npx", "ts-node", "-r", "tsconfig-paths/register", "src/bootstrap.ts"]
+COPY /packages/graphmarket-service-reviews/src src
+
+CMD ["npx", "ts-node", "--script-mode", "--transpile-only", "-r", "tsconfig-paths/register", "src/bootstrap.ts"]

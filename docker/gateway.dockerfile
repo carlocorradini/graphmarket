@@ -10,6 +10,8 @@ COPY /packages/graphmarket-gateway/package.json .
 
 RUN npm install
 
-COPY /packages/graphmarket-gateway .
+COPY /packages/graphmarket-gateway/tsconfig.json .
 
-CMD ["npx", "ts-node", "-r", "tsconfig-paths/register", "src/bootstrap.ts"]
+COPY /packages/graphmarket-gateway/src src
+
+CMD ["npx", "ts-node", "--script-mode", "--transpile-only", "-r", "tsconfig-paths/register", "src/bootstrap.ts"]

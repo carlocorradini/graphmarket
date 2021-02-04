@@ -7,7 +7,11 @@ services:
       context: .
       dockerfile: docker/gateway.dockerfile
     environment:
+      NODE_ENV: production
       PORT: 80
+      GRAPHQL_PATH: ${GRAPHQL_PATH}
+      TOKEN_SECRET: ${TOKEN_SECRET}
+      TOKEN_ALGORITHM: ${TOKEN_ALGORITHM}
       REDIS_URL: redis://:@redis:6379/0 # database 0 is also used by authentications and users
       SERVICES_AUTHENTICATIONS_URL: http://authentications:80/graphql
       SERVICES_USERS_URL: http://users:80/graphql
@@ -30,9 +34,22 @@ services:
       context: .
       dockerfile: docker/authentications.dockerfile
     environment:
+      NODE_ENV: production
       PORT: 80
+      GRAPHQL_PATH: ${GRAPHQL_PATH}
+      TOKEN_SECRET: ${TOKEN_SECRET}
+      TOKEN_ALGORITHM: ${TOKEN_ALGORITHM}
+      TOKEN_EXPIRATION_TIME: ${TOKEN_EXPIRATION_TIME}
       DATABASE_URL: postgres://user:password@db:5432/graphmarket
+      DATABASE_SSL: 'false'
+      DATABASE_SYNCHRONIZE: 'false'
+      DATABASE_DROP_SCHEMA: 'false'
+      DATABASE_LOGGING: ${DATABASE_LOGGING}
       REDIS_URL: redis://:@redis:6379/0 # database 0 is also used by gateway and users
+      ADAPTER_PHONE_USERNAME: ${ADAPTER_PHONE_USERNAME}
+      ADAPTER_PHONE_PASSWORD: ${ADAPTER_PHONE_PASSWORD}
+      ADAPTER_PHONE_SERVICE_VERIFICATION: ${ADAPTER_PHONE_SERVICE_VERIFICATION}
+      ADAPTER_EMAIL_API_KEY: ${ADAPTER_EMAIL_API_KEY}
     ports:
       - 8081:80
     depends_on:
@@ -44,9 +61,27 @@ services:
       context: .
       dockerfile: docker/users.dockerfile
     environment:
+      NODE_ENV: production
       PORT: 80
+      GRAPHQL_PATH: ${GRAPHQL_PATH}
+      TOKEN_SECRET: ${TOKEN_SECRET}
+      TOKEN_ALGORITHM: ${TOKEN_ALGORITHM}
       DATABASE_URL: postgres://user:password@db:5432/graphmarket
+      DATABASE_SSL: 'false'
+      DATABASE_SYNCHRONIZE: 'false'
+      DATABASE_DROP_SCHEMA: 'false'
+      DATABASE_LOGGING: ${DATABASE_LOGGING}
       REDIS_URL: redis://:@redis:6379/0 # database 0 is also used by gateway and authentications
+      ADAPTER_PHONE_USERNAME: ${ADAPTER_PHONE_USERNAME}
+      ADAPTER_PHONE_PASSWORD: ${ADAPTER_PHONE_PASSWORD}
+      ADAPTER_PHONE_SERVICE_VERIFICATION: ${ADAPTER_PHONE_SERVICE_VERIFICATION}
+      ADAPTER_EMAIL_API_KEY: ${ADAPTER_EMAIL_API_KEY}
+      ADAPTER_UPLOAD_CLOUD_NAME: ${ADAPTER_UPLOAD_CLOUD_NAME}
+      ADAPTER_UPLOAD_API_KEY: ${ADAPTER_UPLOAD_API_KEY}
+      ADAPTER_UPLOAD_API_SECRET: ${ADAPTER_UPLOAD_API_SECRET}
+      ADAPTER_UPLOAD_FOLDER: ${ADAPTER_UPLOAD_FOLDER}
+      ADAPTER_UPLOAD_MAX_FILE_SIZE: ${ADAPTER_UPLOAD_MAX_FILE_SIZE}
+      ADAPTER_UPLOAD_MAX_FILES: ${ADAPTER_UPLOAD_MAX_FILES}
     ports:
       - 8082:80
     depends_on:
@@ -58,9 +93,21 @@ services:
       context: .
       dockerfile: docker/products.dockerfile
     environment:
+      NODE_ENV: production
       PORT: 80
+      GRAPHQL_PATH: ${GRAPHQL_PATH}
       DATABASE_URL: postgres://user:password@db:5432/graphmarket
+      DATABASE_SSL: 'false'
+      DATABASE_SYNCHRONIZE: 'false'
+      DATABASE_DROP_SCHEMA: 'false'
+      DATABASE_LOGGING: ${DATABASE_LOGGING}
       REDIS_URL: redis://:@redis:6379/1
+      ADAPTER_UPLOAD_CLOUD_NAME: ${ADAPTER_UPLOAD_CLOUD_NAME}
+      ADAPTER_UPLOAD_API_KEY: ${ADAPTER_UPLOAD_API_KEY}
+      ADAPTER_UPLOAD_API_SECRET: ${ADAPTER_UPLOAD_API_SECRET}
+      ADAPTER_UPLOAD_FOLDER: ${ADAPTER_UPLOAD_FOLDER}
+      ADAPTER_UPLOAD_MAX_FILE_SIZE: ${ADAPTER_UPLOAD_MAX_FILE_SIZE}
+      ADAPTER_UPLOAD_MAX_FILES: ${ADAPTER_UPLOAD_MAX_FILES}
     ports:
       - 8083:80
     depends_on:
@@ -72,8 +119,14 @@ services:
       context: .
       dockerfile: docker/inventories.dockerfile
     environment:
+      NODE_ENV: production
       PORT: 80
+      GRAPHQL_PATH: ${GRAPHQL_PATH}
       DATABASE_URL: postgres://user:password@db:5432/graphmarket
+      DATABASE_SSL: 'false'
+      DATABASE_SYNCHRONIZE: 'false'
+      DATABASE_DROP_SCHEMA: 'false'
+      DATABASE_LOGGING: ${DATABASE_LOGGING}
       REDIS_URL: redis://:@redis:6379/2
     ports:
       - 8084:80
@@ -86,9 +139,16 @@ services:
       context: .
       dockerfile: docker/purchases.dockerfile
     environment:
+      NODE_ENV: production
       PORT: 80
+      GRAPHQL_PATH: ${GRAPHQL_PATH}
       DATABASE_URL: postgres://user:password@db:5432/graphmarket
+      DATABASE_SSL: 'false'
+      DATABASE_SYNCHRONIZE: 'false'
+      DATABASE_DROP_SCHEMA: 'false'
+      DATABASE_LOGGING: ${DATABASE_LOGGING}
       REDIS_URL: redis://:@redis:6379/3
+      ADAPTER_EMAIL_API_KEY: ${ADAPTER_EMAIL_API_KEY}
     ports:
       - 8085:80
     depends_on:
@@ -100,8 +160,14 @@ services:
       context: .
       dockerfile: docker/reviews.dockerfile
     environment:
+      NODE_ENV: production
       PORT: 80
+      GRAPHQL_PATH: ${GRAPHQL_PATH}
       DATABASE_URL: postgres://user:password@db:5432/graphmarket
+      DATABASE_SSL: 'false'
+      DATABASE_SYNCHRONIZE: 'false'
+      DATABASE_DROP_SCHEMA: 'false'
+      DATABASE_LOGGING: ${DATABASE_LOGGING}
       REDIS_URL: redis://:@redis:6379/4
     ports:
       - 8086:80

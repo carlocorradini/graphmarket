@@ -15,6 +15,12 @@
 | Carlo  | Corradini | `carlocorradini` | **223811** |
 | Andrea |  Stedile  | `andreastedile`  | **220930** |
 
+## Architecture
+
+> Graph Market is based on GraphQL and designed to be a federated architecture exposing a single schema through the gateway.
+
+![Architecture](https://res.cloudinary.com/dxiqa0xwa/image/upload/v1612436348/graphmarket/architecture_luo6lq.png)
+
 ## Run
 
 1. Clone the repo and install the dependencies

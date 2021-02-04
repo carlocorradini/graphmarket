@@ -1,0 +1,126 @@
+version: '3.9'
+
+services:
+
+  gateway:
+    build:
+      context: .
+      dockerfile: docker/gateway.dockerfile
+    environment:
+      PORT: 80
+      REDIS_URL: redis://:@redis:6379/0 # database 0 is also used by authentications and users
+      SERVICES_AUTHENTICATIONS_URL: http://authentications:80/graphql
+      SERVICES_USERS_URL: http://users:80/graphql
+      SERVICES_PRODUCTS_URL: http://products:80/graphql
+      SERVICES_INVENTORIES_URL: http://inventories:80/graphql
+      SERVICES_PURCHASES_URL: http://purchases:80/graphql
+      SERVICES_REVIEWS_URL: http://reviews:80/graphql
+    ports:
+      - 8080:80
+    depends_on:
+      - authentications
+      - users
+      - products
+      - inventories
+      - purchases
+      - reviews
+
+  authentications:
+    build:
+      context: .
+      dockerfile: docker/authentications.dockerfile
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://user:password@db:5432/graphmarket
+      REDIS_URL: redis://:@redis:6379/0 # database 0 is also used by gateway and users
+    ports:
+      - 8081:80
+    depends_on:
+      - db
+      - redis
+
+  users:
+    build:
+      context: .
+      dockerfile: docker/users.dockerfile
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://user:password@db:5432/graphmarket
+      REDIS_URL: redis://:@redis:6379/0 # database 0 is also used by gateway and authentications
+    ports:
+      - 8082:80
+    depends_on:
+      - db
+      - redis
+
+  products:
+    build:
+      context: .
+      dockerfile: docker/products.dockerfile
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://user:password@db:5432/graphmarket
+      REDIS_URL: redis://:@redis:6379/1
+    ports:
+      - 8083:80
+    depends_on:
+      - db
+      - redis
+
+  inventories:
+    build:
+      context: .
+      dockerfile: docker/inventories.dockerfile
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://user:password@db:5432/graphmarket
+      REDIS_URL: redis://:@redis:6379/2
+    ports:
+      - 8084:80
+    depends_on:
+      - db
+      - redis
+
+  purchases:
+    build:
+      context: .
+      dockerfile: docker/purchases.dockerfile
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://user:password@db:5432/graphmarket
+      REDIS_URL: redis://:@redis:6379/3
+    ports:
+      - 8085:80
+    depends_on:
+      - db
+      - redis
+
+  reviews:
+    build:
+      context: .
+      dockerfile: docker/reviews.dockerfile
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://user:password@db:5432/graphmarket
+      REDIS_URL: redis://:@redis:6379/4
+    ports:
+      - 8086:80
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: graphmarket
+    ports:
+      - 5432:5432
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    depends_on:
+      - db

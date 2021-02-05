@@ -10,7 +10,7 @@ import { services, buildServiceDatasource } from '@app/services';
  * Express app instance.
  */
 const app = buildExpressApp({
-  graphql: { path: config.GRAPHQL.PATH },
+  graphql: { path: config.GRAPHQL.PATH, playground: true },
   token: { secret: config.TOKEN.SECRET, algorithm: config.TOKEN.ALGORITHM },
   redis: { url: config.REDIS.URL },
 });

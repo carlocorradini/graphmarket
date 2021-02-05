@@ -4,6 +4,7 @@
 export default interface IBuildExpressAppOptions {
   graphql: {
     path: string;
+    playground?: boolean;
   };
   upload?: {
     maxFileSize: number;

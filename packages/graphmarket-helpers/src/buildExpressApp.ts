@@ -21,7 +21,8 @@ const buildExpressApp = (options: IBuildExpressAppOptions) => {
     .use(compression())
     .use(
       helmet({
-        contentSecurityPolicy: EnvUtil.isProduction() ? undefined : false,
+        contentSecurityPolicy:
+          EnvUtil.isProduction() && !options.graphql.playground ? undefined : false,
       }),
     );
 

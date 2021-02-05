@@ -29,7 +29,7 @@
     "@graphmarket/entities": "^1.1.1",
     "@graphmarket/errors": "^1.1.1",
     "@graphmarket/graphql-scalars": "^1.1.1",
-    "@graphmarket/helpers": "^1.1.1",
+    "@graphmarket/helpers": "^1.1.2",
     "@graphmarket/interfaces": "^1.1.1",
     "@graphmarket/logger": "^1.1.1",
     "@graphmarket/utils": "^1.1.2",

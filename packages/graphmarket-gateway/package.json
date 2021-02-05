@@ -29,7 +29,7 @@
     "@graphmarket/helpers": "^1.1.1",
     "@graphmarket/interfaces": "^1.1.1",
     "@graphmarket/logger": "^1.1.1",
-    "@graphmarket/utils": "^1.1.1",
+    "@graphmarket/utils": "^1.1.2",
     "@profusion/apollo-federation-upload": "^2.2.1",
     "apollo-server-express": "^2.19.1",
     "apollo-server-types": "^0.6.2",

@@ -28,7 +28,7 @@
     "@apollo/federation": "^0.21.0",
     "@graphmarket/interfaces": "^1.1.1",
     "@graphmarket/middlewares": "^1.1.1",
-    "@graphmarket/utils": "^1.1.1",
+    "@graphmarket/utils": "^1.1.2",
     "apollo-graphql": "^0.6.0",
     "apollo-server-core": "^2.19.1",
     "apollo-server-express": "^2.19.1",

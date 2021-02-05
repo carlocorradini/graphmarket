@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@graphmarket/graphql-scalars": "^1.1.1",
-    "@graphmarket/utils": "^1.1.1",
+    "@graphmarket/utils": "^1.1.2",
     "lodash": "^4.17.20",
     "type-graphql": "^1.1.1",
     "typeorm": "^0.2.29"

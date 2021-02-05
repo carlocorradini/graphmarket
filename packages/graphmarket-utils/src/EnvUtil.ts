@@ -31,14 +31,15 @@ export default class EnvUtil {
 
   /**
    * Load the '.env' file based on the current environment.
-   * .env file used in development environment.
+   * .env file used in production & development environment.
    * .env.test file used in test environment.
-   * Otherwise it does not load any '.emv' file.
+   * Otherwise it does not load any '.env' file.
    */
   public static loadDotEnvFile(): void {
     let dotEnvPath: string;
 
     switch (EnvUtil.getCurrentEnv()) {
+      case EnvUtil.ENV_PRODUCTION:
       case EnvUtil.ENV_DEVELOPMENT:
         dotEnvPath = '.env';
         break;

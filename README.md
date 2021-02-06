@@ -65,8 +65,6 @@ $  cp .env.example .env
    $  npm run start:services
    ```
 
-   > Note that in production the _.env_ file is ignored. You must inject or define globally each environment variable
-
 > Each service can also be started individually running `npm run start:dev` (development) or `npm run start` (production) with context the service folder itself
 
 5. Start gateway

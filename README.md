@@ -83,8 +83,6 @@ $  cp .env.example .env
    $  npm run start:gateway
    ```
 
-   > Note that in production the _.env_ file is ignored. You must inject or define globally each environment variable
-
 > The gateway can also be started running `npm run start:dev` (development) or `npm run start` (production) with context the gateway folder itself
 
 > The gateway can be started before the services thanks to a health check procedure in the bootstrap phase. After 3 failed attempts to establish the connection with the services the gateway raise an error and exit

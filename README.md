@@ -113,7 +113,7 @@ Docker-related files are kept in a dedicated branch called `docker`.
 
 ## Build and run the website
 
-The website's code is hosted uder the _website_ directory. Build and launch it:
+The website's code is hosted under the _website_ directory. Build and launch it:
 
 ```bash
 cd website

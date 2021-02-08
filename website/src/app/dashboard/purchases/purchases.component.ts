@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Apollo, gql, QueryRef } from 'apollo-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Purchase } from 'src/app/core';
+import { Purchase } from '../../core';
 
 const QUERY_PURCHASES = gql`
   query Purchases($skip: NonNegativeInt, $take: PositiveInt) {

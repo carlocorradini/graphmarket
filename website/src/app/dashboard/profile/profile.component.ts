@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { updateValues, User, UserGenders, UserService } from 'src/app/core';
+import { updateValues, User, UserGenders, UserService } from '../../core';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -11,7 +11,6 @@ import Swal from 'sweetalert2';
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent {
-
   public static readonly MAX_UPLOAD_FILE_SIZE: number = 4194304;
 
   public user?: User;

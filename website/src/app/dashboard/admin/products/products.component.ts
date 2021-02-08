@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo, gql, QueryRef } from 'apollo-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { concat, forkJoin } from 'rxjs';
+import { concat } from 'rxjs';
 import { concatMap, finalize } from 'rxjs/operators';
 import { Product, ProductCategories } from 'src/app/core';
 import Swal from 'sweetalert2';

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
-import { isUUID } from 'class-validator';
 import { User, UserService } from '../core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
@@ -19,7 +18,7 @@ export class UserComponent implements OnInit {
   public ngOnInit(): void {
     const userId: string | null = this.route.snapshot.paramMap.get('userId');
 
-    if (userId == null || !isUUID(userId)) {
+    if (userId === null) {
       Swal.fire({
         icon: 'error',
         title: 'Oops',

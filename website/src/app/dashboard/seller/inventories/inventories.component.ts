@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo, gql, QueryRef } from 'apollo-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
-import { Inventory, ProductConditions } from 'src/app/core';
+import { Inventory, ProductConditions } from '../../../core';
 import Swal from 'sweetalert2';
 declare var UIkit: any;
 
@@ -198,7 +198,9 @@ export class InventoriesComponent implements OnInit {
         else if (!data) Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Unknown error' });
         else {
           this.updateInventoryForm.get('inventoryId')?.setValue(data.inventory.id);
-          this.updateInventoryForm.get('price')?.setValue(Math.trunc(Number.parseFloat(data.inventory.price) * 100));
+          this.updateInventoryForm
+            .get('price')
+            ?.setValue(Math.trunc(Number.parseFloat(data.inventory.price) * 100));
           this.updateInventoryForm.get('quantity')?.setValue(data.inventory.quantity);
           UIkit.tab(document.getElementById('inventories-tab')).show(2);
         }

@@ -24,7 +24,6 @@
     "@sweetalert2/ngx-sweetalert2": "^9.0.0",
     "angular-star-rating": "^4.0.0-beta.3",
     "apollo-angular": "^2.2.0",
-    "class-validator": "^0.13.1",
     "css-star-rating": "^1.2.4",
     "graphql": "^15.0.0",
     "ngx-spinner": "^10.0.1",

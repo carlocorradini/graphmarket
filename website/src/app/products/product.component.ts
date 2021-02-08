@@ -4,7 +4,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
 import Swal from 'sweetalert2';
-import { Inventory, Product, PurchaseService, Review, User, UserService } from '../core';
+import { Inventory, Product, PurchaseService, Review, UserService } from '../core';
 
 const QUERY_PRODUCT = gql`
   query QueryProduct($id: UUID!) {

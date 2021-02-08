@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql, QueryRef } from 'apollo-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
-import { Review } from 'src/app/core';
+import { Review } from '../../core';
 import Swal from 'sweetalert2';
 
 const QUERY_REVIEWS = gql`

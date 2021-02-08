@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { isUUID } from 'class-validator';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
 import Swal from 'sweetalert2';
@@ -31,7 +30,7 @@ export class VerifyComponent implements OnInit {
     const userId: string | null = this.route.snapshot.paramMap.get('userId');
     const context: string | null = this.route.snapshot.queryParamMap.get('context');
 
-    if (!isUUID(userId)) {
+    if (userId === null) {
       Swal.fire({
         icon: 'error',
         title: 'Oops',

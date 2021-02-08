@@ -39,6 +39,7 @@ const listen = (port: number): Promise<AddressInfo> => {
     playground: config.GRAPHQL.PLAYGROUND,
     uploads: true,
     subscriptions: false,
+    introspection: true,
     context: ({ req }): IGraphQLContext => ({
       user: req.user,
     }),

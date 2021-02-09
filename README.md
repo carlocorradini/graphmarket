@@ -34,11 +34,11 @@ Graph Market has a Service-Oriented Architecture implemented by six microservice
 
 A gateway acts as an entry point for GraphQL client requests, which are orchestrated and fulfilled by GraphQL Federation.
 
-[![Architecture](./images/architecture_small.png)](./images/architecture.png)
+[![Architecture](./images/architecture.png)](./images/architecture.png)
 
 Note that the image above is a bit deceptive: in principle, all services might have their own Cache Layer (i.e., their own Redis instance).
 
-Full quality image: [images/architecture.png](./images/architecture.png)
+Full quality PDF: [images/architecture.pdf](./images/architecture.pdf)
 
 ## Source code organization
 

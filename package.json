@@ -36,7 +36,8 @@
     "lint": "npx eslint \"packages/*/src/**/*.ts\" \"packages/*/tests/**/*.ts\"",
     "test": "npx jest --config jest.config.ts --no-watchman --silent",
     "test:debug": "npm run test -- --verbose --silent false",
-    "coverage": "npm run test -- --coverage"
+    "coverage": "npm run test -- --coverage",
+    "postinstall": "npx husky install"
   },
   "devDependencies": {
     "@types/faker": "^5.1.5",

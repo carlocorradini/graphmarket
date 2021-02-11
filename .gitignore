@@ -56,5 +56,8 @@ coverage/
 doc/
 docs/
 
+# Husky
+.husky/_/
+
 # Exceptions
 !.gitignore

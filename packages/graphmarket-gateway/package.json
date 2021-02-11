@@ -25,7 +25,7 @@
     "start:dev": "npx cross-env NODE_ENV=development ts-node-dev --prefer-ts true --no-notify --quiet --exit-child -r tsconfig-paths/register --transpile-only src/bootstrap.ts"
   },
   "dependencies": {
-    "@apollo/gateway": "^0.22.0",
+    "@apollo/gateway": "^0.23.0",
     "@graphmarket/helpers": "^1.1.2",
     "@graphmarket/interfaces": "^1.1.1",
     "@graphmarket/logger": "^1.1.1",

@@ -18,6 +18,7 @@ const QUERY_INVENTORIES = gql`
         createdAt
         updatedAt
         product {
+          id
           cover
           name
         }

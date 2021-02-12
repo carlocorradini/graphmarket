@@ -1,16 +1,18 @@
 # Graph Market
 
+[![Build](https://github.com/carlocorradini/graphmarket/workflows/build/badge.svg)](https://github.com/carlocorradini/graphmarket/actions)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/eab19cd392424e41afec10b001aaeadd)](https://www.codacy.com/gh/carlocorradini/graphmarket/dashboard?utm_source=github.com&utm_medium=referral&utm_content=carlocorradini/graphmarket&utm_campaign=Badge_Grade)
+[![codecov](https://codecov.io/gh/carlocorradini/graphmarket/branch/main/graph/badge.svg?token=VKZLWJYNY2)](https://codecov.io/gh/carlocorradini/graphmarket)
+[![Known Vulnerabilities](https://snyk.io/test/github/carlocorradini/graphmarket/badge.svg)](https://snyk.io/test/github/carlocorradini/graphmarket)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcarlocorradini%2Fgraphmarket.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcarlocorradini%2Fgraphmarket?ref=badge_shield)
+
 Graph Market is an online E-commerce platform.
 
 Sellers can publish their products, providing images and descriptions; users can browse such products and, upon registration, buy and review them.
 
 When a user registers themselves, Graph Market sends both an email and SMS key which are required to complete the registration process.
 
-[![Build](https://github.com/carlocorradini/graphmarket/workflows/build/badge.svg)](https://github.com/carlocorradini/graphmarket/actions)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/eab19cd392424e41afec10b001aaeadd)](https://www.codacy.com/gh/carlocorradini/graphmarket/dashboard?utm_source=github.com&utm_medium=referral&utm_content=carlocorradini/graphmarket&utm_campaign=Badge_Grade)
-[![codecov](https://codecov.io/gh/carlocorradini/graphmarket/branch/main/graph/badge.svg?token=VKZLWJYNY2)](https://codecov.io/gh/carlocorradini/graphmarket)
-[![Known Vulnerabilities](https://snyk.io/test/github/carlocorradini/graphmarket/badge.svg)](https://snyk.io/test/github/carlocorradini/graphmarket)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcarlocorradini%2Fgraphmarket.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcarlocorradini%2Fgraphmarket?ref=badge_shield)
+[Read the report for more information](Graph_Market.pdf)
 
 **Members**:
 
